@@ -1,0 +1,47 @@
+{
+    "name": "fsi/admin-security-bundle",
+    "type": "symfony-bundle",
+    "description": "Purpose of this bundle is to provide simple authentication & authorization mechanisms for fsi/admin-bundle",
+    "keywords": ["admin", "panel", "symfony2", "bundle", "fsi"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Norbert Orzechowicz",
+            "email": "norbert@fsi.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "fsi/admin-bundle" : "1.0.*",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/security-bundle": "~2.3",
+        "symfony/swiftmailer-bundle": "~2.3",
+        "friendsofsymfony/user-bundle": "1.3.*"
+    },
+    "require-dev": {
+        "doctrine/doctrine-bundle": "1.2.*@dev",
+        "symfony/expression-language": "~2.4",
+        "phpspec/phpspec": "2.0.*@dev",
+        "behat/behat": "*@stable",
+        "behat/symfony2-extension": "*@stable",
+        "behat/mink-extension": "*",
+        "behat/mink-browserkit-driver": "*",
+        "behat/mink-selenium2-driver": "*",
+        "sensiolabs/behat-page-object-extension": "1.0.*@dev",
+        "bossa/phpspec2-expect": "dev-master"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "FSi\\Bundle\\AdminSecurityBundle\\": ""
+        }
+    },
+    "target-dir" : "FSi/Bundle/AdminSecurityBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

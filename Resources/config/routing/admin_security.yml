@@ -1,0 +1,14 @@
+admin_security_user_login:
+    path: /login
+    defaults:
+        _controller: admin_security.controller.security:loginAction
+
+admin_security_user_check:
+    path: /login_check
+    defaults:
+        _controller: admin_security.controller.security:checkAction
+
+admin_security_user_logout:
+    path: /logout
+    defaults:
+        _controller: admin_security.controller.security:logoutAction

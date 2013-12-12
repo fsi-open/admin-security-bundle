@@ -1,0 +1,7 @@
+admin:
+  login:
+    email:
+      placeholder: E-mail
+    password:
+      placeholder: Password
+    button: Login
