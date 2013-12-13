@@ -1,0 +1,19 @@
+admin:
+  login:
+    email:
+      placeholder: E-mail
+    password:
+      placeholder: Hasło
+    button: Zaloguj
+  logout: Wyloguj
+  change_password: Zmień hasło
+  change_password_message:
+    success: Twoje hasło zostało poprawnie zmienione
+  change_password_form:
+    current_password: Aktualne hasło
+    password: Nowe hasło
+    repeat_password: Powtórz hasło
+    button:
+      save: Zapisz
+      reset: Resetuj
+  welcome: Witaj <b>%username%</b>

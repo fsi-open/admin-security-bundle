@@ -12,3 +12,8 @@ admin_security_user_logout:
     path: /logout
     defaults:
         _controller: admin_security.controller.security:logoutAction
+
+fsi_admin_change_password:
+    path: /change-password
+    defaults:
+        _controller: admin_security.controller.admin:changePasswordAction

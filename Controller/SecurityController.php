@@ -43,6 +43,10 @@ class SecurityController
             $session->remove(SecurityContext::AUTHENTICATION_ERROR);
         }
 
+        if ($error instanceof \Exception ) {
+            $error = $error->getMessage();
+        }
+
         $csrfToken = isset($this->csrfProvider)
             ? $this->csrfProvider->generateCsrfToken('authenticate')
             : null;

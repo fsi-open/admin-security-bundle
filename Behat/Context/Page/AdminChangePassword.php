@@ -12,26 +12,22 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context\Page;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class Login extends Page
+class AdminChangePassword extends Page
 {
-    protected $path = '/admin/login';
+    protected $path = '/admin/change-password';
 
     public function isOpen()
     {
-        if (!$this->has('css', 'form.form-signin')) {
-            throw new UnexpectedPageException(sprintf("Page %s is not a Login page", $this->path));
+        if (!$this->has('css', 'form')) {
+            throw new UnexpectedPageException(sprintf("Page %s is not a Admin change password page", $this->path));
         }
         $this->verifyResponse();
     }
 
-    public function getFormErrorMessage()
+    public function findFieldError($field)
     {
-        return $this->find('css', 'form > div.alert-danger')->getText();
-    }
-
-    public function getFormSuccessMessage()
-    {
-        return $this->find('css', 'form > div.alert-success')->getText();
+        $fieldContainer = $this->findField($field)->getParent();
+        return $fieldContainer->find('css', 'span.help-block');
     }
 }
 

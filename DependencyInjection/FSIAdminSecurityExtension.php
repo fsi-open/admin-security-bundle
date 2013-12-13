@@ -11,13 +11,14 @@ namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * @author Norbert Orzechowicz <norbert@fsi.pl>
  */
-class FSIAdminSecurityExtension extends Extension
+class FSIAdminSecurityExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -26,5 +27,19 @@ class FSIAdminSecurityExtension extends Extension
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+    }
+
+    /**
+     * Allow an extension to prepend the extension configurations.
+     *
+     * @param ContainerBuilder $container
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $container->prependExtensionConfig('fsi_admin', array(
+            'templates' => array(
+                'base' => 'FSiAdminSecurityBundle:Admin:base.html.twig'
+            )
+        ));
     }
 }

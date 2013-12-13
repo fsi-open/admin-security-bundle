@@ -14,7 +14,20 @@ Feature: Secure admin panel
 
   Scenario: Login into admin panel as a admin
     Given I'm not logged in
-    And I on the "Admin panel" page
+    And I am on the "Admin panel" page
     When I fill form with valid admin login and password
     And I press "Login" button
     Then I should be redirected to "Admin panel" page
+
+  Scenario: Login into admin panel using bad credentials
+    Given I'm not logged in
+    And I am on the "Admin panel" page
+    When I fill form with invalid admin login and password
+    And I press "Login" button
+    Then I should see login form error message "Bad credentials"
+
+  Scenario: Logout from admin panel
+    Given I'm logged in as admin
+    And I am on the "Admin panel" page
+    When I click "Logout" link from "Hello admin" dropdown button
+    Then I should be logged off

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\SecurityContext;
 
 class SecurityControllerSpec extends ObjectBehavior
@@ -30,7 +31,7 @@ class SecurityControllerSpec extends ObjectBehavior
     function it_render_login_template_in_login_action(EngineInterface $templating, Response $response, Request $request)
     {
         $templating->renderResponse(
-                '@FSiAdminSecurity/Security/login.html.twig',
+                'FSiAdminSecurityBundle:Security:login.html.twig',
                 array(
                     'error' => null,
                     'csrf_token' => null
@@ -51,7 +52,7 @@ class SecurityControllerSpec extends ObjectBehavior
         $requestAttributes->get(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn('error message');
 
         $templating->renderResponse(
-                '@FSiAdminSecurity/Security/login.html.twig',
+                'FSiAdminSecurityBundle:Security:login.html.twig',
                 array(
                     'error' => 'error message',
                     'csrf_token' => null
@@ -67,13 +68,13 @@ class SecurityControllerSpec extends ObjectBehavior
         Request $request,
         Response $response,
         SessionInterface $session
-    ){
+    ) {
         $session->has(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn(true);
         $session->get(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn('error message');
         $session->remove(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled();
 
         $templating->renderResponse(
-                '@FSiAdminSecurity/Security/login.html.twig',
+                'FSiAdminSecurityBundle:Security:login.html.twig',
                 array(
                     'error' => 'error message',
                     'csrf_token' => null
@@ -82,6 +83,32 @@ class SecurityControllerSpec extends ObjectBehavior
             ->willReturn($response);
 
         $this->loginAction($request)->shouldReturn($response);
+    }
+
+    function it_render_login_template_with_error_message_when_error_is_exception(
+        EngineInterface $templating,
+        Request $request,
+        Response $response,
+        SessionInterface $session
+    ) {
+        //$exception->getMessage()->shouldBeCalled()->willReturn('error message');
+        $session->has(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn(true);
+        $session->get(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn(
+            new \Exception("error message")
+        );
+        $session->remove(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled();
+
+        $templating->renderResponse(
+            'FSiAdminSecurityBundle:Security:login.html.twig',
+            array(
+                'error' => 'error message',
+                'csrf_token' => null
+            )
+        )->shouldBeCalled()
+            ->willReturn($response);
+
+        $this->loginAction($request)->shouldReturn($response);
+
     }
 
     function it_render_login_template_with_csrf_token(
@@ -94,7 +121,7 @@ class SecurityControllerSpec extends ObjectBehavior
         $this->beConstructedWith($templating, $csrfProvider);
 
         $templating->renderResponse(
-                '@FSiAdminSecurity/Security/login.html.twig',
+                'FSiAdminSecurityBundle:Security:login.html.twig',
                 array(
                     'error' => null,
                     'csrf_token' => 'token'

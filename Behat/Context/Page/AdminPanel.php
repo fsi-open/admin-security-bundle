@@ -23,5 +23,29 @@ class AdminPanel extends Page
         }
         $this->verifyResponse();
     }
+
+    public function getDropdownOptions($dropdownText)
+    {
+        $link = $this->find('css', sprintf('li#account a:contains("%s")', $dropdownText));
+        if (!isset($link)) {
+            return null;
+        }
+
+        $linkNodes = $this->findAll('css', 'li#account > ul > li');
+
+        return array_filter(array_map(function($element) {
+            return $element->getText();
+        }, $linkNodes));
+    }
+
+    public function getDropdown($dropdownText)
+    {
+        $link = $this->find('css', sprintf('li#account a:contains("%s")', $dropdownText));
+        if (!isset($link)) {
+            return null;
+        }
+
+        return $this->find('css', 'li#account');
+    }
 }
 
