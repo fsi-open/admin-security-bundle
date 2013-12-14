@@ -38,4 +38,16 @@ class AppKernel extends Kernel
     {
         return sys_get_temp_dir() . '/FSiAdminSecurityBundle/logs';
     }
+
+    /**
+     * @return string
+     */
+    protected function getContainerBaseClass()
+    {
+        if ('test' == $this->environment) {
+            return '\PSS\SymfonyMockerContainer\DependencyInjection\MockerContainer';
+        }
+
+        return parent::getContainerBaseClass();
+    }
 }

@@ -9,8 +9,11 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,8 +21,21 @@ use Symfony\Component\Security\Core\SecurityContext;
 
 class AdminController
 {
+    /**
+     * @var \Symfony\Component\Security\Core\SecurityContext
+     */
     private $securityContext;
+
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
     private $router;
+
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
      */
@@ -35,17 +51,20 @@ class AdminController
      * @param FormInterface $changePasswordForm
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         EngineInterface $templating,
         FormInterface $changePasswordForm,
         SecurityContext $securityContext,
-        Router $router
+        Router $router,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->templating = $templating;
         $this->changePasswordForm = $changePasswordForm;
         $this->securityContext = $securityContext;
         $this->router = $router;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function changePasswordAction(Request $request)
@@ -53,6 +72,14 @@ class AdminController
         $this->changePasswordForm->handleRequest($request);
 
         if ($this->changePasswordForm->isValid()) {
+            $user = $this->securityContext->getToken()->getUser();
+            $formData = $this->changePasswordForm->getData();
+
+            $this->eventDispatcher->dispatch(
+                AdminSecurityEvents::CHANGE_PASSWORD,
+                new ChangePasswordEvent($user, $formData['plainPassword'])
+            );
+
             $request->getSession()->invalidate();
             $this->securityContext->setToken(null);
 

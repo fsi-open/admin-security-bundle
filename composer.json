@@ -28,6 +28,7 @@
         "behat/mink-extension": "*",
         "behat/mink-browserkit-driver": "*",
         "behat/mink-selenium2-driver": "*",
+        "polishsymfonycommunity/symfony2-mocker-extension": "*",
         "sensiolabs/behat-page-object-extension": "1.0.*@dev",
         "bossa/phpspec2-expect": "dev-master"
     },

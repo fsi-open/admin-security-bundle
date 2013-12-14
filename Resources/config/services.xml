@@ -8,6 +8,7 @@
         <parameter key="admin_security.controller.security.class">FSi\Bundle\AdminSecurityBundle\Controller\SecurityController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
         <parameter key="admin_security.form.change_password_type.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
+        <parameter key="admin_security.listener.doctrine_change_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener</parameter>
     </parameters>
 
     <services>
@@ -22,6 +23,7 @@
             <argument type="service" id="admin_security.form.change_password" />
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
+            <argument type="service" id="event_dispatcher" />
         </service>
 
         <!-- Forms -->
@@ -31,6 +33,13 @@
                 factory-service="form.factory" factory-method="create">
             <argument type="service" id="admin_security.form.change_password_type" />
             <argument type="collection"/>
+        </service>
+
+        <!-- Event listeners -->
+        <service id="admin_security.listener.doctrine_change_password_listener" class="%admin_security.listener.doctrine_change_password_listener.class%">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.encoder_factory" />
+            <tag name="kernel.event_listener" event="admin.security.change_password" method="onChangePassword" />
         </service>
     </services>
 

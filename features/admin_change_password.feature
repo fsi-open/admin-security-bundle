@@ -23,7 +23,8 @@ Feature: Admin change password
     And I should see change password form "Save" and "Reset" buttons
 
   Scenario: Submit change form with valid data
-    Given I am on the "Admin change password" page
+    Given user password should be changed
+    And I am on the "Admin change password" page
     When I fill change password form fields with valid data
     And I press "Save"
     Then I should be redirected to "Login" page

@@ -14,15 +14,22 @@ use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareInterface;
+use PSS\Behat\Symfony2MockerExtension\Context\ServiceMockerAwareInterface;
+use PSS\Behat\Symfony2MockerExtension\ServiceMocker;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class AdminUserContext extends PageObjectContext implements KernelAwareInterface
+class AdminUserContext extends PageObjectContext implements KernelAwareInterface, ServiceMockerAwareInterface
 {
+    /**
+     * @var \PSS\Behat\Symfony2MockerExtension\ServiceMocker
+     */
+    private $serviceMocker;
+
     /**
      * @var KernelInterface
      */
-    protected $kernel;
+    private $kernel;
 
     /**
      * Sets Kernel instance.
@@ -32,6 +39,24 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     public function setKernel(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
+    }
+
+    /**
+     * @param \PSS\Behat\Symfony2MockerExtension\ServiceMocker $serviceMocker
+     *
+     * @return null
+     */
+    public function setServiceMocker(ServiceMocker $serviceMocker)
+    {
+        $this->serviceMocker = $serviceMocker;
+    }
+
+    /**
+     * @afterScenario
+     */
+    public function tearDown()
+    {
+        \Mockery::close();
     }
 
     /**
@@ -247,5 +272,17 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     public function iShouldSeeFieldErrorInChangePasswordFormWithMessage($field, PyStringNode $message)
     {
         expect($this->getPage('Admin change password')->findFieldError($field)->getText())->toBe((string) $message);
+    }
+
+    /**
+     * @Then /^user password should be changed$/
+     */
+    public function userPasswordShouldBeChanged()
+    {
+        $this->serviceMocker->mockService(
+            'admin_security.listener.doctrine_change_password_listener',
+            'FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener'
+        )->shouldReceive('onChangePassword')
+        ->once();
     }
 }
