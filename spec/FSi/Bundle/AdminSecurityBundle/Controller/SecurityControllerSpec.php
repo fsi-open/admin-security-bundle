@@ -89,7 +89,6 @@ class SecurityControllerSpec extends ObjectBehavior
         Response $response,
         SessionInterface $session
     ) {
-        //$exception->getMessage()->shouldBeCalled()->willReturn('error message');
         $session->has(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn(true);
         $session->get(SecurityContext::AUTHENTICATION_ERROR)->shouldBeCalled()->willReturn(
             new \Exception("error message")

@@ -3,11 +3,11 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Prophecy\Prophet;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -33,11 +33,13 @@ class DoctrineChangePasswordListenerSpec extends ObjectBehavior
     function it_set_password_when_user_is_doctrine_entity(
         ChangePasswordEvent $event,
         Registry $registry,
-        EntityManager $em,
         User $user,
         EncoderFactoryInterface $encodeFactory,
         PasswordEncoderInterface $encoder
     ) {
+        $prophet = new Prophet();
+        $em = $prophet->prophesize('Doctrine\ORM\EntityManager');
+
         $registry->getManagerForClass(
             Argument::type('string')
         )->willReturn($em);
@@ -53,7 +55,7 @@ class DoctrineChangePasswordListenerSpec extends ObjectBehavior
 
         $user->setPassword('encoded_password')->shouldBeCalled();
 
-        $em->persist($user)->shouldBeCalled();
+        $em->persist($user->getWrappedObject())->shouldBeCalled();
         $em->flush()->shouldBeCalled();
 
         $this->onChangePassword($event);
