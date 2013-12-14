@@ -16,19 +16,18 @@
         "symfony/framework-bundle": "~2.3",
         "symfony/security-bundle": "~2.3",
         "symfony/validator": "~2.3",
-        "symfony/swiftmailer-bundle": "~2.3",
-        "friendsofsymfony/user-bundle": "1.3.*"
+        "symfony/swiftmailer-bundle": "~2.3"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "1.2.*@dev",
         "symfony/expression-language": "~2.4",
+        "friendsofsymfony/user-bundle": "1.3.*",
         "phpspec/phpspec": "2.0.*@dev",
         "behat/behat": "*@stable",
         "behat/symfony2-extension": "*@stable",
         "behat/mink-extension": "*",
         "behat/mink-browserkit-driver": "*",
         "behat/mink-selenium2-driver": "*",
-        "polishsymfonycommunity/symfony2-mocker-extension": "*",
         "sensiolabs/behat-page-object-extension": "1.0.*@dev",
         "bossa/phpspec2-expect": "dev-master"
     },

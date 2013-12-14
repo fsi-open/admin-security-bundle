@@ -88,7 +88,7 @@ class AdminController
                 'admin.change_password_message.success'
             );
 
-            return new RedirectResponse($this->router->generate('admin_security_user_login'));
+            return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
         return $this->templating->renderResponse('FSiAdminSecurityBundle:Admin:change_password.html.twig', array(

@@ -5,6 +5,12 @@ php:
   - 5.4
   - 5.5
 
+before_install:
+    - sudo apt-get update > /dev/null
+
+install:
+    - sudo apt-get install -y --force-yes php5-sqlite
+
 script:
     - composer self-update
     - composer install -n --prefer-source

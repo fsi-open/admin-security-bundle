@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**

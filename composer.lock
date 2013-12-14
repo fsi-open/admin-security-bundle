@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "423beea331ed83fb7416a85289285c9f",
+    "hash": "7055a8536a8b74352a5880b7bbfdfe9b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -551,74 +551,6 @@
                 "orm"
             ],
             "time": "2013-11-12 12:40:13"
-        },
-        {
-            "name": "friendsofsymfony/user-bundle",
-            "version": "v1.3.3",
-            "target-dir": "FOS/UserBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
-                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2",
-                "symfony/framework-bundle": "~2.1",
-                "symfony/security-bundle": "~2.1"
-            },
-            "require-dev": {
-                "doctrine/doctrine-bundle": "*",
-                "swiftmailer/swiftmailer": "~4.3",
-                "symfony/validator": "~2.1",
-                "symfony/yaml": "~2.1",
-                "twig/twig": "~1.5",
-                "willdurand/propel-typehintable-behavior": "dev-master"
-            },
-            "suggest": {
-                "willdurand/propel-typehintable-behavior": "Needed when using the propel implementation"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "FOS\\UserBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christophe Coevoet",
-                    "email": "stof@notk.org"
-                },
-                {
-                    "name": "Thibault Duplessis",
-                    "email": "thibault.duplessis@gmail.com",
-                    "homepage": "http://ornicar.github.com"
-                },
-                {
-                    "name": "FriendsOfSymfony Community",
-                    "homepage": "https://github.com/friendsofsymfony/FOSUserBundle/contributors"
-                }
-            ],
-            "description": "Symfony FOSUserBundle",
-            "homepage": "http://friendsofsymfony.github.com",
-            "keywords": [
-                "User management"
-            ],
-            "time": "2013-09-23 08:24:12"
         },
         {
             "name": "fsi/admin-bundle",
@@ -3285,6 +3217,74 @@
             "time": "2013-11-25 17:33:45"
         },
         {
+            "name": "friendsofsymfony/user-bundle",
+            "version": "v1.3.3",
+            "target-dir": "FOS/UserBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
+                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
+                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "~2.1",
+                "symfony/security-bundle": "~2.1"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "*",
+                "swiftmailer/swiftmailer": "~4.3",
+                "symfony/validator": "~2.1",
+                "symfony/yaml": "~2.1",
+                "twig/twig": "~1.5",
+                "willdurand/propel-typehintable-behavior": "dev-master"
+            },
+            "suggest": {
+                "willdurand/propel-typehintable-behavior": "Needed when using the propel implementation"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "FOS\\UserBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                },
+                {
+                    "name": "Thibault Duplessis",
+                    "email": "thibault.duplessis@gmail.com",
+                    "homepage": "http://ornicar.github.com"
+                },
+                {
+                    "name": "FriendsOfSymfony Community",
+                    "homepage": "https://github.com/friendsofsymfony/FOSUserBundle/contributors"
+                }
+            ],
+            "description": "Symfony FOSUserBundle",
+            "homepage": "http://friendsofsymfony.github.com",
+            "keywords": [
+                "User management"
+            ],
+            "time": "2013-09-23 08:24:12"
+        },
+        {
             "name": "instaclick/php-webdriver",
             "version": "1.0.17",
             "source": {
@@ -3391,59 +3391,6 @@
                 "sql"
             ],
             "time": "2013-11-27 22:51:13"
-        },
-        {
-            "name": "mockery/mockery",
-            "version": "0.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/padraic/mockery.git",
-                "reference": "35f0e18022f5538df9df8920a3d96c1761d63220"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/35f0e18022f5538df9df8920a3d96c1761d63220",
-                "reference": "35f0e18022f5538df9df8920a3d96c1761d63220",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "hamcrest/hamcrest": "1.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Mockery": "library/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Pádraic Brady",
-                    "email": "padraic.brady@gmail.com",
-                    "homepage": "http://blog.astrumfutura.com"
-                }
-            ],
-            "description": "Mockery is a simple yet flexible PHP mock object framework for use in unit testing with PHPUnit, PHPSpec or any other testing framework. Its core goal is to offer a test double framework with a succint API capable of clearly defining all possible object operations and interactions using a human readable Domain Specific Language (DSL). Designed as a drop in alternative to PHPUnit's phpunit-mock-objects library, Mockery is easy to integrate with PHPUnit and can operate alongside phpunit-mock-objects without the World ending.",
-            "homepage": "http://github.com/padraic/mockery",
-            "keywords": [
-                "BDD",
-                "TDD",
-                "library",
-                "mock",
-                "mock objects",
-                "mockery",
-                "stub",
-                "test",
-                "test double",
-                "testing"
-            ],
-            "time": "2013-04-01 12:13:17"
         },
         {
             "name": "phpspec/php-diff",
@@ -3600,117 +3547,6 @@
                 "stub"
             ],
             "time": "2013-08-10 11:11:45"
-        },
-        {
-            "name": "polishsymfonycommunity/symfony-mocker-container",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PolishSymfonyCommunity/SymfonyMockerContainer.git",
-                "reference": "392a4d28baa6279dd0ecc2c3e4da7a7feac7e6b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PolishSymfonyCommunity/SymfonyMockerContainer/zipball/392a4d28baa6279dd0ecc2c3e4da7a7feac7e6b7",
-                "reference": "392a4d28baa6279dd0ecc2c3e4da7a7feac7e6b7",
-                "shasum": ""
-            },
-            "require": {
-                "mockery/mockery": ">=0.7.0",
-                "php": ">=5.3.2",
-                "symfony/dependency-injection": ">=2.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PSS\\SymfonyMockerContainer": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jakub Zalas",
-                    "email": "jakub@zalas.pl",
-                    "homepage": "http://www.zalas.eu"
-                },
-                {
-                    "name": "Polish Symfony Community",
-                    "homepage": "http://symfonylab.pl"
-                }
-            ],
-            "description": "Provides base Symfony dependency injection container enabling service mocking.",
-            "homepage": "http://symfonylab.pl",
-            "keywords": [
-                "BDD",
-                "Behat",
-                "TDD",
-                "mock",
-                "mockery",
-                "test"
-            ],
-            "time": "2013-01-19 23:12:22"
-        },
-        {
-            "name": "polishsymfonycommunity/symfony2-mocker-extension",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PolishSymfonyCommunity/Symfony2MockerExtension.git",
-                "reference": "cde08ee34d4041a402fe9771c46a2dd7b435cdbf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PolishSymfonyCommunity/Symfony2MockerExtension/zipball/cde08ee34d4041a402fe9771c46a2dd7b435cdbf",
-                "reference": "cde08ee34d4041a402fe9771c46a2dd7b435cdbf",
-                "shasum": ""
-            },
-            "require": {
-                "behat/behat": ">=2.4",
-                "behat/mink": ">=1.4",
-                "behat/symfony2-extension": "*",
-                "mockery/mockery": ">=0.7.0",
-                "php": ">=5.3.2",
-                "polishsymfonycommunity/symfony-mocker-container": "1.0.*",
-                "symfony/config": "*",
-                "symfony/dependency-injection": "*",
-                "symfony/event-dispatcher": "*",
-                "symfony/http-kernel": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PSS\\Behat\\Symfony2MockerExtension": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jakub Zalas",
-                    "email": "jakub@zalas.pl",
-                    "homepage": "http://www.zalas.eu"
-                },
-                {
-                    "name": "Polish Symfony Community",
-                    "homepage": "http://symfonylab.pl"
-                }
-            ],
-            "description": "Behat extension for mocking services defined in the Symfony2 dependency injection container.",
-            "homepage": "http://symfonylab.pl",
-            "keywords": [
-                "BDD",
-                "Behat",
-                "TDD",
-                "mock",
-                "mockery",
-                "test"
-            ],
-            "time": "2013-10-16 15:01:30"
         },
         {
             "name": "sensiolabs/behat-page-object-extension",

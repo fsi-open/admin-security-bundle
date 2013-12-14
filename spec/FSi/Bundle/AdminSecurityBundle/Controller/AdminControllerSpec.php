@@ -5,7 +5,6 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -82,7 +81,7 @@ class AdminControllerSpec extends ObjectBehavior
             'success',
             'admin.change_password_message.success'
         )->shouldBeCalled();
-        $router->generate('admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
+        $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 
         $this->changePasswordAction($request)
             ->shouldReturnAnInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse');

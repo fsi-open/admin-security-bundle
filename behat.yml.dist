@@ -18,4 +18,3 @@ default:
                 path: features/fixtures/project/app/AppKernel.php
                 bootstrap: features/fixtures/project/app/bootstrap.php
         SensioLabs\Behat\PageObjectExtension\Extension: ~
-        PSS\Behat\Symfony2MockerExtension\Extension: ~

@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Event;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ChangePasswordEventSpec extends ObjectBehavior

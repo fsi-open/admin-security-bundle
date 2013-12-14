@@ -14,18 +14,13 @@ use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareInterface;
-use PSS\Behat\Symfony2MockerExtension\Context\ServiceMockerAwareInterface;
-use PSS\Behat\Symfony2MockerExtension\ServiceMocker;
+use Doctrine\ORM\Tools\SchemaTool;
+use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class AdminUserContext extends PageObjectContext implements KernelAwareInterface, ServiceMockerAwareInterface
+class AdminUserContext extends PageObjectContext implements KernelAwareInterface
 {
-    /**
-     * @var \PSS\Behat\Symfony2MockerExtension\ServiceMocker
-     */
-    private $serviceMocker;
-
     /**
      * @var KernelInterface
      */
@@ -42,21 +37,48 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     }
 
     /**
-     * @param \PSS\Behat\Symfony2MockerExtension\ServiceMocker $serviceMocker
-     *
-     * @return null
+     * @BeforeScenario
      */
-    public function setServiceMocker(ServiceMocker $serviceMocker)
+    public function createDatabase()
     {
-        $this->serviceMocker = $serviceMocker;
+        $this->deleteDatabaseIfExist();
+        $metadata = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($this->getDoctrine()->getManager());
+        $tool->createSchema($metadata);
     }
 
     /**
-     * @afterScenario
+     * @Given /^There is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
      */
-    public function tearDown()
+    public function thereIsUserWithRoleAndPassword($nick, $role, $password)
     {
-        \Mockery::close();
+        $user = new User();
+        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')
+            ->getEncoder($user);
+
+        $encodedPassword = $encoder->encodePassword($password, $user->getSalt());
+
+        $user->setUsername($nick)
+            ->setEmail($nick)
+            ->setRoles(array($role))
+            ->setPassword($encodedPassword)
+            ->setEnabled(true);
+
+        $em = $this->getDoctrine()->getManagerForClass(get_class($user));
+        $em->persist($user);
+        $em->flush();
+    }
+
+    /**
+     * @AfterScenario
+     */
+    public function deleteDatabaseIfExist()
+    {
+        $dbFilePath = $this->kernel->getRootDir() . '/data.sqlite';
+
+        if (file_exists($dbFilePath)) {
+            unlink($dbFilePath);
+        }
     }
 
     /**
@@ -279,10 +301,22 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
      */
     public function userPasswordShouldBeChanged()
     {
-        $this->serviceMocker->mockService(
-            'admin_security.listener.doctrine_change_password_listener',
-            'FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener'
-        )->shouldReceive('onChangePassword')
-        ->once();
+        $user = $this->getDoctrine()->getManager()->getRepository('FSi\FixturesBundle\Entity\User')
+            ->findOneBy(array('username' => 'admin'));
+
+        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')
+            ->getEncoder($user);
+
+        $encodedPassword = $encoder->encodePassword('admin-new', $user->getSalt());
+
+        expect($user->getPassword())->toBe($encodedPassword);
+    }
+
+    /**
+     * @return \Doctrine\Bundle\DoctrineBundle\Registry
+     */
+    protected function getDoctrine()
+    {
+        return $this->kernel->getContainer()->get('doctrine');
     }
 }
