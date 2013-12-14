@@ -1,0 +1,19 @@
+fsi_admin_security_user_login:
+    path: /login
+    defaults:
+        _controller: admin_security.controller.security:loginAction
+
+fsi_admin_security_user_check:
+    path: /login_check
+    defaults:
+        _controller: admin_security.controller.security:checkAction
+
+fsi_admin_security_user_logout:
+    path: /logout
+    defaults:
+        _controller: admin_security.controller.security:logoutAction
+
+fsi_admin_change_password:
+    path: /change-password
+    defaults:
+        _controller: admin_security.controller.admin:changePasswordAction
