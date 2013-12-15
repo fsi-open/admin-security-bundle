@@ -1,6 +1,6 @@
-# Installation in 4 simple steps
+# Installation in 5 simple steps
 
-## 1. Download Admin Bundle
+## 1. Download Admin Security Bundle
 
 Add to composer.json
 
