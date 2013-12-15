@@ -77,10 +77,10 @@ security:
         admin_panel:
             pattern:    ^/admin
             form_login:
-                check_path: admin_security_user_check
-                login_path: admin_security_user_login
+                check_path: fsi_admin_security_user_check
+                login_path: fsi_admin_security_user_login
             logout:
-                path:   admin_security_user_logout
+                path:   fsi_admin_security_user_logout
             anonymous:    ~
 
     access_control:
