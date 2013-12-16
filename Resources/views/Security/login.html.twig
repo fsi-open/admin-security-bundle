@@ -59,7 +59,7 @@
 <div class="container">
     <form class="form-signin" role="form" action="{{ path("fsi_admin_security_user_check") }}" method="post">
         {% if error %}
-        <div class="alert alert-danger">{{ error|trans }}</div>
+        <div class="alert alert-danger">{{ error|trans({}, 'FSiAdminSecurity') }}</div>
         {% endif %}
         {% for flashMessage in app.session.flashbag.get('success') %}
         <div class="alert alert-success">
