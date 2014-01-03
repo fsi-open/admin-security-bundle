@@ -6,6 +6,9 @@ security:
         fos_userbundle:
             id: fos_user.user_provider.username
 
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_REDACTOR
+
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
@@ -23,4 +26,4 @@ security:
 
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_REDACTOR] }

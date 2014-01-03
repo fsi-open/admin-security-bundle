@@ -48,7 +48,7 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     }
 
     /**
-     * @Given /^There is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
+     * @Given /^there is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
      */
     public function thereIsUserWithRoleAndPassword($nick, $role, $password)
     {
@@ -112,6 +112,19 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     }
 
     /**
+     * @Given /^I\'m logged in as redactor$/
+     */
+    public function iMLoggedInAsRedactor()
+    {
+        return array(
+            new Given('I\'m not logged in'),
+            new Given('I am on the "Admin panel" page'),
+            new When('I fill form with valid redactor login and password'),
+            new When('I press "Login" button')
+        );
+    }
+
+    /**
      * @When /^I open "([^"]*)" page$/
      */
     public function iOpenPage($pageName)
@@ -144,6 +157,15 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     {
         $this->getPage('Login')->fillField('E-mail', 'admin');
         $this->getPage('Login')->fillField('Password', 'admin');
+    }
+
+    /**
+     * @When /^I fill form with valid redactor login and password$/
+     */
+    public function iFillFormWithValidRedactorLoginAndPassword()
+    {
+        $this->getPage('Login')->fillField('E-mail', 'redactor');
+        $this->getPage('Login')->fillField('Password', 'redactor');
     }
 
     /**
@@ -310,6 +332,26 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
         $encodedPassword = $encoder->encodePassword('admin-new', $user->getSalt());
 
         expect($user->getPassword())->toBe($encodedPassword);
+    }
+
+    /**
+     * @Then /^I should see navigation menu with following elements$/
+     */
+    public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu)
+    {
+        foreach($menu->getHash() as $elementData) {
+            expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementData['Element']))
+                ->toBe(true);
+        }
+    }
+
+    /**
+     * @Given /^I should not see "([^"]*)" position in menu$/
+     */
+    public function iShouldNotSeePositionInMenu($elementName)
+    {
+        expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementName))
+            ->toBe(false);
     }
 
     /**

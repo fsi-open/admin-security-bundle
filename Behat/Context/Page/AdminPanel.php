@@ -47,5 +47,10 @@ class AdminPanel extends Page
 
         return $this->find('css', 'li#account');
     }
+
+    public function hasElementInTopMenu($element)
+    {
+        return $this->find('css', '#top-menu')->hasLink($element);
+    }
 }
 

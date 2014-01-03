@@ -23,7 +23,7 @@
         "symfony/expression-language": "~2.4",
         "friendsofsymfony/user-bundle": "1.3.*",
         "phpspec/phpspec": "2.0.*@dev",
-        "behat/behat": "*@stable",
+        "behat/behat": "2.4.*",
         "behat/symfony2-extension": "*@stable",
         "behat/mink-extension": "*",
         "behat/mink-browserkit-driver": "*",
