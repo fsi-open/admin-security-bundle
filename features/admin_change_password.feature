@@ -4,7 +4,7 @@ Feature: Admin change password
   I need to install FSiAdminSecurityBundle in my application
 
   Background:
-    Given There is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
     And I'm logged in as admin
 
   Scenario: Access change password page

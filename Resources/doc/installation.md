@@ -120,3 +120,5 @@ security:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
 ```
+
+Now when your admin panel is secured you should read how to [secure specific admin elements](secured_admin_elements.md)

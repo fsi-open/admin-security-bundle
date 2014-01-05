@@ -18,6 +18,7 @@ Documentation:
 - [Installation](Resources/doc/installation.md)
 - [Templating](Resources/doc/templating.md)
 - [Change Password Event](Resources/doc/change_password_event.md)
+- [Secured Admin Elements](Resources/doc/secured_admin_elements.md)
 
 # Features
 

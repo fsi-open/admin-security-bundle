@@ -3,8 +3,12 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-    <!--
     <services>
+        <service id="fsi_fixtures_bundle.admin.news" class="FSi\FixturesBundle\Admin\News">
+            <tag name="admin.element"/>
+        </service>
+        <service id="fsi_fixtures_bundle.admin.page_settings" class="FSi\FixturesBundle\Admin\PageSettings">
+            <tag name="admin.element"/>
+        </service>
     </services>
-    -->
 </container>
