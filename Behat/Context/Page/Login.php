@@ -16,12 +16,12 @@ class Login extends Page
 {
     protected $path = '/admin/login';
 
-    public function isOpen()
+    public function isOpen(array $urlParameters = array())
     {
         if (!$this->has('css', 'form.form-signin')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Login page", $this->path));
         }
-        $this->verifyResponse();
+        $this->verify($urlParameters);
     }
 
     public function getFormErrorMessage()
