@@ -16,12 +16,12 @@ class AdminPanel extends Page
 {
     protected $path = '/admin';
 
-    public function isOpen()
+    public function isOpen(array $urlParameters = array())
     {
         if (!$this->has('css', 'h1#welcome')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin panel page", $this->path));
         }
-        $this->verifyResponse();
+        $this->verify($urlParameters);
     }
 
     public function getDropdownOptions($dropdownText)
