@@ -16,7 +16,7 @@ class AdminChangePassword extends Page
 {
     protected $path = '/admin/change-password';
 
-    public function isOpen()
+    public function isOpen(array $urlParameters = array())
     {
         if (!$this->has('css', 'form')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin change password page", $this->path));
