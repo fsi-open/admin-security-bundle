@@ -40,16 +40,16 @@ class PageSettings extends CRUDElement implements SecuredElementInterface
 
     protected function initDataGrid(DataGridFactoryInterface $factory)
     {
-        // TODO: Implement initDataGrid() method.
+        return null;
     }
 
     protected function initDataSource(DataSourceFactoryInterface $factory)
     {
-        // TODO: Implement initDataSource() method.
+        return null;
     }
 
     protected function initForm(FormFactoryInterface $factory, $data = null)
     {
-        // TODO: Implement initForm() method.
+        return null;
     }
 }
