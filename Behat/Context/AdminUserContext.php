@@ -18,6 +18,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 
 class AdminUserContext extends PageObjectContext implements KernelAwareInterface
 {
@@ -105,7 +106,7 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     {
         return array(
             new Given('I\'m not logged in'),
-            new Given('I am on the "Admin panel" page'),
+            new Given('I am on the "Login" page'),
             new When('I fill form with valid admin login and password'),
             new When('I press "Login" button')
         );
@@ -118,7 +119,7 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     {
         return array(
             new Given('I\'m not logged in'),
-            new Given('I am on the "Admin panel" page'),
+            new Given('I am on the "Login" page'),
             new When('I fill form with valid redactor login and password'),
             new When('I press "Login" button')
         );
@@ -130,6 +131,18 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     public function iOpenPage($pageName)
     {
         $this->getPage($pageName)->open();
+    }
+
+    /**
+     * @When /^I try to open "([^"]*)" page$/
+     */
+    public function iTryToOpenPage($pageName)
+    {
+        try {
+            $this->iOpenPage($pageName);
+        } catch (UnexpectedPageException $e) {
+            // probably it is redirect
+        }
     }
 
     /**
