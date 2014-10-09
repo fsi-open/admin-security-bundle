@@ -8,21 +8,22 @@ Feature: Secure admin panel
     And I'm not logged in
 
   Scenario: Display login form to unauthorized users
-    When I open "Admin panel" page
-    Then I should see login form with following fields:
+    When I try to open "Admin panel" page
+    Then I should be redirected to "Login" page
+    And I should see login form with following fields:
       | Field name |
       | E-mail     |
       | Password   |
     And I should also see login form "Login" button
 
   Scenario: Login into admin panel as a admin
-    Given I am on the "Admin panel" page
+    Given I am on the "Login" page
     When I fill form with valid admin login and password
     And I press "Login" button
     Then I should be redirected to "Admin panel" page
 
   Scenario: Login into admin panel using bad credentials
-    Given I am on the "Admin panel" page
+    Given I am on the "Login" page
     When I fill form with invalid admin login and password
     And I press "Login" button
     Then I should see login form error message "Invalid username or password"

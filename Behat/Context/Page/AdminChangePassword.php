@@ -16,7 +16,7 @@ class AdminChangePassword extends Page
 {
     protected $path = '/admin/change-password';
 
-    public function isOpen(array $urlParameters = array())
+    public function verifyPage()
     {
         if (!$this->has('css', 'form')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin change password page", $this->path));
@@ -30,4 +30,3 @@ class AdminChangePassword extends Page
         return $fieldContainer->find('css', 'span.help-block');
     }
 }
-

@@ -16,7 +16,7 @@ class AdminPanel extends Page
 {
     protected $path = '/admin';
 
-    public function isOpen(array $urlParameters = array())
+    public function verifyPage()
     {
         if (!$this->has('css', 'h1#welcome')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin panel page", $this->path));
