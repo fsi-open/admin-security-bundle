@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 /**
  * @author Norbert Orzechowicz <norbert@fsi.pl>
  */
-class FSIAdminSecurityExtension extends Extension implements PrependExtensionInterface
+class FSIAdminSecurityExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -27,19 +27,5 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-    }
-
-    /**
-     * Allow an extension to prepend the extension configurations.
-     *
-     * @param ContainerBuilder $container
-     */
-    public function prepend(ContainerBuilder $container)
-    {
-        $container->prependExtensionConfig('fsi_admin', array(
-            'templates' => array(
-                'base' => 'FSiAdminSecurityBundle:Admin:base.html.twig'
-            )
-        ));
     }
 }

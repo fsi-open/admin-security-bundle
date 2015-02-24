@@ -19,4 +19,4 @@ admin:
     button:
       save: Save
       reset: Reset
-  welcome: Hello <b>%username%</b>
+  welcome: Hello %username%
