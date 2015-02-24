@@ -1,5 +1,5 @@
 # Security
-"Bad credentials": Invalid username or password
+"Bad credentials.": Invalid username or password
 
 admin:
   login:
