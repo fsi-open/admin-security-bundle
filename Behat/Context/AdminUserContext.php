@@ -277,12 +277,11 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     }
 
     /**
-     * @Given /^I should see change password form "([^"]*)" and "([^"]*)" buttons$/
+     * @Given /^I should see change password form "([^"]*)" button$/
      */
-    public function iShouldSeeChangePasswordFormAndButtons($button1Name, $button2Name)
+    public function iShouldSeeChangePasswordFormButton($buttonName)
     {
-        expect($this->getPage('Admin change password')->hasButton($button1Name))->toBe(true);
-        expect($this->getPage('Admin change password')->hasButton($button2Name))->toBe(true);
+        expect($this->getPage('Admin change password')->hasButton($buttonName))->toBe(true);
     }
 
     /**

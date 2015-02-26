@@ -9,7 +9,7 @@
 
 namespace FSi\FixturesBundle\Admin;
 
-use FSi\Bundle\AdminBundle\Admin\Doctrine\CRUDElement;
+use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;

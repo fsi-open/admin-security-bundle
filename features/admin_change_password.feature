@@ -21,7 +21,7 @@ Feature: Admin change password
       | Current password |
       | New password     |
       | Repeat password  |
-    And I should see change password form "Save" and "Reset" buttons
+    And I should see change password form "Save" button
 
   Scenario: Submit change form with valid data
     And I am on the "Admin change password" page
