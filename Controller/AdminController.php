@@ -47,24 +47,32 @@ class AdminController
     private $changePasswordForm;
 
     /**
+     * @var string
+     */
+    private $changePasswordActionTemplate;
+
+    /**
      * @param EngineInterface $templating
      * @param FormInterface $changePasswordForm
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param string $changePasswordActionTemplate
      */
     public function __construct(
         EngineInterface $templating,
         FormInterface $changePasswordForm,
         SecurityContext $securityContext,
         Router $router,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        $changePasswordActionTemplate
     ) {
         $this->templating = $templating;
         $this->changePasswordForm = $changePasswordForm;
         $this->securityContext = $securityContext;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
+        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
     }
 
     public function changePasswordAction(Request $request)
@@ -91,7 +99,7 @@ class AdminController
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
-        return $this->templating->renderResponse('FSiAdminSecurityBundle:Admin:change_password.html.twig', array(
+        return $this->templating->renderResponse($this->changePasswordActionTemplate, array(
             'form' => $this->changePasswordForm->createView()
         ));
     }

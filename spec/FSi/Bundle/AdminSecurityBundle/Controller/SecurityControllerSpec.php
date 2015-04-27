@@ -23,7 +23,7 @@ class SecurityControllerSpec extends ObjectBehavior
         $request->attributes = $requestAttributes;
         $request->getSession()->willReturn($session);
 
-        $this->beConstructedWith($templating);
+        $this->beConstructedWith($templating, 'FSiAdminSecurityBundle:Security:login.html.twig', null);
     }
 
     function it_render_login_template_in_login_action(EngineInterface $templating, Response $response, Request $request)
@@ -115,7 +115,7 @@ class SecurityControllerSpec extends ObjectBehavior
         CsrfProviderInterface $csrfProvider
     ) {
         $csrfProvider->generateCsrfToken('authenticate')->shouldBeCalled()->willReturn('token');
-        $this->beConstructedWith($templating, $csrfProvider);
+        $this->beConstructedWith($templating, 'FSiAdminSecurityBundle:Security:login.html.twig', $csrfProvider);
 
         $templating->renderResponse(
                 'FSiAdminSecurityBundle:Security:login.html.twig',

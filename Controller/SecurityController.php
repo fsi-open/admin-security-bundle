@@ -17,19 +17,27 @@ use Symfony\Component\Security\Core\SecurityContext;
 class SecurityController
 {
     private $csrfProvider;
+
     /**
      * @var EngineInterface
      */
     private $templating;
 
     /**
+     * @var string
+     */
+    private $loginActionTemplate;
+
+    /**
      * @param EngineInterface $templating
+     * @param string $loginActionTemplate
      * @param \Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface $csrfProvider
      */
-    function __construct(EngineInterface $templating, CsrfProviderInterface $csrfProvider = null)
+    function __construct(EngineInterface $templating, $loginActionTemplate, CsrfProviderInterface $csrfProvider = null)
     {
         $this->csrfProvider = $csrfProvider;
         $this->templating = $templating;
+        $this->loginActionTemplate = $loginActionTemplate;
     }
 
     public function loginAction(Request $request)
@@ -51,7 +59,7 @@ class SecurityController
             ? $this->csrfProvider->generateCsrfToken('authenticate')
             : null;
 
-        return $this->templating->renderResponse('FSiAdminSecurityBundle:Security:login.html.twig', array(
+        return $this->templating->renderResponse($this->loginActionTemplate, array(
             'error' => $error,
             'csrf_token' => $csrfToken
         ));

@@ -7,6 +7,8 @@
     <parameters>
         <parameter key="admin_security.controller.security.class">FSi\Bundle\AdminSecurityBundle\Controller\SecurityController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
+        <parameter key="admin_security.template.security.login">FSiAdminSecurityBundle:Security:login.html.twig</parameter>
+        <parameter key="admin_security.template.admin.change_password">FSiAdminSecurityBundle:Admin:change_password.html.twig</parameter>
         <parameter key="admin_security.form.change_password_type.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
         <parameter key="admin_security.listener.doctrine_change_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener</parameter>
         <parameter key="admin_security.listener.secured_element_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\SecuredElementListener</parameter>
@@ -17,6 +19,7 @@
         <!-- Controllers -->
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%">
             <argument type="service" id="templating" />
+            <argument type="string">%admin_security.template.security.login%</argument>
             <argument type="service" id="form.csrf_provider" on-invalid="ignore"/>
         </service>
 
@@ -26,6 +29,7 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
             <argument type="service" id="event_dispatcher" />
+            <argument type="string">%admin_security.template.admin.change_password%</argument>
         </service>
 
         <!-- Forms -->
