@@ -17,6 +17,7 @@
         <!-- Controllers -->
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%">
             <argument type="service" id="templating" />
+            <argument type="string">%admin_security.templates.login%</argument>
             <argument type="service" id="form.csrf_provider" on-invalid="ignore"/>
         </service>
 
@@ -26,6 +27,7 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
             <argument type="service" id="event_dispatcher" />
+            <argument type="string">%admin_security.templates.change_password%</argument>
         </service>
 
         <!-- Forms -->

@@ -27,7 +27,14 @@ class AdminControllerSpec extends ObjectBehavior
         Router $router,
         EventDispatcher $eventDispatcher
     ) {
-        $this->beConstructedWith($templating, $form, $securityContext, $router, $eventDispatcher);
+        $this->beConstructedWith(
+            $templating,
+            $form,
+            $securityContext,
+            $router,
+            $eventDispatcher,
+            'FSiAdminSecurityBundle:Admin:change_password.html.twig'
+        );
     }
 
     function it_render_template_with_change_password_form(
