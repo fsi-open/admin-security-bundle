@@ -5,7 +5,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -24,7 +24,7 @@ class AdminControllerSpec extends ObjectBehavior
         EngineInterface $templating,
         FormInterface $form,
         SecurityContext $securityContext,
-        Router $router,
+        RouterInterface $router,
         EventDispatcher $eventDispatcher
     ) {
         $this->beConstructedWith($templating, $form, $securityContext, $router, $eventDispatcher);
@@ -54,7 +54,7 @@ class AdminControllerSpec extends ObjectBehavior
         Session $session,
         SecurityContext $securityContext,
         ParameterBag $flashBag,
-        Router $router,
+        RouterInterface $router,
         EventDispatcher $eventDispatcher,
         TokenInterface $token,
         UserInterface $user
