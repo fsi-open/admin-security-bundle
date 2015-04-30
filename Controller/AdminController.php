@@ -11,7 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
@@ -27,7 +27,7 @@ class AdminController
     private $securityContext;
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     * @var \Symfony\Component\Routing\RouterInterface
      */
     private $router;
 
@@ -63,7 +63,7 @@ class AdminController
         EngineInterface $templating,
         FormInterface $changePasswordForm,
         SecurityContext $securityContext,
-        Router $router,
+        RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         $changePasswordActionTemplate
     ) {
