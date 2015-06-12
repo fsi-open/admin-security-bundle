@@ -5,7 +5,11 @@ namespace FSi\Bundle\AdminSecurityBundle\spec\fixtures;
 use FSi\Bundle\AdminBundle\Admin\AbstractElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+<<<<<<< HEAD
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+=======
+use Symfony\Component\Security\Core\SecurityContextInterface;
+>>>>>>> Password reset
 
 class SecuredElement extends AbstractElement implements SecuredElementInterface
 {

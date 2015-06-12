@@ -5,3 +5,8 @@ admin:
 admin_security:
       resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
       prefix: /admin
+
+admin_password_reset:
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yml"
+    prefix: /admin
+    options: { i18n: false }

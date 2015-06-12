@@ -27,7 +27,7 @@ class FSIAdminSecurityExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $this->setTemplateParameters($container, $config['templates']);
+        $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
@@ -37,10 +37,16 @@ class FSIAdminSecurityExtension extends Extension
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      * @param array $config
      */
-    protected function setTemplateParameters(ContainerBuilder $container, $config = array())
+    protected function setTemplateParameters(ContainerBuilder $container, $prefix, $config = array())
     {
         foreach ($config as $key => $value) {
-            $container->setParameter(sprintf('admin_security.templates.%s', $key), $value);
+            $parameterName = join('.', array($prefix, $key));
+            if (is_array($value)) {
+                $this->setTemplateParameters($container, $parameterName, $value);
+                continue;
+            }
+
+            $container->setParameter($parameterName, $value);
         }
     }
 }

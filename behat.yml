@@ -3,6 +3,8 @@ default:
         default:
             contexts:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserContext
+                - FSi\Bundle\AdminSecurityBundle\Behat\Context\MailContext:
+                - FSi\Bundle\AdminSecurityBundle\Behat\Context\PasswordResetContext
     extensions:
         Behat\MinkExtension:
             base_url: http://localhost

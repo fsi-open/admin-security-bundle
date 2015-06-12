@@ -1,0 +1,19 @@
+{% extends '@FSiAdminSecurity/layout.html.twig' %}
+
+{% block body %}
+
+    {% if app.request.hasPreviousSession %}
+        {% for type, messages in app.session.flashbag.all() %}
+            {% for message in messages %}
+                <div class="flash {{ type }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" class="btn btn-primary" value="Send me reset password instructions" />
+    {{ form_end(form) }}
+{% endblock %}

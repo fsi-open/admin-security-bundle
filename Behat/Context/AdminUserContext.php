@@ -13,7 +13,6 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\ORM\Tools\SchemaTool;
-use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
@@ -49,21 +48,17 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
      */
     public function thereIsUserWithRoleAndPassword($nick, $role, $password)
     {
-        $user = new User();
-        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')
-            ->getEncoder($user);
-
-        $encodedPassword = $encoder->encodePassword($password, $user->getSalt());
+        /** @var \FOS\UserBundle\Doctrine\UserManager $userManager */
+        $userManager = $this->kernel->getContainer()->get('fos_user.user_manager');
+        $user = $userManager->createUser();
 
         $user->setUsername($nick)
             ->setEmail($nick)
             ->setRoles(array($role))
-            ->setPassword($encodedPassword)
+            ->setPlainPassword($password)
             ->setEnabled(true);
 
-        $em = $this->getDoctrine()->getManagerForClass(get_class($user));
-        $em->persist($user);
-        $em->flush();
+        $userManager->updateUser($user);
     }
 
     /**

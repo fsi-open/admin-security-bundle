@@ -31,3 +31,11 @@ fos_user:
     db_driver: orm
     firewall_name: admin_panel
     user_class: FSi\FixturesBundle\Entity\User
+
+twig:
+    form_themes:
+        - '::form_theme.html.twig'
+
+swiftmailer:
+    spool:
+        type: file

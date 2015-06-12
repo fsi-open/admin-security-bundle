@@ -1,0 +1,9 @@
+{% block subject -%}
+    Reset Password
+{%- endblock %}
+
+{% block body_html -%}
+    To reset your password - please visit:
+    {% set changePasswordUrl = url('fsi_admin_security_password_reset_change_password', {token: user.confirmationToken}) %}
+    <a href="{{ changePasswordUrl }}">{{ changePasswordUrl }}</a>
+{%- endblock %}
