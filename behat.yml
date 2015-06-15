@@ -5,6 +5,7 @@ default:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserContext
     extensions:
         Behat\MinkExtension:
+            base_url: http://localhost
             sessions:
                 default:
                     symfony2: ~
@@ -18,6 +19,3 @@ default:
             namespaces:
                 page: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page
                 element: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element
-            factory:
-                page_parameters:
-                    base_url: http://localhost
