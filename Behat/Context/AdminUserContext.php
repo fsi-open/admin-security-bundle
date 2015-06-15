@@ -9,18 +9,16 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Behat\Context\Step\When;
-use Behat\Behat\Context\Step\Given;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Symfony2Extension\Context\KernelAwareInterface;
+use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\ORM\Tools\SchemaTool;
 use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 
-class AdminUserContext extends PageObjectContext implements KernelAwareInterface
+class AdminUserContext extends PageObjectContext implements KernelAwareContext
 {
     /**
      * @var KernelInterface
@@ -28,9 +26,7 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
     private $kernel;
 
     /**
-     * Sets Kernel instance.
-     *
-     * @param KernelInterface $kernel HttpKernel instance
+     * {@inheritdoc}
      */
     public function setKernel(KernelInterface $kernel)
     {
@@ -104,12 +100,10 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
      */
     public function iMLoggedInAsAdmin()
     {
-        return array(
-            new Given('I\'m not logged in'),
-            new Given('I am on the "Login" page'),
-            new When('I fill form with valid admin login and password'),
-            new When('I press "Login" button')
-        );
+        $this->iMNotLoggedIn();
+        $this->iAmOnThePage('Login');
+        $this->iFillFormWithValidAdminLoginAndPassword();
+        $this->iPressButton('Login');
     }
 
     /**
@@ -117,12 +111,10 @@ class AdminUserContext extends PageObjectContext implements KernelAwareInterface
      */
     public function iMLoggedInAsRedactor()
     {
-        return array(
-            new Given('I\'m not logged in'),
-            new Given('I am on the "Login" page'),
-            new When('I fill form with valid redactor login and password'),
-            new When('I press "Login" button')
-        );
+        $this->iMNotLoggedIn();
+        $this->iAmOnThePage('Login');
+        $this->iFillFormWithValidRedactorLoginAndPassword();
+        $this->iPressButton('Login');
     }
 
     /**
