@@ -9,8 +9,6 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Behat\Definition\Call\Given;
-use Behat\Behat\Definition\Call\When;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
