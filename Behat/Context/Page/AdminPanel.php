@@ -14,7 +14,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class AdminPanel extends Page
 {
-    protected $path = '/admin';
+    protected $path = '/admin/';
 
     public function verifyPage()
     {
