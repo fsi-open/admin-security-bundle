@@ -17,6 +17,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->arrayNode('model')
+                    ->isRequired()
+                    ->children()
+                        ->scalarNode('user')->cannotBeEmpty()->isRequired()->end()
+                    ->end()
+                ->end()
                 ->arrayNode('templates')
                     ->addDefaultsIfNotSet()
                     ->children()

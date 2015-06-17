@@ -2,7 +2,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FOS\UserBundle\Model\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
 use Swift_Mailer;
 use Symfony\Component\Routing\RouterInterface;
 use Twig_Environment;
@@ -48,7 +48,7 @@ class Mailer implements MailerInterface
         $this->templateName = $templateName;
     }
 
-    public function sendPasswordResetMail(UserInterface $user)
+    public function sendPasswordResetMail(UserPasswordResetInterface $user)
     {
         list($subject, $htmlBody) = $this->prepareMessage(array('user' => $user));
 

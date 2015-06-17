@@ -13,6 +13,7 @@
         <parameter key="admin_security.listener.doctrine_change_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener</parameter>
         <parameter key="admin_security.listener.secured_element_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\SecuredElementListener</parameter>
         <parameter key="admin_security.listener.tools_menu_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ToolsMenuListener</parameter>
+        <parameter key="admin_security.token_generator.class">FSi\Bundle\AdminSecurityBundle\Token\TokenGenerator</parameter>
     </parameters>
 
     <services>
@@ -28,15 +29,15 @@
             <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
-            <argument type="service" id="fos_user.user_manager"/>
-            <argument type="service" id="fos_user.util.token_generator"/>
+            <argument type="service" id="admin_security.repository.user"/>
+            <argument type="service" id="admin_security.token_generator"/>
             <argument type="service" id="admin_security.mailer.password_reset"/>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%">
             <argument type="service" id="templating" />
             <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
-            <argument type="service" id="fos_user.user_manager"/>
+            <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
         </service>
@@ -48,6 +49,12 @@
             <argument type="service" id="router" />
             <argument type="service" id="event_dispatcher" />
             <argument type="string">%admin_security.templates.change_password%</argument>
+        </service>
+
+        <!-- Repository -->
+        <service id="admin_security.repository.user" class="Doctrine\ORM\EntityRepository">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" /> <!-- FIXME: add dependency on doctrine to composer -->
+            <argument type="string">%admin_security.model.user%</argument>
         </service>
 
         <!-- Mailer -->
@@ -93,6 +100,11 @@
             <argument type="service" id="translator" />
             <argument type="service" id="security.context" />
             <tag name="kernel.event_listener" event="fsi_admin.menu.tools" method="createAccountMenu" />
+        </service>
+
+        <!-- token generator -->
+        <service id="admin_security.token_generator" class="%admin_security.token_generator.class%">
+            <argument type="service" id="security.secure_random" />
         </service>
     </services>
 

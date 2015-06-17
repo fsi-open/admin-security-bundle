@@ -32,6 +32,10 @@ fos_user:
     firewall_name: admin_panel
     user_class: FSi\FixturesBundle\Entity\User
 
+fsi_admin_security:
+    model:
+        user: FSi\FixturesBundle\Entity\User
+
 twig:
     form_themes:
         - '::form_theme.html.twig'

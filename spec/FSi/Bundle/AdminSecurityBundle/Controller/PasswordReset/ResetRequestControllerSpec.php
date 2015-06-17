@@ -2,21 +2,18 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FOS\UserBundle\Model\UserInterface;
-use FOS\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Util\TokenGeneratorInterface;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\ExpressionLanguage\Token;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class ResetRequestControllerSpec extends ObjectBehavior
@@ -30,17 +27,16 @@ class ResetRequestControllerSpec extends ObjectBehavior
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
-        UserManagerInterface $userManager,
+        UserRepositoryInterface $userRepository,
         TokenGeneratorInterface $tokenGenerator,
         MailerInterface $mailer
-    )
-    {
+    ) {
         $this->beConstructedWith(
             $templating,
             'template_path',
             $formFactory,
             $router,
-            $userManager,
+            $userRepository,
             $tokenGenerator,
             $mailer
         );
@@ -51,8 +47,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
         FormFactoryInterface $formFactory,
         FormInterface $form,
         FormInterface $form2,
-        UserManagerInterface $userManager,
-        UserInterface $user,
+        UserRepositoryInterface $userRepository,
+        UserPasswordResetInterface $user,
         TokenGeneratorInterface $tokenGenerator,
         MailerInterface $mailer,
         Session $session,
@@ -66,14 +62,14 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $form->get('email')->willReturn($form2);
         $form2->getData()->willReturn('admin@fsi.pl');
 
-        $userManager->findUserByEmail('admin@fsi.pl')->willReturn($user);
+        $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
         $tokenGenerator->generateToken()->willReturn('token1234');
 
         $user->setConfirmationToken('token1234')->shouldBeCalled();
         $user->setPasswordRequestedAt(Argument::type('\DateTime'))->shouldBeCalled();
 
-        $userManager->updateUser($user)->shouldBeCalled();
+        $userRepository->save($user)->shouldBeCalled();
 
         $mailer->sendPasswordResetMail($user)->shouldBeCalled();
 

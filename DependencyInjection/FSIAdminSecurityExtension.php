@@ -28,6 +28,7 @@ class FSIAdminSecurityExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
+        $this->setModelParameters($container, $config['model']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
@@ -48,5 +49,10 @@ class FSIAdminSecurityExtension extends Extension
 
             $container->setParameter($parameterName, $value);
         }
+    }
+
+    protected function setModelParameters(ContainerBuilder $container, $model)
+    {
+        $container->setParameter('admin_security.model.user', $model['user']);
     }
 }

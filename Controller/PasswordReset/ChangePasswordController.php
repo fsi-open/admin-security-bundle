@@ -9,8 +9,8 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FOS\UserBundle\Model\UserInterface;
-use FOS\UserBundle\Model\UserManagerInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,9 +31,9 @@ class ChangePasswordController
     private $changePasswordActionTemplate;
 
     /**
-     * @var UserManagerInterface
+     * @var UserRepositoryInterface
      */
-    private $userManager;
+    private $userRepository;
 
     /**
      * @var RouterInterface
@@ -48,21 +48,21 @@ class ChangePasswordController
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
-        UserManagerInterface $userManager,
+        UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
-        $this->userManager = $userManager;
+        $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
     }
 
     public function changePasswordAction(Request $request, $token)
     {
-        /** @var $user UserInterface */
-        $user = $this->userManager->findUserByConfirmationToken($token);
+        /** @var UserPasswordResetInterface $user */
+        $user = $this->userRepository->findUserByConfirmationToken($token);
         if (null === $user) {
             throw new NotFoundHttpException();
         }
@@ -77,7 +77,7 @@ class ChangePasswordController
         if ($form->isValid()) {
             $user->setConfirmationToken(null);
             $user->setPasswordRequestedAt(null);
-            $this->userManager->updateUser($user);
+            $this->userRepository->save($user);
 
             $request->getSession()->getFlashBag()->add(
                 'success',

@@ -2,8 +2,8 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FOS\UserBundle\Model\UserInterface;
-use FOS\UserBundle\Model\UserManagerInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -23,24 +23,24 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
     function let(
         EngineInterface $templating,
-        UserManagerInterface $userManager,
+        UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory
     ) {
-        $this->beConstructedWith($templating, 'template-name', $userManager, $router, $formFactory);
+        $this->beConstructedWith($templating, 'template-name', $userRepository, $router, $formFactory);
     }
 
     function it_changes_password(
         Request $request,
-        UserManagerInterface $userManager,
-        UserInterface $user,
+        UserRepositoryInterface $userRepository,
+        UserPasswordResetInterface $user,
         FormFactoryInterface $formFactory,
         FormInterface $form,
         Session $session,
         FlashBagInterface $flashBag,
         RouterInterface $router
     ) {
-        $userManager->findUserByConfirmationToken('token12345')->willReturn($user);
+        $userRepository->findUserByConfirmationToken('token12345')->willReturn($user);
         $user->isPasswordRequestNonExpired(Argument::any())->willReturn(true);
 
         $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
@@ -49,7 +49,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
         $user->setConfirmationToken(null)->shouldBeCalled();
         $user->setPasswordRequestedAt(null)->shouldBeCalled();
-        $userManager->updateUser($user)->shouldBeCalled();
+        $userRepository->save($user)->shouldBeCalled();
 
         $request->getSession()->willReturn($session);
         $session->getFlashBag()->willReturn($flashBag);

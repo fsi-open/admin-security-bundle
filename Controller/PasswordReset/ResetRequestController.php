@@ -2,10 +2,10 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FOS\UserBundle\Model\UserInterface;
-use FOS\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Util\TokenGeneratorInterface;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,9 +35,9 @@ class ResetRequestController
     private $router;
 
     /**
-     * @var UserManagerInterface
+     * @var UserRepositoryInterface
      */
-    private $userManager;
+    private $userRepository;
 
     /**
      * @var TokenGeneratorInterface
@@ -54,7 +54,7 @@ class ResetRequestController
         $requestActionTemplate,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
-        UserManagerInterface $userManager,
+        UserRepositoryInterface $userRepository,
         TokenGeneratorInterface $tokenGenerator,
         MailerInterface $mailer
     ) {
@@ -62,7 +62,7 @@ class ResetRequestController
         $this->requestActionTemplate = $requestActionTemplate;
         $this->formFactory = $formFactory;
         $this->router = $router;
-        $this->userManager = $userManager;
+        $this->userRepository = $userRepository;
         $this->tokenGenerator = $tokenGenerator;
         $this->mailer = $mailer;
     }
@@ -74,8 +74,8 @@ class ResetRequestController
 
         if ($form->isValid()) {
 
-            /** @var $user UserInterface */
-            $user = $this->userManager->findUserByEmail($form->get('email')->getData());
+            /** @var UserPasswordResetInterface $user */
+            $user = $this->userRepository->findUserByEmail($form->get('email')->getData());
             if (null === $user) {
                 return $this->addFlashAndRedirect($request);
             }
@@ -87,7 +87,7 @@ class ResetRequestController
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
             $user->setPasswordRequestedAt(new \DateTime());
 
-            $this->userManager->updateUser($user);
+            $this->userRepository->save($user);
 
             $this->mailer->sendPasswordResetMail($user);
 
