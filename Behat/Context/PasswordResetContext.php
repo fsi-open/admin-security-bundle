@@ -13,7 +13,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
+    /**
+     * @var Mink
+     */
     private $mink;
+
+    /**
+     * @var array
+     */
     private $minkParameters;
 
     /**
@@ -54,10 +61,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * Returns Mink session.
-     *
      * @param string|null $name name of the session OR active session will be used
-     *
      * @return Session
      */
     public function getSession($name = null)
@@ -147,17 +151,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     /**
      * @Then /^i should see (\d+) error$/
      */
-    public function iShouldSeePage($httpStatusCode)
+    public function iShouldSeeHttpError($httpStatusCode)
     {
         expect($this->getMink()->getSession()->getStatusCode())->toBe(intval($httpStatusCode));
-    }
-
-    /**
-     * @return \FOS\UserBundle\Doctrine\UserManager
-     */
-    private function getUserManager()
-    {
-        return $this->kernel->getContainer()->get('fos_user.user_manager');
     }
 
     /**
@@ -213,4 +209,11 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
         return $encoder->encodePassword($password, $user->getSalt());
     }
 
+    /**
+     * @return \FOS\UserBundle\Doctrine\UserManager
+     */
+    private function getUserManager()
+    {
+        return $this->kernel->getContainer()->get('fos_user.user_manager');
+    }
 }
