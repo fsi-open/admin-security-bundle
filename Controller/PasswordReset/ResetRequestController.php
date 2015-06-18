@@ -80,10 +80,6 @@ class ResetRequestController
                 return $this->addFlashAndRedirect($request);
             }
 
-//            if ($user->isPasswordRequestNonExpired(1234)) {
-//
-//            }
-
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
             $user->setPasswordRequestedAt(new \DateTime());
 
