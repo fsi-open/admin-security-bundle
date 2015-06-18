@@ -27,7 +27,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         RouterInterface $router,
         FormFactoryInterface $formFactory
     ) {
-        $this->beConstructedWith($templating, 'template-name', $userRepository, $router, $formFactory);
+        $this->beConstructedWith($templating, 'template-name', $userRepository, $router, $formFactory, 3600 * 12);
     }
 
     function it_changes_password(
@@ -41,7 +41,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         RouterInterface $router
     ) {
         $userRepository->findUserByConfirmationToken('token12345')->willReturn($user);
-        $user->isPasswordRequestNonExpired(Argument::any())->willReturn(true);
+        $user->isPasswordRequestNonExpired(3600 * 12)->willReturn(true);
 
         $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();

@@ -44,19 +44,22 @@ class ChangePasswordController
      * @var FormFactoryInterface
      */
     private $formFactory;
+    private $tokenTtl;
 
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        $tokenTtl
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
+        $this->tokenTtl = $tokenTtl;
     }
 
     public function changePasswordAction(Request $request, $token)
@@ -67,7 +70,7 @@ class ChangePasswordController
             throw new NotFoundHttpException();
         }
 
-        if (!$user->isPasswordRequestNonExpired(3600 * 12)) { // 12h FIXME: introduce parameter
+        if (!$user->isPasswordRequestNonExpired($this->tokenTtl)) {
             throw new NotFoundHttpException();
         }
 

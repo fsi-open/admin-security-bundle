@@ -23,6 +23,18 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('user')->cannotBeEmpty()->isRequired()->end()
                     ->end()
                 ->end()
+                ->arrayNode('password_reset')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('token_ttl')
+                            ->cannotBeEmpty()
+                            ->isRequired()
+                            ->min(0)
+                            ->defaultValue(43200) // 12h
+                            ->max(172800) // 48h
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('templates')
                     ->addDefaultsIfNotSet()
                     ->children()

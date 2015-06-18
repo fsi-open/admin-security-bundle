@@ -40,6 +40,7 @@
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
+            <argument type="string">%admin_security.password_reset.token_ttl%</argument>
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%">

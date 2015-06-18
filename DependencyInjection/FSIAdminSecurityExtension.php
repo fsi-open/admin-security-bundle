@@ -29,6 +29,7 @@ class FSIAdminSecurityExtension extends Extension
 
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
         $this->setModelParameters($container, $config['model']);
+        $this->setPasswordResetParameters($container, $config['password_reset']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
@@ -54,5 +55,10 @@ class FSIAdminSecurityExtension extends Extension
     protected function setModelParameters(ContainerBuilder $container, $model)
     {
         $container->setParameter('admin_security.model.user', $model['user']);
+    }
+
+    private function setPasswordResetParameters(ContainerBuilder $container, $model)
+    {
+        $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
     }
 }
