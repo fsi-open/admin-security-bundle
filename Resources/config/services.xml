@@ -54,7 +54,7 @@
 
         <!-- Repository -->
         <service id="admin_security.repository.user" class="Doctrine\ORM\EntityRepository">
-            <factory service="doctrine.orm.default_entity_manager" method="getRepository" /> <!-- FIXME: add dependency on doctrine to composer -->
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
             <argument type="string">%admin_security.model.user%</argument>
         </service>
 
