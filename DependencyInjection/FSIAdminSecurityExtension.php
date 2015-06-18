@@ -60,5 +60,8 @@ class FSIAdminSecurityExtension extends Extension
     private function setPasswordResetParameters(ContainerBuilder $container, $model)
     {
         $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
+        $container->setParameter('admin_security.password_reset.mailer.template', $model['mailer']['template']);
+        $container->setParameter('admin_security.password_reset.mailer.from', $model['mailer']['from']);
+        $container->setParameter('admin_security.password_reset.mailer.replay_to', $model['mailer']['replay_to']);
     }
 }

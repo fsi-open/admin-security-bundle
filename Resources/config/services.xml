@@ -63,8 +63,9 @@
             <argument type="service" id="swiftmailer.mailer" />
             <argument type="service" id="twig" />
             <argument type="service" id="router" />
-            <argument type="string">from-admin@fsi.pl</argument>
-            <argument type="string">@FSiAdminSecurity/PasswordReset/mail.html.twig</argument>
+            <argument type="string">%admin_security.password_reset.mailer.template%</argument>
+            <argument type="string">%admin_security.password_reset.mailer.from%</argument>
+            <argument type="string">%admin_security.password_reset.mailer.replay_to%</argument>
         </service>
 
         <!-- Forms -->

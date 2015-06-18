@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 interface UserPasswordResetInterface extends UserInterface
 {
+    public function getEmail();
     public function getConfirmationToken();
     public function setConfirmationToken($confirmationToken);
     public function setPasswordRequestedAt(\DateTime $date = null);

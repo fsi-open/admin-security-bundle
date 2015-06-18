@@ -35,6 +35,10 @@ fos_user:
 fsi_admin_security:
     model:
         user: FSi\FixturesBundle\Entity\User
+    password_reset:
+        mailer:
+            from: from-admin@fsi.pl
+            replay_to: office@example.com
 
 twig:
     form_themes:

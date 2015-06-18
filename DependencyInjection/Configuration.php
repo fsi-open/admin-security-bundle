@@ -28,10 +28,17 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->integerNode('token_ttl')
                             ->cannotBeEmpty()
-                            ->isRequired()
                             ->min(0)
                             ->defaultValue(43200) // 12h
                             ->max(172800) // 48h
+                        ->end()
+                        ->arrayNode('mailer')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('template')->defaultValue('@FSiAdminSecurity/PasswordReset/mail.html.twig')->end()
+                                ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
+                                ->scalarNode('replay_to')->defaultNull()->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()

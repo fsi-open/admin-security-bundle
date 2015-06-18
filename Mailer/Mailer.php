@@ -27,25 +27,32 @@ class Mailer implements MailerInterface
     /**
      * @var string
      */
-    private $fromEmail;
+    private $templateName;
 
     /**
      * @var string
      */
-    private $templateName;
+    private $fromEmail;
+
+    /**
+     * @var string|null
+     */
+    private $replayToEmail;
 
     public function __construct(
         Swift_Mailer $mailer,
         Twig_Environment $twig,
         RouterInterface $router,
+        $templateName,
         $fromEmail,
-        $templateName
+        $replayToEmail = null
     ) {
         $this->mailer = $mailer;
         $this->twig = $twig;
         $this->router = $router;
-        $this->fromEmail = $fromEmail;
         $this->templateName = $templateName;
+        $this->fromEmail = $fromEmail;
+        $this->replayToEmail = $replayToEmail;
     }
 
     public function sendPasswordResetMail(UserPasswordResetInterface $user)
@@ -55,17 +62,18 @@ class Mailer implements MailerInterface
         $message = \Swift_Message::newInstance()
             ->setSubject($subject)
             ->setTo($user->getEmail())
-            //->setReplyTo($this->toEmail)
             ->setFrom($this->fromEmail)
         ;
+
+        if ($this->replayToEmail) {
+            $message->setReplyTo($this->replayToEmail);
+        }
 
         if (!empty($htmlBody)) {
             $message->setBody($htmlBody, 'text/html');
         }
 
-        $temp = $this->mailer->send($message);
-
-        return $temp;
+        return $this->mailer->send($message);
     }
 
     protected function prepareMessage($data)

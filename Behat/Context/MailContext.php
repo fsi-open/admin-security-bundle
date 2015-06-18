@@ -65,6 +65,7 @@ class MailContext implements SnippetAcceptingContext, KernelAwareContext
 
         expect(key($email->getFrom()))->toBe($expected['from']);
         expect(key($email->getTo()))->toBe($expected['to']);
+        expect(key($email->getReplyTo()))->toBe($expected['replay_to']);
     }
 
     private function fetchEmail($subject)
