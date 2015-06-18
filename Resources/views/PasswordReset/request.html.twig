@@ -1,7 +1,6 @@
 {% extends '@FSiAdminSecurity/layout.html.twig' %}
 
 {% block body %}
-
     {% if app.request.hasPreviousSession %}
         {% for type, messages in app.session.flashbag.all() %}
             {% for message in messages %}
