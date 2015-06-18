@@ -9,6 +9,7 @@ use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
@@ -180,13 +181,36 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @Given /^I should see information about passwords mismatch$/
+     * @Then /^I should see information about passwords mismatch$/
      */
     public function iShouldSeeInformationAboutPasswordsMismatch()
     {
         /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form $form */
         $form = $this->getElement('Form');
         expect($form->getFieldErrors('New password'))->toBe('This value is not valid.');
+    }
+
+    /**
+     * @Then /^user "([^"]*)" should have changed password$/
+     */
+    public function userShouldHaveChangedPassword($userEmail)
+    {
+        $user = $this->getUserManager()->findUserByEmail($userEmail);
+
+        expect($user->getPassword())->toBe($this->encodePassword($user, 'test'));
+    }
+
+    /**
+     * @param UserInterface $user
+     * @param $password
+     * @return string
+     */
+    private function encodePassword(UserInterface $user, $password)
+    {
+        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
+        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')->getEncoder($user);
+
+        return $encoder->encodePassword($password, $user->getSalt());
     }
 
 }
