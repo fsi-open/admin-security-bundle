@@ -10,10 +10,6 @@
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\SecurityContext;
-use Symfony\Component\Security\Csrf\CsrfTokenManager;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController
@@ -35,14 +31,14 @@ class SecurityController
 
     /**
      * @param EngineInterface $templating
-     * @param string $loginActionTemplate
      * @param \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils
+     * @param string $loginActionTemplate
      */
-    function __construct(EngineInterface $templating, $loginActionTemplate, AuthenticationUtils $authenticationUtils)
+    function __construct(EngineInterface $templating, AuthenticationUtils $authenticationUtils, $loginActionTemplate)
     {
         $this->templating = $templating;
-        $this->loginActionTemplate = $loginActionTemplate;
         $this->authenticationUtils = $authenticationUtils;
+        $this->loginActionTemplate = $loginActionTemplate;
     }
 
     public function loginAction()
