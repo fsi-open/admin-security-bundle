@@ -84,7 +84,7 @@ class ChangePasswordController
 
             $request->getSession()->getFlashBag()->add(
                 'success',
-                'Your password has been changed successfully'
+                'admin.change_password_message.success'
             );
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));

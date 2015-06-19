@@ -54,7 +54,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $request->getSession()->willReturn($session);
         $session->getFlashBag()->willReturn($flashBag);
 
-        $flashBag->add('success', 'Your password has been changed successfully')->shouldBeCalled();
+        $flashBag->add('success', 'admin.change_password_message.success')->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 

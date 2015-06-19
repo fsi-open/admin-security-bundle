@@ -98,7 +98,7 @@ class ResetRequestController
 
     private function addFlashAndRedirect(Request $request)
     {
-        $request->getSession()->getFlashBag()->add('password-reset.success', 'Reset password instructions sent');
+        $request->getSession()->getFlashBag()->add('password-reset.success', 'admin.password_reset.request.mail_sent');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_password_reset_request'));
     }
