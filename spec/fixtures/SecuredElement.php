@@ -4,8 +4,8 @@ namespace FSi\Bundle\AdminSecurityBundle\spec\fixtures;
 
 use FSi\Bundle\AdminBundle\Admin\AbstractElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SecuredElement extends AbstractElement implements SecuredElementInterface
 {
@@ -21,11 +21,11 @@ class SecuredElement extends AbstractElement implements SecuredElementInterface
     {
     }
 
-    public function isAllowed(SecurityContextInterface $securityContext)
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)
     {
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
     }
 }

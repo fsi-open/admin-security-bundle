@@ -14,13 +14,13 @@ use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class News extends CRUDElement implements SecuredElementInterface
 {
-    public function isAllowed(SecurityContextInterface $securityContext)
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)
     {
-        return $securityContext->isGranted('ROLE_REDACTOR');
+        return $authorizationChecker->isGranted('ROLE_REDACTOR');
     }
 
     public function getClassName()
