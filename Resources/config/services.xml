@@ -18,7 +18,7 @@
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%">
             <argument type="service" id="templating" />
             <argument type="string">%admin_security.templates.login%</argument>
-            <argument type="service" id="form.csrf_provider" on-invalid="ignore"/>
+            <argument type="service" id="security.authentication_utils"/>
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%">

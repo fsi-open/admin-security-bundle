@@ -60,16 +60,16 @@
 <div class="container">
     <form class="form-signin" role="form" action="{{ path("fsi_admin_security_user_check") }}" method="post">
         {% if error %}
-        <div class="alert alert-danger">{{ error|trans({}, 'FSiAdminSecurity') }}</div>
+        <div class="alert alert-danger">{{ error.message|trans({}, 'FSiAdminSecurity') }}</div>
         {% endif %}
         {% for flashMessage in app.session.flashbag.get('success') %}
         <div class="alert alert-success">
         {{ flashMessage|trans({}, 'FSiAdminSecurity') }}
         </div>
         {% endfor %}
-        <input type="text" name="_username" class="form-control" placeholder="{{ 'admin.login.email.placeholder'|trans({}, 'FSiAdminSecurity') }}" required autofocus>
+        <input type="text" name="_username" class="form-control" placeholder="{{ 'admin.login.email.placeholder'|trans({}, 'FSiAdminSecurity') }}" value="{{ last_username }}" required autofocus>
         <input type="password" name="_password" class="form-control" placeholder="{{ 'admin.login.password.placeholder'|trans({}, 'FSiAdminSecurity') }}" required>
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('admin_authenticate') }}" />
         <button class="btn btn-lg btn-primary btn-block" type="submit">{{ 'admin.login.button'|trans({}, 'FSiAdminSecurity') }}</button>
     </form>
 </div>
