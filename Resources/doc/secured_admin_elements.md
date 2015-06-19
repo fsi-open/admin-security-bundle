@@ -15,13 +15,13 @@ use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PageSettings extends CRUDElement implements SecuredElementInterface
 {
-    public function isAllowed(SecurityContextInterface $securityContext)
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)
     {
-        return $securityContext->isGranted('ROLE_ADMIN');
+        return $authorizationChecker->isGranted('ROLE_ADMIN');
     }
 
     public function getClassName()
@@ -50,6 +50,6 @@ class PageSettings extends CRUDElement implements SecuredElementInterface
 }
 ```
 
-As you can see there is extra method ``public function isAllowed(SecurityContextInterface $securityContext)``
+As you can see there is extra method ``public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)``
 If this method return false admin element will be removed from admin elements manager, it will
 be no longer visible in menu or even accessible through direct url.

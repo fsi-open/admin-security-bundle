@@ -9,13 +9,13 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Admin;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 interface SecuredElementInterface
 {
     /**
-     * @param \Symfony\Component\Security\Core\SecurityContextInterface $securityContext
-     * @return Boolean
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     * @return bool
      */
-    public function isAllowed(SecurityContextInterface $securityContext);
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker);
 }
