@@ -325,12 +325,10 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
         $user = $this->getDoctrine()->getManager()->getRepository('FSi\FixturesBundle\Entity\User')
             ->findOneBy(array('username' => 'admin'));
 
-        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')
-            ->getEncoder($user);
+        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
+        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
 
-        $encodedPassword = $encoder->encodePassword('admin-new', $user->getSalt());
-
-        expect($user->getPassword())->toBe($encodedPassword);
+        expect($user->getPassword())->toBe($encoder->encodePassword($user, 'admin-new'));
     }
 
     /**

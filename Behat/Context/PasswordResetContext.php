@@ -204,9 +204,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     private function encodePassword(UserInterface $user, $password)
     {
         /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
-        $encoder = $this->kernel->getContainer()->get('security.encoder_factory')->getEncoder($user);
+        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
 
-        return $encoder->encodePassword($password, $user->getSalt());
+        return $encoder->encodePassword($user, $password);
     }
 
     /**
