@@ -39,6 +39,10 @@ fsi_admin_security:
         mailer:
             from: from-admin@fsi.pl
             replay_to: office@example.com
+    templates:
+        password_reset:
+            request: ::request.html.twig
+            change_password: ::change_password.html.twig
 
 twig:
     form_themes:

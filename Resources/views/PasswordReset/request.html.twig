@@ -1,10 +1,14 @@
 {% extends '@FSiAdminSecurity/layout.html.twig' %}
 
+{% block themes %}
+    {% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% endblock %}
+
 {% block body %}
     {% if app.request.hasPreviousSession %}
         {% for type, messages in app.session.flashbag.all() %}
             {% for message in messages %}
-                <div class="flash {{ type }}">
+                <div class="alert flash {{ type }}">
                     {{ message|trans({}, 'FSiAdminSecurity') }}
                 </div>
             {% endfor %}

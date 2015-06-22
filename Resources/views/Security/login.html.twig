@@ -6,7 +6,7 @@
         <div class="alert alert-danger">{{ error.message|trans({}, 'FSiAdminSecurity') }}</div>
         {% endif %}
         {% for flashMessage in app.session.flashbag.get('success') %}
-        <div class="alert alert-success">
+        <div class="flash alert alert-success">
         {{ flashMessage|trans({}, 'FSiAdminSecurity') }}
         </div>
         {% endfor %}
