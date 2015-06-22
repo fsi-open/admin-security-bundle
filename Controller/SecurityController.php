@@ -10,18 +10,19 @@
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController
 {
-    private $csrfProvider;
-
     /**
      * @var EngineInterface
      */
     private $templating;
+
+    /**
+     * @var AuthenticationUtils
+     */
+    private $authenticationUtils;
 
     /**
      * @var string
@@ -30,38 +31,21 @@ class SecurityController
 
     /**
      * @param EngineInterface $templating
+     * @param \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils
      * @param string $loginActionTemplate
-     * @param \Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface $csrfProvider
      */
-    function __construct(EngineInterface $templating, $loginActionTemplate, CsrfProviderInterface $csrfProvider = null)
+    function __construct(EngineInterface $templating, AuthenticationUtils $authenticationUtils, $loginActionTemplate)
     {
-        $this->csrfProvider = $csrfProvider;
         $this->templating = $templating;
+        $this->authenticationUtils = $authenticationUtils;
         $this->loginActionTemplate = $loginActionTemplate;
     }
 
-    public function loginAction(Request $request)
+    public function loginAction()
     {
-        $session = $request->getSession();
-        $error = null;
-        if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
-        } elseif (null !== $session && $session->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
-            $session->remove(SecurityContext::AUTHENTICATION_ERROR);
-        }
-
-        if ($error instanceof \Exception ) {
-            $error = $error->getMessage();
-        }
-
-        $csrfToken = isset($this->csrfProvider)
-            ? $this->csrfProvider->generateCsrfToken('authenticate')
-            : null;
-
         return $this->templating->renderResponse($this->loginActionTemplate, array(
-            'error' => $error,
-            'csrf_token' => $csrfToken
+            'error' => $this->authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $this->authenticationUtils->getLastUsername()
         ));
     }
 }
