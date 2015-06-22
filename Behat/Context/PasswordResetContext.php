@@ -85,6 +85,18 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
+     * @Given /^user "([^"]*)" should still have confirmation token "([^"]*)"$/
+     */
+    public function userShouldStillHaveConfirmationToken($username, $expectedConfirmationToken)
+    {
+        $userManager = $this->getUserManager();
+
+        $user = $userManager->findUserByUsername($username);
+
+        expect($user->getConfirmationToken())->toBe($expectedConfirmationToken);
+    }
+
+    /**
      * @Given /^user "([^"]*)" has expired confirmation token "([^"]*)"$/
      */
     public function userHasConfirmationTokenWithTtl($username, $confirmationToken)
@@ -108,6 +120,16 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     public function iFillFormWithNonExistentEmailAddress()
     {
         $this->getPage('Password Reset Request')->fillField('Email', 'nonexistent@fsi.pl');
+    }
+
+    /**
+     * @Given /^I should be on the "([^"]*)" page$/
+     */
+    public function iShouldBeOnThePage($pageName)
+    {
+        /** @var \SensioLabs\Behat\PageObjectExtension\PageObject\Page $page */
+        $page = $this->getPage($pageName);
+        $page->isOpen();
     }
 
     /**

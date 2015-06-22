@@ -26,3 +26,4 @@ admin:
       mail_info: "To reset your password - please visit:"
       mail_subject: Reset Password
       submit: Send me reset password instructions
+      already_requested: You already requested password reset instructions. Check your email.

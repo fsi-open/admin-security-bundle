@@ -32,6 +32,7 @@
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="admin_security.token_generator"/>
             <argument type="service" id="admin_security.mailer.password_reset"/>
+            <argument type="string">%admin_security.password_reset.token_ttl%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%">

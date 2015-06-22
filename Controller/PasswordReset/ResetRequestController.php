@@ -49,6 +49,11 @@ class ResetRequestController
      */
     private $mailer;
 
+    /**
+     * @var integer
+     */
+    private $tokeTtl;
+
     public function __construct(
         EngineInterface $templating,
         $requestActionTemplate,
@@ -56,7 +61,8 @@ class ResetRequestController
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
         TokenGeneratorInterface $tokenGenerator,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        $tokeTtl
     ) {
         $this->templating = $templating;
         $this->requestActionTemplate = $requestActionTemplate;
@@ -65,6 +71,7 @@ class ResetRequestController
         $this->userRepository = $userRepository;
         $this->tokenGenerator = $tokenGenerator;
         $this->mailer = $mailer;
+        $this->tokeTtl = $tokeTtl;
     }
 
     public function requestAction(Request $request)
@@ -77,7 +84,11 @@ class ResetRequestController
             /** @var UserPasswordResetInterface $user */
             $user = $this->userRepository->findUserByEmail($form->get('email')->getData());
             if (null === $user) {
-                return $this->addFlashAndRedirect($request);
+                return $this->addFlashAndRedirect($request, 'admin.password_reset.request.mail_sent');
+            }
+
+            if ($user->isPasswordRequestNonExpired($this->tokeTtl)) {
+                return $this->addFlashAndRedirect($request, 'admin.password_reset.request.already_requested');
             }
 
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
@@ -87,7 +98,7 @@ class ResetRequestController
 
             $this->mailer->sendPasswordResetMail($user);
 
-            return $this->addFlashAndRedirect($request);
+            return $this->addFlashAndRedirect($request, 'admin.password_reset.request.mail_sent');
         }
 
         return $this->templating->renderResponse(
@@ -96,9 +107,9 @@ class ResetRequestController
         );
     }
 
-    private function addFlashAndRedirect(Request $request)
+    private function addFlashAndRedirect(Request $request, $message)
     {
-        $request->getSession()->getFlashBag()->add('password-reset.success', 'admin.password_reset.request.mail_sent');
+        $request->getSession()->getFlashBag()->add('password-reset.success', $message);
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_password_reset_request'));
     }

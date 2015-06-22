@@ -26,3 +26,4 @@ admin:
       mail_info: "Aby ustawić nowe hasło proszę otworzyć link:"
       mail_subject: Zmiana hasła
       submit: Wyślij instrukcję zmiany hasła
+      already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.

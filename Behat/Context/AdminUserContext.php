@@ -206,7 +206,7 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldSeeMessage($message)
     {
-        expect($this->getPage('Login')->getFormSuccessMessage())->toBe($message);
+        expect($this->getElement('FlashMessage')->getText())->toBe($message);
     }
 
     /**

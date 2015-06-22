@@ -38,7 +38,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $router,
             $userRepository,
             $tokenGenerator,
-            $mailer
+            $mailer,
+            3600 * 12
         );
     }
 
@@ -63,6 +64,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $form2->getData()->willReturn('admin@fsi.pl');
 
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
+
+        $user->isPasswordRequestNonExpired(3600 * 12)->willReturn(false);
 
         $tokenGenerator->generateToken()->willReturn('token1234');
 

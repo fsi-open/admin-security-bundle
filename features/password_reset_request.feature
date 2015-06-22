@@ -26,3 +26,12 @@ Feature: Request URI for password change form
       | from      | from-admin@fsi.pl  |
       | to        | admin@fsi.pl       |
       | replay_to | office@example.com |
+
+  Scenario: Second request for reset password link
+    Given user "admin@fsi.pl" has confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
+    And I am on the "Password Reset Request" page
+    When I fill form with correct email address
+    And I press "Send me reset password instructions" button
+    Then I should see message "You already requested password reset instructions. Check your email."
+    And I should be on the "Password Reset Request" page
+    And user "admin@fsi.pl" should still have confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
