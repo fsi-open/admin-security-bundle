@@ -23,7 +23,9 @@ admin:
   password_reset:
     request:
       mail_sent: Reset password instructions sent
-      mail_info: "To reset your password - please visit:"
       mail_subject: Reset Password
+      mail:
+        info: "To reset your password - please visit:"
+        requested_by: "%ip% - %user_agent%"
       submit: Send me reset password instructions
       already_requested: You already requested password reset instructions. Check your email.

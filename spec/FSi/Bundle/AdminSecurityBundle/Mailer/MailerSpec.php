@@ -6,6 +6,8 @@ use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Swift_Mailer;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig_Environment;
 use Twig_Template;
@@ -17,12 +19,13 @@ class MailerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Mailer\Mailer');
     }
 
-    function let(Swift_Mailer $mailer, Twig_Environment $twig, RouterInterface $router)
+    function let(Swift_Mailer $mailer, Twig_Environment $twig, RouterInterface $router, RequestStack $requestStack)
     {
         $this->beConstructedWith(
             $mailer,
             $twig,
             $router,
+            $requestStack,
             'mailer-template.html.twig',
             'from@fsi.pl',
             'replay-to@fsi.pl'
@@ -33,15 +36,31 @@ class MailerSpec extends ObjectBehavior
         UserPasswordResetInterface $user,
         Twig_Environment $twig,
         Twig_Template $template,
-        Swift_Mailer $mailer
+        Swift_Mailer $mailer,
+        RequestStack $requestStack
     ) {
-        $twig->mergeGlobals(array('user' => $user))->willReturn(array('user' => $user));
+        $request = new Request(
+            array(),
+            array(),
+            array(),
+            array(),
+            array(),
+            array('HTTP_USER_AGENT' => 'user agent', 'REMOTE_ADDR' => '192.168.99.99')
+        );
+
+        $requestStack->getMasterRequest()->willReturn($request);
+
+        $templateParameters = array(
+            'user' => $user,
+            'ip' => '192.168.99.99',
+            'user_agent' => 'user agent'
+        );
+
+        $twig->mergeGlobals($templateParameters)->willReturn($templateParameters);
         $twig->loadTemplate('mailer-template.html.twig')->willReturn($template);
 
-        $template->renderBlock('subject', array('user' => $user))
-            ->willReturn('subject string');
-        $template->renderBlock('body_html', array('user' => $user))
-            ->willReturn('body string');
+        $template->renderBlock('subject', $templateParameters)->willReturn('subject string');
+        $template->renderBlock('body_html', $templateParameters)->willReturn('body string');
 
         $user->getEmail()->willReturn('user@example.com');
 
