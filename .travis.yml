@@ -25,8 +25,7 @@ matrix:
       php: 5.4
 
 install:
-    - composer self-update
-    - composer install -n --prefer-source
+    - composer require symfony/symfony:${SYMFONY_VERSION} -n --prefer-source
 
 script:
     - bin/phpspec run -f pretty

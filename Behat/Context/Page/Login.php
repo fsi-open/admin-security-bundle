@@ -28,9 +28,4 @@ class Login extends Page
     {
         return $this->find('css', 'form > div.alert-danger')->getText();
     }
-
-    public function getFormSuccessMessage()
-    {
-        return $this->find('css', 'form > div.alert-success')->getText();
-    }
 }

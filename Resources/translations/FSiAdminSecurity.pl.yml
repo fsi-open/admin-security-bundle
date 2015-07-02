@@ -20,3 +20,12 @@ admin:
       save: Zapisz
       reset: Resetuj
   welcome: Witaj %username%
+  password_reset:
+    request:
+      mail_sent: Instrukcja zmiany hasła została wysłana pod podany adres email
+      mail_subject: Zmiana hasła
+      mail:
+        info: "Aby ustawić nowe hasło proszę otworzyć link:"
+        requested_by: "%ip% - %user_agent%"
+      submit: Wyślij instrukcję zmiany hasła
+      already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.

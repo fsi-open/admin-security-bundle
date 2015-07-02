@@ -31,3 +31,23 @@ fos_user:
     db_driver: orm
     firewall_name: admin_panel
     user_class: FSi\FixturesBundle\Entity\User
+
+fsi_admin_security:
+    model:
+        user: FSi\FixturesBundle\Entity\User
+    password_reset:
+        mailer:
+            from: from-admin@fsi.pl
+            replay_to: office@example.com
+    templates:
+        password_reset:
+            request: ::request.html.twig
+            change_password: ::change_password.html.twig
+
+twig:
+    form_themes:
+        - '::form_theme.html.twig'
+
+swiftmailer:
+    spool:
+        type: file
