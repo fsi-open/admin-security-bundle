@@ -13,14 +13,14 @@ use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SecuredElementListener
 {
     /**
-     * @var SecurityContextInterface
+     * @var AuthorizationCheckerInterface
      */
-    private $securityContext;
+    private $authorizationChecker;
 
     /**
      * @var ManagerInterface
@@ -29,12 +29,12 @@ class SecuredElementListener
 
     /**
      * @param ManagerInterface $adminManager
-     * @param SecurityContextInterface $securityContext
+     * @param AuthorizationCheckerInterface $authorizationChecker
      */
-    function __construct(ManagerInterface $adminManager, SecurityContextInterface $securityContext)
+    function __construct(ManagerInterface $adminManager, AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->adminManager = $adminManager;
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -46,15 +46,9 @@ class SecuredElementListener
             return;
         }
 
-        $token = $this->securityContext->getToken();
-
-        if (!isset($token)) {
-            return;
-        }
-
         foreach ($this->adminManager->getElements() as $element) {
             if ($element instanceof SecuredElementInterface) {
-                if (!$element->isAllowed($this->securityContext)) {
+                if (!$element->isAllowed($this->authorizationChecker)) {
                     /* @var $element \FSi\Bundle\AdminBundle\Admin\ElementInterface */
                     $this->adminManager->removeElement($element->getId());
                 }

@@ -6,15 +6,17 @@ use FSi\Bundle\AdminBundle\Event\MenuEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class ToolsMenuListenerSpec extends ObjectBehavior
 {
-    function let(TranslatorInterface $translator, SecurityContextInterface $securityContext, TokenInterface $token)
+    /**
+     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     */
+    function let($translator, $tokenStorage, $token)
     {
-        $securityContext->getToken()->willReturn($token);
+        $tokenStorage->getToken()->willReturn($token);
         $token->getUsername()->willReturn('some user');
 
         $translator->trans('admin.welcome', array('%username%' => 'some user'), 'FSiAdminSecurity')
@@ -22,7 +24,7 @@ class ToolsMenuListenerSpec extends ObjectBehavior
         $translator->trans('admin.change_password', array(), 'FSiAdminSecurity')->willReturn('change password');
         $translator->trans('admin.logout', array(), 'FSiAdminSecurity')->willReturn('logout');
 
-        $this->beConstructedWith($translator, $securityContext);
+        $this->beConstructedWith($translator, $tokenStorage);
     }
 
     function it_builds_account_menu()

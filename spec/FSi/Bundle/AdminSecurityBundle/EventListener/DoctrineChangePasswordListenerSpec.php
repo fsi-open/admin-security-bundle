@@ -2,26 +2,28 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Prophecy\Prophet;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class DoctrineChangePasswordListenerSpec extends ObjectBehavior
 {
-    function let(Registry $registry, EncoderFactoryInterface $encodeFactory)
+    /**
+     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
+     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encodeFactory
+     */
+    function let($registry, $encodeFactory)
     {
         $this->beConstructedWith($registry, $encodeFactory);
     }
 
-    function it_do_nothing_when_user_is_not_doctrine_entity(
-        ChangePasswordEvent $event,
-        Registry $registry
-    ) {
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
+     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
+     */
+    function it_do_nothing_when_user_is_not_doctrine_entity($event, $registry)
+    {
         $registry->getManagerForClass(
             'FSi\Bundle\AdminSecurityBundle\spec\fixtures\User'
         )->willReturn(null);
@@ -30,13 +32,15 @@ class DoctrineChangePasswordListenerSpec extends ObjectBehavior
         $this->onChangePassword($event)->shouldReturn(null);
     }
 
-    function it_set_password_when_user_is_doctrine_entity(
-        ChangePasswordEvent $event,
-        Registry $registry,
-        User $user,
-        EncoderFactoryInterface $encodeFactory,
-        PasswordEncoderInterface $encoder
-    ) {
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
+     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
+     * @param \FSi\Bundle\AdminSecurityBundle\spec\fixtures\User $user
+     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encodeFactory
+     * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
+     */
+    function it_set_password_when_user_is_doctrine_entity($event, $registry, $user, $encodeFactory, $encoder)
+    {
         $prophet = new Prophet();
         $em = $prophet->prophesize('Doctrine\ORM\EntityManager');
 

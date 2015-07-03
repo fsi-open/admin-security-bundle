@@ -3,24 +3,25 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 
 use PhpSpec\ObjectBehavior;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityControllerSpec extends ObjectBehavior
 {
-    function let(
-        EngineInterface $templating,
-        AuthenticationUtils $authenticationUtils
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils
+     */
+    function let($templating, $authenticationUtils)
+    {
         $this->beConstructedWith($templating, $authenticationUtils, 'FSiAdminSecurityBundle:Security:login.html.twig');
     }
 
-    function it_render_login_template_in_login_action(
-        EngineInterface $templating,
-        AuthenticationUtils $authenticationUtils,
-        Response $response
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     */
+    function it_render_login_template_in_login_action($templating, $authenticationUtils, $response)
+    {
         $error = new \Exception('message');
         $authenticationUtils->getLastAuthenticationError()->willReturn($error);
         $authenticationUtils->getLastUsername()->willReturn('user');

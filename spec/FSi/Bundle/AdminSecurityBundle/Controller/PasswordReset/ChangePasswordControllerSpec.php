@@ -2,17 +2,8 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Routing\RouterInterface;
 
 class ChangePasswordControllerSpec extends ObjectBehavior
 {
@@ -21,24 +12,29 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController');
     }
 
-    function let(
-        EngineInterface $templating,
-        UserRepositoryInterface $userRepository,
-        RouterInterface $router,
-        FormFactoryInterface $formFactory
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     */
+    function let($templating, $userRepository, $router, $formFactory)
+    {
         $this->beConstructedWith($templating, 'template-name', $userRepository, $router, $formFactory, 3600 * 12);
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
+     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     */
     function it_changes_password(
-        Request $request,
-        UserRepositoryInterface $userRepository,
-        UserPasswordResetInterface $user,
-        FormFactoryInterface $formFactory,
-        FormInterface $form,
-        Session $session,
-        FlashBagInterface $flashBag,
-        RouterInterface $router
+        $request, $userRepository, $user, $formFactory, $form, $session, $flashBag, $router
     ) {
         $userRepository->findUserByConfirmationToken('token12345')->willReturn($user);
         $user->isPasswordRequestNonExpired(3600 * 12)->willReturn(true);

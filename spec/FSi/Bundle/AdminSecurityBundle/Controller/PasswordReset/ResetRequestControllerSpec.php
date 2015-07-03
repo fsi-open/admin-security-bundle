@@ -23,14 +23,16 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController');
     }
 
-    function let(
-        EngineInterface $templating,
-        FormFactoryInterface $formFactory,
-        RouterInterface $router,
-        UserRepositoryInterface $userRepository,
-        TokenGeneratorInterface $tokenGenerator,
-        MailerInterface $mailer
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
+     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     */
+    function let($templating, $formFactory, $router, $userRepository, $tokenGenerator, $mailer)
+    {
         $this->beConstructedWith(
             $templating,
             'template_path',
@@ -43,18 +45,31 @@ class ResetRequestControllerSpec extends ObjectBehavior
         );
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\Form\FormInterface $form2
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
+     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
+     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     */
     function it_updates_confirmation_token_and_sends_mail(
-        Request $request,
-        FormFactoryInterface $formFactory,
-        FormInterface $form,
-        FormInterface $form2,
-        UserRepositoryInterface $userRepository,
-        UserPasswordResetInterface $user,
-        TokenGeneratorInterface $tokenGenerator,
-        MailerInterface $mailer,
-        Session $session,
-        FlashBagInterface $flashBag,
-        RouterInterface $router
+        $request,
+        $formFactory,
+        $form,
+        $form2,
+        $userRepository,
+        $user,
+        $tokenGenerator,
+        $mailer,
+        $session,
+        $flashBag,
+        $router
     ) {
         $formFactory->create('admin_password_reset_request')->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
