@@ -5,45 +5,37 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\SecurityContext;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class AdminControllerSpec extends ObjectBehavior
 {
-    function let(
-        EngineInterface $templating,
-        FormInterface $form,
-        SecurityContext $securityContext,
-        RouterInterface $router,
-        EventDispatcher $eventDispatcher
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
+     */
+    function let($templating, $form, $tokenStorage, $router, $eventDispatcher)
+    {
         $this->beConstructedWith(
             $templating,
             $form,
-            $securityContext,
+            $tokenStorage,
             $router,
             $eventDispatcher,
             'FSiAdminSecurityBundle:Admin:change_password.html.twig'
         );
     }
 
-    function it_render_template_with_change_password_form(
-        EngineInterface $templating,
-        FormInterface $form,
-        FormView $formView,
-        Request $request,
-        Response $response
-    ) {
+    /**
+     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\Form\FormView $formView
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     */
+    function it_render_template_with_change_password_form($templating, $form, $formView, $request, $response)
+    {
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
@@ -55,16 +47,19 @@ class AdminControllerSpec extends ObjectBehavior
         $this->changePasswordAction($request)->shouldReturn($response);
     }
 
+    /**
+     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Session\Session $session
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag $flashBag
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     */
     function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
-        FormInterface $form,
-        Request $request,
-        Session $session,
-        SecurityContext $securityContext,
-        ParameterBag $flashBag,
-        RouterInterface $router,
-        EventDispatcher $eventDispatcher,
-        TokenInterface $token,
-        UserInterface $user
+        $form, $request, $session, $tokenStorage, $flashBag, $router, $eventDispatcher, $token, $user
     ) {
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->shouldBeCalled()->willReturn(true);
@@ -79,8 +74,8 @@ class AdminControllerSpec extends ObjectBehavior
         $event = new ChangePasswordEvent($user->getWrappedObject(), 'plain_password');
         $eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, $event)->shouldBeCalled();
 
-        $securityContext->getToken()->shouldBeCalled()->willReturn($token);
-        $securityContext->setToken(null)->shouldBeCalled();
+        $tokenStorage->getToken()->shouldBeCalled()->willReturn($token);
+        $tokenStorage->setToken(null)->shouldBeCalled();
         $session->invalidate()->shouldBeCalled();
         $session->getFlashBag()->shouldBeCalled()->willReturn($flashBag);
 

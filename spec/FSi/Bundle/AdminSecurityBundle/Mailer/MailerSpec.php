@@ -2,15 +2,9 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Swift_Mailer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
-use Twig_Environment;
-use Twig_Template;
 
 class MailerSpec extends ObjectBehavior
 {
@@ -19,7 +13,13 @@ class MailerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Mailer\Mailer');
     }
 
-    function let(Swift_Mailer $mailer, Twig_Environment $twig, RouterInterface $router, RequestStack $requestStack)
+    /**
+     * @param \Swift_Mailer $mailer
+     * @param \Twig_Environment $twig
+     * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+     */
+    function let($mailer, $twig, $router, $requestStack)
     {
         $this->beConstructedWith(
             $mailer,
@@ -32,13 +32,15 @@ class MailerSpec extends ObjectBehavior
         );
     }
 
-    function it_should_render_template(
-        UserPasswordResetInterface $user,
-        Twig_Environment $twig,
-        Twig_Template $template,
-        Swift_Mailer $mailer,
-        RequestStack $requestStack
-    ) {
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
+     * @param \Twig_Environment $twig
+     * @param \Twig_Template $template
+     * @param \Swift_Mailer $mailer
+     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+     */
+    function it_should_render_template($user, $twig, $template, $mailer, $requestStack)
+    {
         $request = new Request(
             array(),
             array(),

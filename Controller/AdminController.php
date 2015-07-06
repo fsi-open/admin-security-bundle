@@ -17,6 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\SecurityContext;
 
 class AdminController
@@ -24,7 +25,7 @@ class AdminController
     /**
      * @var \Symfony\Component\Security\Core\SecurityContext
      */
-    private $securityContext;
+    private $tokenStorage;
 
     /**
      * @var \Symfony\Component\Routing\RouterInterface
@@ -54,22 +55,22 @@ class AdminController
     /**
      * @param EngineInterface $templating
      * @param FormInterface $changePasswordForm
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
-     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     * @param TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param string $changePasswordActionTemplate
      */
     public function __construct(
         EngineInterface $templating,
         FormInterface $changePasswordForm,
-        SecurityContext $securityContext,
+        TokenStorageInterface $tokenStorage,
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         $changePasswordActionTemplate
     ) {
         $this->templating = $templating;
         $this->changePasswordForm = $changePasswordForm;
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
@@ -80,7 +81,7 @@ class AdminController
         $this->changePasswordForm->handleRequest($request);
 
         if ($this->changePasswordForm->isValid()) {
-            $user = $this->securityContext->getToken()->getUser();
+            $user = $this->tokenStorage->getToken()->getUser();
             $formData = $this->changePasswordForm->getData();
 
             $this->eventDispatcher->dispatch(
@@ -89,7 +90,7 @@ class AdminController
             );
 
             $request->getSession()->invalidate();
-            $this->securityContext->setToken(null);
+            $this->tokenStorage->setToken(null);
 
             $request->getSession()->getFlashBag()->set(
                 'success',

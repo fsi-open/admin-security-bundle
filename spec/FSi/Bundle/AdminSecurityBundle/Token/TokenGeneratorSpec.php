@@ -3,16 +3,21 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Token;
 
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class TokenGeneratorSpec extends ObjectBehavior
 {
-    function let(SecureRandomInterface $secureRandom)
+    /**
+     * @param \Symfony\Component\Security\Core\Util\SecureRandomInterface $secureRandom
+     */
+    function let($secureRandom)
     {
         $this->beConstructedWith($secureRandom);
     }
 
-    function it_should_generate_token(SecureRandomInterface $secureRandom)
+    /**
+     * @param \Symfony\Component\Security\Core\Util\SecureRandomInterface $secureRandom
+     */
+    function it_should_generate_token($secureRandom)
     {
         $secureRandom->nextBytes(32)->willReturn('12345678901234567890123456789012');
 

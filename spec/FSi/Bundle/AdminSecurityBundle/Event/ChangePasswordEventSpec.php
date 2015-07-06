@@ -7,7 +7,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {
-    function let(UserInterface $user)
+    /**
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     */
+    function let($user)
     {
         $this->beConstructedWith($user, 'plain_password');
     }
@@ -17,7 +20,10 @@ class ChangePasswordEventSpec extends ObjectBehavior
         $this->shouldHaveType('Symfony\Component\EventDispatcher\Event');
     }
 
-    function it_returns_user(UserInterface $user)
+    /**
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     */
+    function it_returns_user($user)
     {
         $this->getUser()->shouldReturn($user);
     }

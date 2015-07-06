@@ -6,6 +6,7 @@ use FSi\Bundle\AdminBundle\Event\MenuEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminBundle\Menu\Item\RoutableItem;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -17,16 +18,16 @@ class ToolsMenuListener
     private $translator;
 
     /**
-     * @var SecurityContextInterface
+     * @var TokenStorageInterface
      */
-    private $securityContext;
+    private $tokenStorage;
 
     public function __construct(
         TranslatorInterface $translator,
-        SecurityContextInterface $securityContext
+        TokenStorageInterface $tokenStorage
     ) {
         $this->translator = $translator;
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function createAccountMenu(MenuEvent $event)
@@ -56,7 +57,7 @@ class ToolsMenuListener
         $rootItem->setLabel(
             $this->translator->trans(
                 'admin.welcome',
-                array('%username%' => $this->securityContext->getToken()->getUsername()),
+                array('%username%' => $this->tokenStorage->getToken()->getUsername()),
                 'FSiAdminSecurity'
             )
         );

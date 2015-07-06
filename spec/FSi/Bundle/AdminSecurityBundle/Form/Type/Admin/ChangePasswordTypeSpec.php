@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ChangePasswordTypeSpec extends ObjectBehavior
@@ -13,7 +12,10 @@ class ChangePasswordTypeSpec extends ObjectBehavior
         $this->shouldHaveType('Symfony\Component\Form\AbstractType');
     }
 
-    function it_add_fields_during_build(FormBuilder $formBuilder)
+    /**
+     * @param \Symfony\Component\Form\FormBuilder $formBuilder
+     */
+    function it_add_fields_during_build($formBuilder)
     {
         $formBuilder->add('current_password', 'password', array(
             'label' => 'admin.change_password_form.current_password',
