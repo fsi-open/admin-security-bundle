@@ -32,6 +32,7 @@ class ChangePasswordType extends AbstractType
         $builder->add('current_password', 'password', array(
             'label' => 'admin.change_password_form.current_password',
             'mapped' => false,
+            'required' => true,
             'translation_domain' => 'FSiAdminSecurity',
             'constraints' => array(
                 new UserPassword(array('message' => 'admin.invalid_password'))
@@ -43,10 +44,12 @@ class ChangePasswordType extends AbstractType
             'translation_domain' => 'FSiAdminSecurity',
             'first_options' => array(
                 'label' => 'admin.change_password_form.password',
+                'required' => true,
                 'translation_domain' => 'FSiAdminSecurity',
             ),
             'second_options' => array(
                 'label' => 'admin.change_password_form.repeat_password',
+                'required' => true,
                 'translation_domain' => 'FSiAdminSecurity'
             )
         ));
