@@ -13,10 +13,12 @@ class ToolsMenuListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Translation\TranslatorInterface $translator
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      */
-    function let($translator, $tokenStorage, $token)
+    function let($translator, $tokenStorage, $token, $user)
     {
         $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
         $token->getUsername()->willReturn('some user');
 
         $translator->trans('admin.welcome', array('%username%' => 'some user'), 'FSiAdminSecurity')
