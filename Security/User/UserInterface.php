@@ -51,12 +51,12 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
     /**
      * @return \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
      */
-    public function getConfirmationToken();
+    public function getActivationToken();
 
     /**
      * @param TokenInterface $confirmationToken
      */
-    public function setConfirmationToken(TokenInterface $confirmationToken);
+    public function setActivationToken(TokenInterface $confirmationToken);
 
     /**
      * Sets the last login time

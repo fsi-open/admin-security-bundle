@@ -34,7 +34,7 @@
 
         <field name="credentialsExpireAt" column="credentials_expire_at" type="datetime" nullable="true" />
 
-        <embedded name="confirmationToken" column-prefix="confirmation_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
+        <embedded name="activationToken" column-prefix="activation_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
 
         <embedded name="passwordResetToken" column-prefix="password_reset_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
 

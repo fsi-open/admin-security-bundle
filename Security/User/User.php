@@ -55,7 +55,7 @@ abstract class User implements UserInterface
     /**
      * @var TokenInterface
      */
-    protected $confirmationToken;
+    protected $activationToken;
 
     /**
      * @var \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
@@ -119,9 +119,7 @@ abstract class User implements UserInterface
             $this->locked,
             $this->credentialsExpired,
             $this->enabled,
-            $this->id,
-            $this->confirmationToken,
-            $this->passwordResetToken
+            $this->id
         ));
     }
 
@@ -145,9 +143,7 @@ abstract class User implements UserInterface
             $this->locked,
             $this->credentialsExpired,
             $this->enabled,
-            $this->id,
-            $this->confirmationToken,
-            $this->passwordResetToken
+            $this->id
             ) = $data;
     }
 
@@ -212,17 +208,17 @@ abstract class User implements UserInterface
     /**
      * @return TokenInterface
      */
-    public function getConfirmationToken()
+    public function getActivationToken()
     {
-        return $this->confirmationToken;
+        return $this->activationToken;
     }
 
     /**
-     * @param TokenInterface $confirmationToken
+     * @param TokenInterface $activationToken
      */
-    public function setConfirmationToken(TokenInterface $confirmationToken)
+    public function setActivationToken(TokenInterface $activationToken)
     {
-        $this->confirmationToken = $confirmationToken;
+        $this->activationToken = $activationToken;
     }
 
     /**
