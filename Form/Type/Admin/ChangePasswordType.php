@@ -31,6 +31,7 @@ class ChangePasswordType extends AbstractType
     {
         $builder->add('current_password', 'password', array(
             'label' => 'admin.change_password_form.current_password',
+            'mapped' => false,
             'translation_domain' => 'FSiAdminSecurity',
             'constraints' => array(
                 new UserPassword(array('message' => 'admin.invalid_password'))

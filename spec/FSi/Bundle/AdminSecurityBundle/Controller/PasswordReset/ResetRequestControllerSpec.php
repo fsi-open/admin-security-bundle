@@ -2,19 +2,11 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
@@ -27,11 +19,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
-    function let($templating, $formFactory, $router, $userRepository, $tokenGenerator, $mailer)
+    function let($templating, $formFactory, $router, $userRepository, $tokenFactory, $eventDispatcher)
     {
         $this->beConstructedWith(
             $templating,
@@ -39,9 +31,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $formFactory,
             $router,
             $userRepository,
-            $tokenGenerator,
-            $mailer,
-            3600 * 12
+            $tokenFactory,
+            $eventDispatcher
         );
     }
 
@@ -50,10 +41,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormInterface $form2
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
      * @param \Symfony\Component\Routing\RouterInterface $router
@@ -65,8 +57,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $form2,
         $userRepository,
         $user,
-        $tokenGenerator,
-        $mailer,
+        $tokenFactory,
+        $token,
+        $eventDispatcher,
         $session,
         $flashBag,
         $router
@@ -80,16 +73,19 @@ class ResetRequestControllerSpec extends ObjectBehavior
 
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
-        $user->isPasswordRequestNonExpired(3600 * 12)->willReturn(false);
+        $user->getPasswordResetToken()->willReturn(null);
 
-        $tokenGenerator->generateToken()->willReturn('token1234');
+        $tokenFactory->createToken()->willReturn($token);
 
-        $user->setConfirmationToken('token1234')->shouldBeCalled();
-        $user->setPasswordRequestedAt(Argument::type('\DateTime'))->shouldBeCalled();
+        $user->setPasswordResetToken($token)->shouldBeCalled();
 
-        $userRepository->save($user)->shouldBeCalled();
-
-        $mailer->sendPasswordResetMail($user)->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+            Argument::allOf(
+                Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent'),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
 
         $request->getSession()->willReturn($session);
         $session->getFlashBag()->willReturn($flashBag);

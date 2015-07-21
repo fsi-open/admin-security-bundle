@@ -7,6 +7,8 @@ use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Entity\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -74,14 +76,11 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationToken($username, $confirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
+        $user->setPasswordResetToken($this->createToken($confirmationToken, new DateInterval('PT3600S')));
 
-        $user->setConfirmationToken($confirmationToken);
-        $user->setPasswordRequestedAt(new \DateTime());
-
-        $userManager->updateUser($user);
+        $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User')->flush();
     }
 
     /**
@@ -89,11 +88,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userShouldStillHaveConfirmationToken($username, $expectedConfirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
-
-        expect($user->getConfirmationToken())->toBe($expectedConfirmationToken);
+        expect($user->getPasswordResetToken()->getToken())->toBe($expectedConfirmationToken);
     }
 
     /**
@@ -101,17 +98,14 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationTokenWithTtl($username, $confirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
+        $ttl = new DateInterval('P1D');
+        $ttl->invert = true;
 
-        $passwordRequestedAt = new \DateTime();
-        $passwordRequestedAt->sub(new DateInterval('P1D'));
+        $user->setPasswordResetToken($this->createToken($confirmationToken, $ttl));
 
-        $user->setConfirmationToken($confirmationToken);
-        $user->setPasswordRequestedAt($passwordRequestedAt);
-
-        $userManager->updateUser($user);
+        $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User')->flush();
     }
 
     /**
@@ -213,7 +207,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userShouldHaveChangedPassword($userEmail)
     {
-        $user = $this->getUserManager()->findUserByEmail($userEmail);
+        $user = $this->getUserRepository()->findOneBy(array('email' => $userEmail));
 
         expect($user->getPassword())->toBe($this->encodePassword($user, 'test'));
     }
@@ -232,10 +226,24 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @return \FOS\UserBundle\Doctrine\UserManager
+     * @return UserRepository
      */
-    private function getUserManager()
+    private function getUserRepository()
     {
-        return $this->kernel->getContainer()->get('fos_user.user_manager');
+        return $this->kernel->getContainer()->get('doctrine')->getRepository('FSiFixturesBundle:User');
+    }
+
+    /**
+     * @param string $confirmationToken
+     * @param \DateInterval $ttl
+     * @return \FSi\Bundle\AdminSecurityBundle\Entity\Token
+     */
+    private function createToken($confirmationToken, $ttl)
+    {
+        return new Token(
+            $confirmationToken,
+            new \DateTime(),
+            $ttl
+        );
     }
 }

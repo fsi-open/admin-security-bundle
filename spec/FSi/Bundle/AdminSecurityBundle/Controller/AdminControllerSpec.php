@@ -5,21 +5,22 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 class AdminControllerSpec extends ObjectBehavior
 {
     /**
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \Symfony\Component\Form\FormInterface $form
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
      */
-    function let($templating, $form, $tokenStorage, $router, $eventDispatcher)
+    function let($templating, $formFactory, $tokenStorage, $router, $eventDispatcher)
     {
         $this->beConstructedWith(
             $templating,
-            $form,
+            $formFactory,
             $tokenStorage,
             $router,
             $eventDispatcher,
@@ -29,13 +30,22 @@ class AdminControllerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormView $formView
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    function it_render_template_with_change_password_form($templating, $form, $formView, $request, $response)
-    {
+    function it_render_template_with_change_password_form(
+        $templating, $formFactory, $tokenStorage, $token, $user, $form, $formView, $request, $response
+    ) {
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
+
+        $formFactory->create('admin_change_password', $user)->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
@@ -48,33 +58,37 @@ class AdminControllerSpec extends ObjectBehavior
     }
 
     /**
+     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag $flashBag
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \Symfony\Component\Security\Core\User\UserInterface $user
      */
     function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
-        $form, $request, $session, $tokenStorage, $flashBag, $router, $eventDispatcher, $token, $user
+        $formFactory, $tokenStorage, $token, $user, $form, $request, $session, $flashBag, $router, $eventDispatcher
     ) {
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
+
+        $formFactory->create('admin_change_password', $user)->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
-        $form->isValid()->shouldBeCalled()->willReturn(true);
-        $request->getSession()->shouldBeCalled()->willReturn($session);
+        $form->isValid()->willReturn(true);
+        $request->getSession()->willReturn($session);
 
-        $form->getData()->shouldBeCalled()->willReturn(
-            array(
-                'plainPassword' => 'plain_password'
-            )
-        );
         $token->getUser()->shouldBeCalled()->willReturn($user);
-        $event = new ChangePasswordEvent($user->getWrappedObject(), 'plain_password');
-        $eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, $event)->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::CHANGE_PASSWORD,
+            Argument::allOf(
+                Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent'),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
 
-        $tokenStorage->getToken()->shouldBeCalled()->willReturn($token);
         $tokenStorage->setToken(null)->shouldBeCalled();
         $session->invalidate()->shouldBeCalled();
         $session->getFlashBag()->shouldBeCalled()->willReturn($flashBag);
@@ -85,7 +99,8 @@ class AdminControllerSpec extends ObjectBehavior
         )->shouldBeCalled();
         $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 
-        $this->changePasswordAction($request)
-            ->shouldReturnAnInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response = $this->changePasswordAction($request);
+        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->getTargetUrl()->shouldReturn('/admin/login');
     }
 }

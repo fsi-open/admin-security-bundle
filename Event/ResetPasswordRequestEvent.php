@@ -9,27 +9,27 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ChangePasswordEvent extends Event
+class ResetPasswordRequestEvent extends Event
 {
     /**
-     * @var UserPasswordChangeInterface
+     * @var UserPasswordResetInterface
      */
     private $user;
 
     /**
-     * @param UserPasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface $user
      */
-    function __construct(UserPasswordChangeInterface $user)
+    function __construct(UserPasswordResetInterface $user)
     {
         $this->user = $user;
     }
 
     /**
-     * @return UserPasswordChangeInterface
+     * @return UserInterface
      */
     public function getUser()
     {

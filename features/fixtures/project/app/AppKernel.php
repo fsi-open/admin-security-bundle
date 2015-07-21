@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new FSi\Bundle\DataGridBundle\DataGridBundle(),
             new FSi\Bundle\AdminBundle\FSiAdminBundle(),
             new FSi\FixturesBundle\FSiFixturesBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
             new FSi\Bundle\AdminSecurityBundle\FSiAdminSecurityBundle()
         );
     }

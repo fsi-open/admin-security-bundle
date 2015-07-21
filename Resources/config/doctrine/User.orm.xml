@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="FSi\Bundle\AdminSecurityBundle\Entity\User">
+
+        <id name="id" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="username" column="username" type="string" length="255" />
+
+        <field name="email" column="email" type="string" length="255" />
+
+        <field name="enabled" column="enabled" type="boolean" />
+
+        <field name="salt" column="salt" type="string" />
+
+        <field name="password" column="password" type="string" />
+
+        <field name="lastLogin" column="last_login" type="datetime" nullable="true" />
+
+        <field name="locked" column="locked" type="boolean" />
+
+        <field name="expired" column="expired" type="boolean" />
+
+        <field name="expiresAt" column="expires_at" type="datetime" nullable="true" />
+
+        <field name="roles" column="roles" type="array" />
+
+        <field name="credentialsExpired" column="credentials_expired" type="boolean" />
+
+        <field name="credentialsExpireAt" column="credentials_expire_at" type="datetime" nullable="true" />
+
+        <embedded name="confirmationToken" column-prefix="confirmation_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
+
+        <embedded name="passwordResetToken" column-prefix="password_reset_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
+
+    </mapped-superclass>
+
+</doctrine-mapping>

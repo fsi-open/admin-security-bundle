@@ -5,7 +5,7 @@ Because FSiAdminSecurityBundle doesn't care about your user model as long as it 
 changed password.
 That is why ChangePasswordEvent exist. Each time user change his password the
 ``admin.security.change_password`` is dispatched.
-By default FSiAdminSecureBundle provide ``DoctrineChangePasswordListener`` event listener.
+By default FSiAdminSecureBundle provide ``DoctrineUserListener`` event listener.
 It will check if user from security context token is Doctrine entity next it will try to
 set encoded password on it (using Symfony2 PropertyAccessor) and save change to database.
 

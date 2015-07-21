@@ -33,6 +33,7 @@ class FSIAdminSecurityExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('orm.xml');
     }
 
     /**
@@ -60,6 +61,7 @@ class FSIAdminSecurityExtension extends Extension
     private function setPasswordResetParameters(ContainerBuilder $container, $model)
     {
         $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
+        $container->setParameter('admin_security.password_reset.token_length', $model['token_length']);
         $container->setParameter('admin_security.password_reset.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.password_reset.mailer.from', $model['mailer']['from']);
         $container->setParameter('admin_security.password_reset.mailer.replay_to', $model['mailer']['replay_to']);

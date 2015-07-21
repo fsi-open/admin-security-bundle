@@ -33,6 +33,12 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(43200) // 12h
                             ->max(172800) // 48h
                         ->end()
+                        ->integerNode('token_length')
+                            ->cannotBeEmpty()
+                            ->min(16)
+                            ->defaultValue(32)
+                            ->max(64)
+                        ->end()
                         ->arrayNode('mailer')
                             ->isRequired()
                             ->addDefaultsIfNotSet()

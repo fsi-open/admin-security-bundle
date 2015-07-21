@@ -12,4 +12,5 @@ namespace FSi\Bundle\AdminSecurityBundle\Event;
 class AdminSecurityEvents
 {
     const CHANGE_PASSWORD = 'admin.security.change_password';
+    const RESET_PASSWORD_REQUEST = 'admin.security.reset_password_request';
 }
