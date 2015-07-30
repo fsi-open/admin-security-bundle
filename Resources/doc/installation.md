@@ -82,13 +82,13 @@ choose special compatibility entity class:
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FSi\Bundle\AdminSecurityBundle\Entity\FOSUBUser;
+use FSi\Bundle\AdminSecurityBundle\Entity\FOSUser;
 
 /**
  * @ORM\Entity(repositoryClass="FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository")
  * @ORM\Table(name="user")
  */
-class User extends FOSUBUser
+class User extends FOSUser
 {
 }
 ```

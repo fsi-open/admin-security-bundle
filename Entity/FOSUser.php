@@ -6,7 +6,7 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 
-abstract class FOSUBUser extends BaseUser implements UserInterface
+abstract class FOSUser extends BaseUser implements UserInterface
 {
     /**
      * @var boolean
