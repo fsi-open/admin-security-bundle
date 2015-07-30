@@ -22,10 +22,10 @@ Feature: Request URI for password change form
     And I press "Send me instructions" button
     Then I should see password reset request form message "Reset password instructions sent"
     And I should receive email:
-      | subject   | Reset Password     |
-      | from      | from-admin@fsi.pl  |
-      | to        | admin@fsi.pl       |
-      | replay_to | office@example.com |
+      | subject  | Reset Password           |
+      | from     | from-admin@fsi.pl        |
+      | to       | admin@fsi.pl             |
+      | reply_to | do-not-reply@example.com |
 
   Scenario: Second request for reset password link
     Given user "admin@fsi.pl" has confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"

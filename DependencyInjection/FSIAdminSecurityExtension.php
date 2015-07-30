@@ -66,7 +66,7 @@ class FSIAdminSecurityExtension extends Extension
         $container->setParameter('admin_security.activation.token_length', $model['token_length']);
         $container->setParameter('admin_security.activation.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.activation.mailer.from', $model['mailer']['from']);
-        $container->setParameter('admin_security.activation.mailer.replay_to', $model['mailer']['replay_to']);
+        $container->setParameter('admin_security.activation.mailer.reply_to', $model['mailer']['reply_to']);
     }
 
     private function setPasswordResetParameters(ContainerBuilder $container, $model)
@@ -75,6 +75,6 @@ class FSIAdminSecurityExtension extends Extension
         $container->setParameter('admin_security.password_reset.token_length', $model['token_length']);
         $container->setParameter('admin_security.password_reset.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.password_reset.mailer.from', $model['mailer']['from']);
-        $container->setParameter('admin_security.password_reset.mailer.replay_to', $model['mailer']['replay_to']);
+        $container->setParameter('admin_security.password_reset.mailer.reply_to', $model['mailer']['reply_to']);
     }
 }

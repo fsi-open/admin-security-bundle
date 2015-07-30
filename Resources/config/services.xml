@@ -88,7 +88,7 @@
             <argument type="service" id="admin_security.mailer.message_factory" />
             <argument type="string">%admin_security.activation.mailer.template%</argument>
             <argument type="string">%admin_security.activation.mailer.from%</argument>
-            <argument type="string">%admin_security.activation.mailer.replay_to%</argument>
+            <argument type="string">%admin_security.activation.mailer.reply_to%</argument>
         </service>
 
         <service id="admin_security.mailer.password_reset" class="%admin_security.mailer.password_reset.class%">
@@ -96,7 +96,7 @@
             <argument type="service" id="admin_security.mailer.message_factory" />
             <argument type="string">%admin_security.password_reset.mailer.template%</argument>
             <argument type="string">%admin_security.password_reset.mailer.from%</argument>
-            <argument type="string">%admin_security.password_reset.mailer.replay_to%</argument>
+            <argument type="string">%admin_security.password_reset.mailer.reply_to%</argument>
         </service>
 
         <!-- Forms -->

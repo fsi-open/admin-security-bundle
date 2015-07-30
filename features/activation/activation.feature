@@ -9,10 +9,10 @@ Feature: Activation of disabled user
   @email
   Scenario: Send email to new user
     Then an email should be sent:
-      | subject   | User Activation          |
-      | from      | activation@fsi.pl        |
-      | to        | user@example.com         |
-      | replay_to | do-not-reply@example.com |
+      | subject  | User Activation          |
+      | from     | activation@fsi.pl        |
+      | to       | user@example.com         |
+      | reply_to | do-not-reply@example.com |
 
   Scenario: Activate user
     When i open activation page with token received by user "user@example.com" in the email

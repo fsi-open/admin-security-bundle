@@ -9,10 +9,10 @@ Feature: Activation of disabled user with enforced password change
   @email
   Scenario: Send email to new user
     Then an email should be sent:
-      | subject   | User Activation          |
-      | from      | activation@fsi.pl        |
-      | to        | user@example.com         |
-      | replay_to | do-not-reply@example.com |
+      | subject  | User Activation          |
+      | from     | activation@fsi.pl        |
+      | to       | user@example.com         |
+      | reply_to | do-not-reply@example.com |
 
   Scenario: Open activation page with invalid activation token
     When i try open activation page with token "invalid-token"

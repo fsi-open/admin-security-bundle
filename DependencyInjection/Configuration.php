@@ -18,6 +18,29 @@ class Configuration implements ConfigurationInterface
         $supportedDrivers = array('orm');
 
         $rootNode
+            ->beforeNormalization()
+                ->always(function($v) {
+                    if (isset($v['mailer']['from'])) {
+                        if (!isset($v['activation']['mailer']['from'])) {
+                            $v['activation']['mailer']['from'] = $v['mailer']['from'];
+                        }
+                        if (!isset($v['password_reset']['mailer']['from'])) {
+                            $v['password_reset']['mailer']['from'] = $v['mailer']['from'];
+                        }
+                    }
+
+                    if (isset($v['mailer']['reply_to'])) {
+                        if (!isset($v['activation']['mailer']['reply_to'])) {
+                            $v['activation']['mailer']['reply_to'] = $v['mailer']['reply_to'];
+                        }
+                        if (!isset($v['password_reset']['mailer']['reply_to'])) {
+                            $v['password_reset']['mailer']['reply_to'] = $v['mailer']['reply_to'];
+                        }
+                    }
+
+                    return $v;
+                })
+            ->end()
             ->children()
                 ->scalarNode('driver')
                     ->validate()
@@ -33,6 +56,12 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->children()
                         ->scalarNode('user')->cannotBeEmpty()->isRequired()->end()
+                    ->end()
+                ->end()
+                ->arrayNode('mailer')
+                    ->children()
+                        ->scalarNode('from')->defaultNull()->end()
+                        ->scalarNode('reply_to')->defaultNull()->end()
                     ->end()
                 ->end()
                 ->arrayNode('activation')
@@ -57,7 +86,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
                                 ->scalarNode('template')->defaultValue('@FSiAdminSecurity/Activation/mail.html.twig')->end()
-                                ->scalarNode('replay_to')->defaultNull()->end()
+                                ->scalarNode('reply_to')->defaultNull()->end()
                             ->end()
                         ->end()
                     ->end()
@@ -84,7 +113,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
                                 ->scalarNode('template')->defaultValue('@FSiAdminSecurity/PasswordReset/mail.html.twig')->end()
-                                ->scalarNode('replay_to')->defaultNull()->end()
+                                ->scalarNode('reply_to')->defaultNull()->end()
                             ->end()
                         ->end()
                     ->end()

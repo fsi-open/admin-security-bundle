@@ -7,7 +7,7 @@ fsi_admin_security:
     password_reset:
         mailer:
           from: null                                                            # required
-          replay_to: office@example.com
+          reply_to: office@example.com
           template: '@FSiAdminSecurity/PasswordReset/mail.html.twig'
         token_ttl: 43200
         token_length: 32
