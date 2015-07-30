@@ -51,8 +51,7 @@ class DoctrineUserListener implements EventSubscriberInterface
      */
     public function onActivation(ActivationEvent $event)
     {
-        $user = $event->getUser();
-        $this->flushUserObjectManager($user);
+        $this->flushUserObjectManager($event->getUser());
     }
 
     /**
@@ -60,8 +59,7 @@ class DoctrineUserListener implements EventSubscriberInterface
      */
     public function onChangePassword(ChangePasswordEvent $event)
     {
-        $user = $event->getUser();
-        $this->flushUserObjectManager($user);
+        $this->flushUserObjectManager($event->getUser());
     }
 
     /**
@@ -69,8 +67,7 @@ class DoctrineUserListener implements EventSubscriberInterface
      */
     public function onResetPasswordRequest(ResetPasswordRequestEvent $event)
     {
-        $user = $event->getUser();
-        $this->flushUserObjectManager($user);
+        $this->flushUserObjectManager($event->getUser());
     }
 
     /**
@@ -78,8 +75,7 @@ class DoctrineUserListener implements EventSubscriberInterface
      */
     public function onUserCreated(UserEvent $event)
     {
-        $user = $event->getUser();
-        $this->flushUserObjectManager($user);
+        $this->flushUserObjectManager($event->getUser());
     }
 
 
@@ -91,6 +87,7 @@ class DoctrineUserListener implements EventSubscriberInterface
         $objectManager = $this->registry->getManagerForClass(get_class($user));
 
         if ($objectManager instanceof ObjectManager) {
+            $objectManager->persist($user);
             $objectManager->flush();
         }
     }
