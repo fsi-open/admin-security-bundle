@@ -19,6 +19,7 @@
         <parameter key="admin_security.listener.doctrine_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineUserListener</parameter>
         <parameter key="admin_security.listener.user_encode_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserEncodePasswordListener</parameter>
         <parameter key="admin_security.listener.activate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener</parameter>
+        <parameter key="admin_security.listener.deactivate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DeactivateUserListener</parameter>
         <parameter key="admin_security.listener.user_created.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserCreatedListener</parameter>
         <parameter key="admin_security.listener.user_password_changed.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserPasswordChangedListener</parameter>
         <parameter key="admin_security.listener.last_login_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\LastLoginListener</parameter>
@@ -120,7 +121,10 @@
         </service>
 
         <service id="admin_security.listener.activate_user_listener" class="%admin_security.listener.activate_user_listener.class%">
-            <argument type="service" id="admin_security.mailer.activation"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.deactivate_user_listener" class="%admin_security.listener.deactivate_user_listener.class%">
             <tag name="kernel.event_subscriber" />
         </service>
 

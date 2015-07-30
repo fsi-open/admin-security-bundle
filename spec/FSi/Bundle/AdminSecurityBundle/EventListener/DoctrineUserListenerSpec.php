@@ -28,6 +28,7 @@ class DoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         ));
@@ -79,6 +80,22 @@ class DoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onActivation($event);
+    }
+
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     */
+    function it_flushes_om_after_deactivation($event, $objectManager)
+    {
+        $user = new User();
+
+        $event->getUser()->willReturn($user);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onDeactivation($event);
     }
 
     /**

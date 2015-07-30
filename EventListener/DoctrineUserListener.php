@@ -44,6 +44,7 @@ class DoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         );
@@ -53,6 +54,14 @@ class DoctrineUserListener implements EventSubscriberInterface
      * @param ActivationEvent $event
      */
     public function onActivation(ActivationEvent $event)
+    {
+        $this->flushUserObjectManager($event->getUser());
+    }
+
+    /**
+     * @param ActivationEvent $event
+     */
+    public function onDeactivation(ActivationEvent $event)
     {
         $this->flushUserObjectManager($event->getUser());
     }
