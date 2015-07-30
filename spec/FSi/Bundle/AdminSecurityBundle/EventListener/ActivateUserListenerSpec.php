@@ -15,5 +15,17 @@ class ActivateUserListenerSpec extends ObjectBehavior
         ));
     }
 
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     */
+    function it_activates_user($event, $user)
+    {
+        $event->getUser()->willReturn($user);
 
+        $user->setEnabled(true)->shouldBeCalled();
+        $user->removeActivationToken()->shouldBeCalled();
+
+        $this->onActivation($event);
+    }
 }
