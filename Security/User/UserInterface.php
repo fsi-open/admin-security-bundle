@@ -36,16 +36,6 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
     public function setLocked($boolean);
 
     /**
-     * @return \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
-     */
-    public function getActivationToken();
-
-    /**
-     * @param TokenInterface $confirmationToken
-     */
-    public function setActivationToken(TokenInterface $confirmationToken);
-
-    /**
      * Sets the last login time
      *
      * @param \DateTime $time
@@ -53,6 +43,13 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
      * @return self
      */
     public function setLastLogin(\DateTime $time);
+
+    /**
+     * Gets the last login time.
+     *
+     * @return \DateTime
+     */
+    public function getLastLogin();
 
     /**
      * Never use this to check if this user has access to anything!

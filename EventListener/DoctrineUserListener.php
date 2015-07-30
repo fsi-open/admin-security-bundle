@@ -17,6 +17,8 @@ use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class DoctrineUserListener implements EventSubscriberInterface
 {
@@ -42,7 +44,8 @@ class DoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         );
     }
 
@@ -78,6 +81,13 @@ class DoctrineUserListener implements EventSubscriberInterface
         $this->flushUserObjectManager($event->getUser());
     }
 
+    /**
+     * @param InteractiveLoginEvent $event
+     */
+    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    {
+        $this->flushUserObjectManager($event->getAuthenticationToken()->getUser());
+    }
 
     /**
      * @param object $user

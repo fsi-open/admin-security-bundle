@@ -6,6 +6,9 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
 class DoctrineUserListenerSpec extends ObjectBehavior
 {
@@ -25,7 +28,8 @@ class DoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         ));
     }
 
@@ -91,5 +95,22 @@ class DoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onUserCreated($event);
+    }
+
+    /**
+     * @param \Symfony\Component\Security\Http\Event\InteractiveLoginEvent $event
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     */
+    function it_flushes_om_after_user_logged_in($event, $token, $objectManager)
+    {
+        $user = new User();
+        $token->getUser()->willReturn($user);
+        $event->getAuthenticationToken()->willReturn($token);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onInteractiveLogin($event);
     }
 }

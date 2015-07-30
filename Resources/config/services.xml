@@ -21,6 +21,7 @@
         <parameter key="admin_security.listener.activate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener</parameter>
         <parameter key="admin_security.listener.user_created.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserCreatedListener</parameter>
         <parameter key="admin_security.listener.user_password_changed.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserPasswordChangedListener</parameter>
+        <parameter key="admin_security.listener.last_login_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\LastLoginListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.class">FSi\Bundle\AdminSecurityBundle\EventListener\EnforcePasswordChangeListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
         <parameter key="admin_security.listener.activation_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivationMailerListener</parameter>
@@ -139,6 +140,10 @@
             <argument type="service" id="router"/>
             <argument type="string">%admin_security.firewall_name%</argument>
             <argument type="string">%admin_security.listener.enforce_password_change.change_password_route%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.last_login_listener" class="%admin_security.listener.last_login_listener.class%">
             <tag name="kernel.event_subscriber" />
         </service>
 
