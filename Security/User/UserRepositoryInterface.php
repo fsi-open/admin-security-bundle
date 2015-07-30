@@ -13,9 +13,15 @@ interface UserRepositoryInterface
 {
     /**
      * @param string $confirmationToken
-     * @return UserInterface|null
+     * @return UserPasswordResetInterface|null
      */
-    public function findUserByConfirmationToken($confirmationToken);
+    public function findUserByPasswordResetToken($confirmationToken);
+
+    /**
+     * @param string $activationToken
+     * @return UserActivableInterface|null
+     */
+    public function findUserByActivationToken($activationToken);
 
     /**
      * @param string $email

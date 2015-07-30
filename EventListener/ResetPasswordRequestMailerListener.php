@@ -9,9 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -43,6 +41,6 @@ class ResetPasswordRequestMailerListener implements EventSubscriberInterface
      */
     public function onResetPasswordRequest(ResetPasswordRequestEvent $event)
     {
-        $this->mailer->sendPasswordResetMail($event->getUser());
+        $this->mailer->send($event->getUser());
     }
 }

@@ -22,11 +22,13 @@ security:
                 provider: entity_provider
                 check_path: fsi_admin_security_user_check
                 login_path: fsi_admin_security_user_login
+                default_target_path: /admin
             logout:
                 path:   fsi_admin_security_user_logout
             anonymous:    ~
 
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/activation/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/password-reset/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_REDACTOR] }

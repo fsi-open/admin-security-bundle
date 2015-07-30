@@ -2,13 +2,11 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
-
 interface MailerInterface
 {
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface $user
+     * @param EmailableInterface $to
      * @return int
      */
-    public function sendPasswordResetMail(UserPasswordResetInterface $user);
+    public function send(EmailableInterface $to);
 }

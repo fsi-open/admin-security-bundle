@@ -71,7 +71,7 @@ class ChangePasswordController
 
     public function changePasswordAction(Request $request, $token)
     {
-        $user = $this->userRepository->findUserByConfirmationToken($token);
+        $user = $this->userRepository->findUserByPasswordResetToken($token);
         if (!($user instanceof UserPasswordResetInterface)) {
             throw new NotFoundHttpException();
         }

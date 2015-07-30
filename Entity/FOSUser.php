@@ -6,8 +6,13 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 
-abstract class FOSUBUser extends BaseUser implements UserInterface
+abstract class FOSUser extends BaseUser implements UserInterface
 {
+    /**
+     * @var boolean
+     */
+    protected $enforcePasswordChange;
+
     /**
      * @var TokenInterface
      */
@@ -17,6 +22,29 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
      * @var TokenInterface
      */
     protected $passwordResetToken;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->enforcePasswordChange = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForcedToChangePassword()
+    {
+        return $this->enforcePasswordChange;
+    }
+
+    /**
+     * @param bool $enforcePasswordChange
+     */
+    public function enforcePasswordChange($enforcePasswordChange)
+    {
+        $this->enforcePasswordChange = $enforcePasswordChange;
+    }
 
     /**
      * @return TokenInterface
@@ -32,6 +60,11 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
     public function setActivationToken(TokenInterface $confirmationToken)
     {
         $this->activationToken = $confirmationToken;
+    }
+
+    public function removeActivationToken()
+    {
+        $this->activationToken = null;
     }
 
     /**

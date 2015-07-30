@@ -27,6 +27,11 @@ abstract class User implements UserInterface
     protected $enabled;
 
     /**
+     * @var boolean
+     */
+    protected $enforcePasswordChange;
+
+    /**
      * The salt to use for hashing
      *
      * @var string
@@ -97,6 +102,7 @@ abstract class User implements UserInterface
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->enabled = false;
         $this->locked = false;
+        $this->enforcePasswordChange = false;
         $this->expired = false;
         $this->roles = array();
         $this->credentialsExpired = false;
@@ -219,6 +225,11 @@ abstract class User implements UserInterface
     public function setActivationToken(TokenInterface $activationToken)
     {
         $this->activationToken = $activationToken;
+    }
+
+    public function removeActivationToken()
+    {
+        $this->activationToken = null;
     }
 
     /**
@@ -451,6 +462,16 @@ abstract class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function isForcedToChangePassword()
+    {
+        return $this->enforcePasswordChange;
+    }
+
+    public function enforcePasswordChange($enforcePasswordChange)
+    {
+        $this->enforcePasswordChange = $enforcePasswordChange;
     }
 
     public function __toString()

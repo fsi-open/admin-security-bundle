@@ -9,15 +9,11 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
+use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
-interface UserPasswordResetInterface extends UserPasswordChangeInterface
+interface UserPasswordResetInterface extends UserPasswordChangeInterface, EmailableInterface
 {
-    /**
-     * @return string
-     */
-    public function getEmail();
-
     /**
      * @return TokenInterface
      */

@@ -9,11 +9,20 @@
 
 namespace FSi\Bundle\AdminSecurityBundle;
 
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\FirewallMapCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class FSiAdminSecurityBundle extends Bundle
 {
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new FirewallMapCompilerPass());
+    }
+
     /**
      * @return FSIAdminSecurityExtension
      */

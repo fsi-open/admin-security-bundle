@@ -5,7 +5,8 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterface, \Serializable
+interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterface, UserEnforcePasswordChangeInterface,
+    UserActivableInterface, \Serializable
 {
     /**
      * Sets the username.
@@ -17,13 +18,6 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
     public function setUsername($username);
 
     /**
-     * Gets email.
-     *
-     * @return string
-     */
-    public function getEmail();
-
-    /**
      * Sets the email.
      *
      * @param string $email
@@ -31,13 +25,6 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
      * @return self
      */
     public function setEmail($email);
-
-    /**
-     * @param boolean $boolean
-     *
-     * @return self
-     */
-    public function setEnabled($boolean);
 
     /**
      * Sets the locking status of the user.

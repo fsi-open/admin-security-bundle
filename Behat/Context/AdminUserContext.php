@@ -11,99 +11,16 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Doctrine\ORM\Tools\SchemaTool;
-use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-use Symfony\Component\HttpKernel\KernelInterface;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 
-class AdminUserContext extends PageObjectContext implements KernelAwareContext
+class AdminUserContext extends PageObjectContext
 {
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
-    /**
-     * @BeforeScenario
-     */
-    public function createDatabase()
-    {
-        $this->deleteDatabaseIfExist();
-        $metadata = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($this->getDoctrine()->getManager());
-        $tool->createSchema($metadata);
-    }
-
-    /**
-     * @Given /^there is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
-     */
-    public function thereIsUserWithRoleAndPassword($nick, $role, $password)
-    {
-        $user = new User();
-
-        $user->setUsername($nick)
-            ->setEmail($nick)
-            ->setRoles(array($role))
-            ->setPlainPassword($password)
-            ->setEnabled(true);
-
-        if (0 !== strlen($password = $user->getPlainPassword())) {
-            $encoder = $this->kernel->getContainer()->get('security.encoder_factory')->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
-            $user->eraseCredentials();
-        }
-
-        $manager = $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User');
-        $manager->persist($user);
-        $manager->flush();
-    }
-
-    /**
-     * @AfterScenario
-     */
-    public function deleteDatabaseIfExist()
-    {
-        $dbFilePath = $this->kernel->getRootDir() . '/data.sqlite';
-
-        if (file_exists($dbFilePath)) {
-            unlink($dbFilePath);
-        }
-    }
-
-    /**
-     * @Given /^I am on the "([^"]*)" page$/
-     */
-    public function iAmOnThePage($pageName)
-    {
-        $this->getPage($pageName)->open();
-    }
-
-
-    /**
-     * @Given /^I\'m not logged in$/
-     */
-    public function iMNotLoggedIn()
-    {
-        expect($this->kernel->getContainer()->get('security.context')->getToken())->toBe(null);
-    }
-
     /**
      * @Given /^I\'m logged in as admin$/
      */
     public function iMLoggedInAsAdmin()
     {
-        $this->iMNotLoggedIn();
-        $this->iAmOnThePage('Login');
+        $this->getPage('Login')->open();
         $this->iFillFormWithValidAdminLoginAndPassword();
         $this->iPressButton('Login');
     }
@@ -113,30 +30,19 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
      */
     public function iMLoggedInAsRedactor()
     {
-        $this->iMNotLoggedIn();
-        $this->iAmOnThePage('Login');
+        $this->getPage('Login')->open();
         $this->iFillFormWithValidRedactorLoginAndPassword();
         $this->iPressButton('Login');
     }
 
     /**
-     * @When /^I open "([^"]*)" page$/
+     * @When /^I fill form with login "([^"]*)" and password "([^"]*)"$/
      */
-    public function iOpenPage($pageName)
+    public function iFillFormWithLoginAndPassword($username, $password)
     {
-        $this->getPage($pageName)->open();
-    }
-
-    /**
-     * @When /^I try to open "([^"]*)" page$/
-     */
-    public function iTryToOpenPage($pageName)
-    {
-        try {
-            $this->iOpenPage($pageName);
-        } catch (UnexpectedPageException $e) {
-            // probably it is redirect
-        }
+        $page = $this->getPage('Admin Change Password');
+        $page->fillField('E-mail', $username);
+        $page->fillField('Password', $password);
     }
 
     /**
@@ -193,71 +99,11 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
     }
 
     /**
-     * @Then /^I should be redirected to "([^"]*)" page$/
-     */
-    public function iShouldBeRedirectedToPage($pageName)
-    {
-        $this->getPage($pageName)->isOpen();
-    }
-
-    /**
      * @Then /^I should see login form error message "([^"]*)"$/
      */
     public function iShouldSeeLoginFormErrorMessage($message)
     {
         expect($this->getPage('Login')->getFormErrorMessage())->toBe($message);
-    }
-
-    /**
-     * @Given /^I should see message "([^"]*)"$/
-     */
-    public function iShouldSeeMessage($message)
-    {
-        expect($this->getElement('FlashMessage')->getText())->toBe($message);
-    }
-
-    /**
-     * @Then /^I should see dropdown button in navigation bar "([^"]*)"$/
-     */
-    public function iShouldSeeDropdownButtonInNavigationBar($buttonText)
-    {
-        expect($this->getPage('Admin panel')->hasLink($buttonText))->toBe(true);
-    }
-
-    /**
-     * @Given /^"([^"]*)" dropdown button should have following links$/
-     */
-    public function dropdownButtonShouldHaveFollowingLinks($button, TableNode $dropdownLinks)
-    {
-        $links = $this->getPage('Admin panel')->getDropdownOptions($button);
-
-        foreach ($dropdownLinks->getHash() as $link) {
-            expect($links)->toContain($link['Link']);
-        }
-    }
-
-    /**
-     * @When /^I click "([^"]*)" link from "([^"]*)" dropdown button$/
-     */
-    public function iClickLinkFromDropdownButton($link, $dropdown)
-    {
-        $this->getPage('Admin panel')->getDropdown($dropdown)->clickLink($link);
-    }
-
-    /**
-     * @Then /^I should be logged off$/
-     */
-    public function iShouldBeLoggedOff()
-    {
-        expect($this->kernel->getContainer()->get('security.context')->getToken())->toBe(null);
-    }
-
-    /**
-     * @Then /^I should see page header with "([^"]*)" content$/
-     */
-    public function iShouldSeePageHeaderWithContent($headerText)
-    {
-        expect($this->getElement('Page Header')->getText())->toBe($headerText);
     }
 
     /**
@@ -276,6 +122,18 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
     public function iShouldSeeChangePasswordFormButton($buttonName)
     {
         expect($this->getPage('Admin change password')->hasButton($buttonName))->toBe(true);
+    }
+
+    /**
+     * @When /^I change my password$/
+     */
+    public function iChangeMyPassword()
+    {
+        $this->getPage('Admin change password')->open();
+        $this->getPage('Admin change password')->fillField('Current password', 'redactor');
+        $this->getPage('Admin change password')->fillField('New password', 'admin-new');
+        $this->getPage('Admin change password')->fillField('Repeat password', 'admin-new');
+        $this->iPress('Save');
     }
 
     /**
@@ -325,44 +183,12 @@ class AdminUserContext extends PageObjectContext implements KernelAwareContext
     }
 
     /**
-     * @Then /^user password should be changed$/
+     * @Then /^I should see information about passwords mismatch$/
      */
-    public function userPasswordShouldBeChanged()
+    public function iShouldSeeInformationAboutPasswordsMismatch()
     {
-        $user = $this->getDoctrine()->getManager()->getRepository('FSi\FixturesBundle\Entity\User')
-            ->findOneBy(array('username' => 'admin'));
-
-        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
-        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
-
-        expect($user->getPassword())->toBe($encoder->encodePassword($user, 'admin-new'));
-    }
-
-    /**
-     * @Then /^I should see navigation menu with following elements$/
-     */
-    public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu)
-    {
-        foreach($menu->getHash() as $elementData) {
-            expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementData['Element']))
-                ->toBe(true);
-        }
-    }
-
-    /**
-     * @Given /^I should not see "([^"]*)" position in menu$/
-     */
-    public function iShouldNotSeePositionInMenu($elementName)
-    {
-        expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementName))
-            ->toBe(false);
-    }
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry
-     */
-    protected function getDoctrine()
-    {
-        return $this->kernel->getContainer()->get('doctrine');
+        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form $form */
+        $form = $this->getElement('Form');
+        expect($form->getFieldErrors('New password'))->toBe('This value is not valid.');
     }
 }

@@ -11,7 +11,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ChangePasswordEvent extends Event
 {
