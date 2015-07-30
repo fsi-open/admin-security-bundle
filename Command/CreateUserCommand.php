@@ -38,15 +38,15 @@ class CreateUserCommand extends ContainerAwareCommand
                 new InputOption('enforce-password-change', null, InputOption::VALUE_NONE, 'Enforce user to change password during next login'),
             ))
             ->setHelp(<<<EOT
-The <info>fos:user:create</info> command creates a user:
+The <info>fsi:user:create</info> command creates a user:
 
-  <info>php app/console fsi:user:create matthieu</info>
+  <info>php app/console fsi:user:create john</info>
 
 This interactive shell will ask you for an email and then a password.
 
-You can alternatively specify the email and password as the second and third arguments:
+You can alternatively specify the email, password and role as the second, third and fourth arguments:
 
-  <info>php app/console fos:user:create matthieu matthieu@example.com mypassword</info>
+  <info>php app/console fsi:user:create john john@example.com mypassword ROLE_ADMIN</info>
 
 EOT
             );
