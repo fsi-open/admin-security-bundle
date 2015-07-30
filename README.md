@@ -16,13 +16,16 @@ Documentation:
 
 - [Installation](Resources/doc/installation.md)
 - [Configuration](Resources/doc/configuration.md)
-- [Change Password Event](Resources/doc/change_password_event.md)
-- [Password reset request Event](Resources/doc/password_reset_request_event.md)
+- [Commands](Resources/doc/commands.md)
+- [Events](Resources/doc/events.md)
 - [Secured Admin Elements](Resources/doc/secured_admin_elements.md)
 
 # Features
 
 * Login page
+* Email activation
+* Enforcing user to change password 
 * Reset forgotten password
+* Console command creating new user
 * Logout link added to admin panel navigation bar
 * Admin change password page

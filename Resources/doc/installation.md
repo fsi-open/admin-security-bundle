@@ -44,12 +44,16 @@ admin_security:
     resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
     prefix: /admin
 
+admin_activation:
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_activation.yml"
+    prefix: /admin
+
 admin_password_reset:
     resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yml"
     prefix: /admin
 ```
 
-The last routing entry is optional if you don't want to use the built-in password resetting feature.
+The last two routing entries are optional if you don't want to use these built-in features.
 
 ## 4. Create your user class
 
@@ -101,13 +105,13 @@ Minimal required configuration:
 # app/config/config.yml
 
 fsi_admin_security:
+    driver: orm
+    firewall_name: admin_panel
+    mailer:
+        from: admin@example.com
     model:
         user: AppBundle\User
-    password_reset:
-        mailer:
-            from: admin@example.com
 ```
-
 
 ## 6. Configure security.yml
 
@@ -142,6 +146,7 @@ security:
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/password-reset/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/activation/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
 ```
 
