@@ -29,7 +29,7 @@ Feature: Admin change password
     And I press "Save"
     Then user password should be changed
     And I should be redirected to "Login" page
-    And I should see message "Your password has been changed successfully"
+    And I should see message "Your password has been successfully changed"
 
   Scenario: Submit change form with invalid current password
     Given I am on the "Admin change password" page

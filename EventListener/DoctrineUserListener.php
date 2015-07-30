@@ -10,6 +10,7 @@
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
@@ -66,7 +67,7 @@ class DoctrineUserListener implements EventSubscriberInterface
     {
         $objectManager = $this->registry->getManagerForClass(get_class($user));
 
-        if (isset($objectManager)) {
+        if ($objectManager instanceof ObjectManager) {
             $objectManager->flush();
         }
     }

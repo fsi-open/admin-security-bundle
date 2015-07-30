@@ -11,7 +11,7 @@ admin:
   logout: Logout
   change_password: Change password
   change_password_message:
-    success: Your password has been changed successfully
+    success: Your password has been successfully changed
   change_password_form:
     current_password: Current password
     password: New password
@@ -39,4 +39,4 @@ admin:
         button:
           change_password: Change password
       message:
-        success: Your password has been changed successfully
+        success: Your password has been successfully changed

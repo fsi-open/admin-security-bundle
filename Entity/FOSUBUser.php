@@ -14,7 +14,7 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
     protected $activationToken;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
+     * @var TokenInterface
      */
     protected $passwordResetToken;
 
@@ -43,7 +43,7 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $passwordResetToken
+     * @param TokenInterface $passwordResetToken
      */
     public function setPasswordResetToken(TokenInterface $passwordResetToken)
     {
