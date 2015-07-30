@@ -67,7 +67,17 @@
 <body>
 <div class="container">
     {% block themes %}{% endblock %}
-    {% block body %}{% endblock %}
+    {% block body %}
+        {% if app.request.hasPreviousSession %}
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    <div class="alert flash {{ type }}">
+                        {{ message|trans({}, 'FSiAdminSecurity') }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
 </div>
 </body>
 </html>
