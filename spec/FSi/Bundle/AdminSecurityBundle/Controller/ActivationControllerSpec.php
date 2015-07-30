@@ -127,7 +127,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
-        $user->hasEnforcedPasswordChange()->willReturn(true);
+        $user->isForcedToChangePassword()->willReturn(true);
         $router->generate('fsi_admin_activation_change_password', array('token' => 'activation-token'))
             ->willReturn('change_password_url');
 
@@ -154,7 +154,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
-        $user->hasEnforcedPasswordChange()->willReturn(false);
+        $user->isForcedToChangePassword()->willReturn(false);
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');
 
         $eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, Argument::allOf(
@@ -181,7 +181,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
-        $user->hasEnforcedPasswordChange()->willReturn(false);
+        $user->isForcedToChangePassword()->willReturn(false);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
             ->during('changePasswordAction', array($request, 'activation-token'));
@@ -205,7 +205,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
-        $user->hasEnforcedPasswordChange()->willReturn(true);
+        $user->isForcedToChangePassword()->willReturn(true);
         $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
         $form->isValid()->willReturn(false);
         $templating->renderResponse('change-password.html.twig', array('form' => $formView))->willReturn($response);
@@ -233,7 +233,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
-        $user->hasEnforcedPasswordChange()->willReturn(true);
+        $user->isForcedToChangePassword()->willReturn(true);
         $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
         $form->isValid()->willReturn(true);
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');

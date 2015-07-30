@@ -33,7 +33,7 @@ abstract class FOSUser extends BaseUser implements UserInterface
     /**
      * @return bool
      */
-    public function hasEnforcedPasswordChange()
+    public function isForcedToChangePassword()
     {
         return $this->enforcePasswordChange;
     }

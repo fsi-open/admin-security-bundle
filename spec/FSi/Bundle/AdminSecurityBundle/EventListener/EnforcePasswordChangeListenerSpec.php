@@ -100,7 +100,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
-        $user->hasEnforcedPasswordChange()->willReturn(false);
+        $user->isForcedToChangePassword()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
 
@@ -124,7 +124,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
-        $user->hasEnforcedPasswordChange()->willReturn(true);
+        $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('change_password');
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -150,7 +150,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
-        $user->hasEnforcedPasswordChange()->willReturn(true);
+        $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('something_secure');
         $router->generate('change_password')->willReturn('change_password_url');
 

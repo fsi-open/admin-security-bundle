@@ -27,7 +27,7 @@ class UserPasswordChangedListener implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        if (($user instanceof UserEnforcePasswordChangeInterface) && $user->hasEnforcedPasswordChange()) {
+        if (($user instanceof UserEnforcePasswordChangeInterface) && $user->isForcedToChangePassword()) {
             $user->enforcePasswordChange(false);
         }
     }

@@ -19,7 +19,8 @@ class UserEncodePasswordListenerSpec extends ObjectBehavior
     function it_subscribes_change_password_event()
     {
         $this->getSubscribedEvents()->shouldReturn(array(
-            AdminSecurityEvents::CHANGE_PASSWORD=> 'onChangePassword'
+            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
         ));
     }
 
@@ -55,5 +56,25 @@ class UserEncodePasswordListenerSpec extends ObjectBehavior
         $user->eraseCredentials()->shouldBeCalled();
 
         $this->onChangePassword($event);
+    }
+
+    /**
+     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
+     * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     */
+    function it_encodes_password_for_new_user($encoderFactory, $encoder, $event, $user)
+    {
+        $event->getUser()->willReturn($user);
+        $user->getPlainPassword()->willReturn('new-password');
+        $encoderFactory->getEncoder($user)->willReturn($encoder);
+        $user->getSalt()->willReturn('salt');
+        $encoder->encodePassword('new-password', 'salt')->willReturn('encoded-new-password');
+
+        $user->setPassword('encoded-new-password')->shouldBeCalled();
+        $user->eraseCredentials()->shouldBeCalled();
+
+        $this->onUserCreated($event);
     }
 }

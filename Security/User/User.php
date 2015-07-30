@@ -464,7 +464,7 @@ abstract class User implements UserInterface
         return $this;
     }
 
-    public function hasEnforcedPasswordChange()
+    public function isForcedToChangePassword()
     {
         return $this->enforcePasswordChange;
     }

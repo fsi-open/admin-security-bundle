@@ -4,6 +4,7 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
@@ -26,7 +27,8 @@ class UserEncodePasswordListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
+            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
         );
     }
 
@@ -36,6 +38,17 @@ class UserEncodePasswordListener implements EventSubscriberInterface
     public function onChangePassword(ChangePasswordEvent $event)
     {
         $this->updateUserPassword($event->getUser());
+    }
+
+    /**
+     * @param UserEvent $event
+     */
+    public function onUserCreated(UserEvent $event)
+    {
+        $user = $event->getUser();
+        if ($user instanceof UserPasswordChangeInterface) {
+            $this->updateUserPassword($user);
+        }
     }
 
     /**

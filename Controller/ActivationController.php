@@ -168,6 +168,6 @@ class ActivationController
      */
     private function isUserEnforcedToChangePassword($user)
     {
-        return ($user instanceof UserEnforcePasswordChangeInterface) && $user->hasEnforcedPasswordChange();
+        return ($user instanceof UserEnforcePasswordChangeInterface) && $user->isForcedToChangePassword();
     }
 }

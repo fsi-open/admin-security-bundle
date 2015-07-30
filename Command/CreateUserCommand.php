@@ -79,12 +79,6 @@ EOT
         if (!$input->getOption('inactive')) {
             $user->setEnabled(true);
         }
-
-        $this->getContainer()->get('event_dispatcher')->dispatch(
-            AdminSecurityEvents::CHANGE_PASSWORD,
-            new ChangePasswordEvent($user)
-        );
-
         if ($input->getOption('enforce-password-change')) {
             $user->enforcePasswordChange(true);
         }

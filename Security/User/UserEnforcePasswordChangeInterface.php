@@ -14,7 +14,7 @@ interface UserEnforcePasswordChangeInterface extends UserPasswordChangeInterface
     /**
      * @return bool
      */
-    public function hasEnforcedPasswordChange();
+    public function isForcedToChangePassword();
 
     /**
      * @param bool $enforce
