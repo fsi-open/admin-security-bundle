@@ -16,6 +16,8 @@
 
         <field name="enabled" column="enabled" type="boolean" />
 
+        <field name="enforcePasswordChange" column="enforce_password_change" type="boolean" />
+
         <field name="salt" column="salt" type="string" />
 
         <field name="password" column="password" type="string" />

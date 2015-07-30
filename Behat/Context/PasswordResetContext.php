@@ -165,14 +165,6 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @Then /^i should see (\d+) error$/
-     */
-    public function iShouldSeeHttpError($httpStatusCode)
-    {
-        expect($this->getMink()->getSession()->getStatusCode())->toBe(intval($httpStatusCode));
-    }
-
-    /**
      * @Given /^i fill in new password with confirmation$/
      */
     public function iFillInNewPasswordWithConfirmation()
@@ -190,39 +182,6 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
         /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->fillFormWithInvalidData();
-    }
-
-    /**
-     * @Then /^I should see information about passwords mismatch$/
-     */
-    public function iShouldSeeInformationAboutPasswordsMismatch()
-    {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form $form */
-        $form = $this->getElement('Form');
-        expect($form->getFieldErrors('New password'))->toBe('This value is not valid.');
-    }
-
-    /**
-     * @Then /^user "([^"]*)" should have changed password$/
-     */
-    public function userShouldHaveChangedPassword($userEmail)
-    {
-        $user = $this->getUserRepository()->findOneBy(array('email' => $userEmail));
-
-        expect($user->getPassword())->toBe($this->encodePassword($user, 'test'));
-    }
-
-    /**
-     * @param UserInterface $user
-     * @param $password
-     * @return string
-     */
-    private function encodePassword(UserInterface $user, $password)
-    {
-        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
-        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
-
-        return $encoder->encodePassword($user, $password);
     }
 
     /**

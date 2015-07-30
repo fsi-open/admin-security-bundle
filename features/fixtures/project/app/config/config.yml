@@ -28,8 +28,14 @@ doctrine:
         auto_mapping: true
 
 fsi_admin_security:
+    driver: orm
+    firewall_name: admin_panel
     model:
         user: FSi\FixturesBundle\Entity\User
+    activation:
+        mailer:
+            from: activation@fsi.pl
+            replay_to: do-not-reply@example.com
     password_reset:
         mailer:
             from: from-admin@fsi.pl

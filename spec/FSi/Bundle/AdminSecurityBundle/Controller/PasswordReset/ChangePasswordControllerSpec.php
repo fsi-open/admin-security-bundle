@@ -48,7 +48,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
     function it_changes_password(
         $request, $userRepository, $user, $token, $formFactory, $form, $session, $flashBag, $router, $eventDispatcher
     ) {
-        $userRepository->findUserByConfirmationToken('token12345')->willReturn($user);
+        $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);
         $user->getPasswordResetToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
 

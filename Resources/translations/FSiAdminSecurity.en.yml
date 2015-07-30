@@ -40,3 +40,10 @@ admin:
           change_password: Change password
       message:
         success: Your password has been successfully changed
+  activation:
+    mail:
+      subject: User Activation
+      info: "To activate your account - please visit:"
+    message:
+      change_password_success: Your password has been successfully changed and your account has been activated
+      success: Your account has been successfully activated

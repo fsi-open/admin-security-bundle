@@ -9,6 +9,11 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 abstract class FOSUBUser extends BaseUser implements UserInterface
 {
     /**
+     * @var boolean
+     */
+    protected $enforcePasswordChange;
+
+    /**
      * @var TokenInterface
      */
     protected $activationToken;
@@ -17,6 +22,29 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
      * @var TokenInterface
      */
     protected $passwordResetToken;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->enforcePasswordChange = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEnforcedPasswordChange()
+    {
+        return $this->enforcePasswordChange;
+    }
+
+    /**
+     * @param bool $enforcePasswordChange
+     */
+    public function enforcePasswordChange($enforcePasswordChange)
+    {
+        $this->enforcePasswordChange = $enforcePasswordChange;
+    }
 
     /**
      * @return TokenInterface
@@ -32,6 +60,11 @@ abstract class FOSUBUser extends BaseUser implements UserInterface
     public function setActivationToken(TokenInterface $confirmationToken)
     {
         $this->activationToken = $confirmationToken;
+    }
+
+    public function removeActivationToken()
+    {
+        $this->activationToken = null;
     }
 
     /**

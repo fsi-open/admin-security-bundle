@@ -11,9 +11,11 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DoctrineUserListener implements EventSubscriberInterface
@@ -38,8 +40,19 @@ class DoctrineUserListener implements EventSubscriberInterface
     {
         return array(
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
+            AdminSecurityEvents::ACTIVATION => 'onActivation',
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
         );
+    }
+
+    /**
+     * @param ActivationEvent $event
+     */
+    public function onActivation(ActivationEvent $event)
+    {
+        $user = $event->getUser();
+        $this->flushUserObjectManager($user);
     }
 
     /**
@@ -59,6 +72,16 @@ class DoctrineUserListener implements EventSubscriberInterface
         $user = $event->getUser();
         $this->flushUserObjectManager($user);
     }
+
+    /**
+     * @param UserEvent $event
+     */
+    public function onUserCreated(UserEvent $event)
+    {
+        $user = $event->getUser();
+        $this->flushUserObjectManager($user);
+    }
+
 
     /**
      * @param object $user

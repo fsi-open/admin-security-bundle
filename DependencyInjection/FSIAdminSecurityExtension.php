@@ -27,13 +27,15 @@ class FSIAdminSecurityExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('admin_security.firewall_name', $config['firewall_name']);
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
         $this->setModelParameters($container, $config['model']);
+        $this->setActivationParameters($container, $config['activation']);
         $this->setPasswordResetParameters($container, $config['password_reset']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-        $loader->load('orm.xml');
+        $loader->load(sprintf('%s.xml', $config['driver']));
     }
 
     /**
@@ -56,6 +58,15 @@ class FSIAdminSecurityExtension extends Extension
     protected function setModelParameters(ContainerBuilder $container, $model)
     {
         $container->setParameter('admin_security.model.user', $model['user']);
+    }
+
+    private function setActivationParameters(ContainerBuilder $container, $model)
+    {
+        $container->setParameter('admin_security.activation.token_ttl', $model['token_ttl']);
+        $container->setParameter('admin_security.activation.token_length', $model['token_length']);
+        $container->setParameter('admin_security.activation.mailer.template', $model['mailer']['template']);
+        $container->setParameter('admin_security.activation.mailer.from', $model['mailer']['from']);
+        $container->setParameter('admin_security.activation.mailer.replay_to', $model['mailer']['replay_to']);
     }
 
     private function setPasswordResetParameters(ContainerBuilder $container, $model)

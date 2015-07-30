@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class MailContext implements SnippetAcceptingContext, KernelAwareContext
+class MailContext implements KernelAwareContext
 {
     /**
      * @var KernelInterface
@@ -47,6 +47,7 @@ class MailContext implements SnippetAcceptingContext, KernelAwareContext
 
     /**
      * @Given I should receive email:
+     * @Then an email should be sent:
      */
     public function iShouldReceiveEmail(TableNode $table)
     {

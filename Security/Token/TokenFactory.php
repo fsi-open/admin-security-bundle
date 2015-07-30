@@ -43,7 +43,7 @@ class TokenFactory implements TokenFactoryInterface
     }
 
     /**
-     * @return string
+     * @return TokenInterface
      */
     public function createToken()
     {

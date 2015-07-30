@@ -18,7 +18,15 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findUserByConfirmationToken($confirmationToken)
+    public function findUserByActivationToken($activationToken)
+    {
+        return $this->findOneBy(['activationToken.token' => $activationToken]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUserByPasswordResetToken($confirmationToken)
     {
         return $this->findOneBy(['passwordResetToken.token' => $confirmationToken]);
     }

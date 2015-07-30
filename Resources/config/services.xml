@@ -6,18 +6,30 @@
 
     <parameters>
         <parameter key="admin_security.controller.security.class">FSi\Bundle\AdminSecurityBundle\Controller\SecurityController</parameter>
+        <parameter key="admin_security.controller.activation.class">FSi\Bundle\AdminSecurityBundle\Controller\ActivationController</parameter>
         <parameter key="admin_security.controller.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController</parameter>
         <parameter key="admin_security.controller.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
-        <parameter key="admin_security.form.change_password_type.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
+        <parameter key="admin_security.mailer.message_factory.class">FSi\Bundle\AdminSecurityBundle\Mailer\TwigSwiftMessageFactory</parameter>
+        <parameter key="admin_security.mailer.activation.class">FSi\Bundle\AdminSecurityBundle\Mailer\TwigSwiftMailer</parameter>
+        <parameter key="admin_security.mailer.password_reset.class">FSi\Bundle\AdminSecurityBundle\Mailer\TwigSwiftMailer</parameter>
+        <parameter key="admin_security.form.type.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
+        <parameter key="admin_security.form.type.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType</parameter>
+        <parameter key="admin_security.form.type.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType</parameter>
         <parameter key="admin_security.listener.doctrine_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineUserListener</parameter>
         <parameter key="admin_security.listener.user_encode_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserEncodePasswordListener</parameter>
+        <parameter key="admin_security.listener.activate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener</parameter>
+        <parameter key="admin_security.listener.user_created.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserCreatedListener</parameter>
+        <parameter key="admin_security.listener.user_password_changed.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserPasswordChangedListener</parameter>
+        <parameter key="admin_security.listener.enforce_password_change.class">FSi\Bundle\AdminSecurityBundle\EventListener\EnforcePasswordChangeListener</parameter>
+        <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
+        <parameter key="admin_security.listener.activation_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivationMailerListener</parameter>
         <parameter key="admin_security.listener.reset_password_request_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ResetPasswordRequestMailerListener</parameter>
         <parameter key="admin_security.listener.secured_element_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\SecuredElementListener</parameter>
         <parameter key="admin_security.listener.tools_menu_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ToolsMenuListener</parameter>
-        <parameter key="admin_security.token_factory.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
-        <parameter key="admin_security.token_factory.ttl">43200</parameter>
-        <parameter key="admin_security.token_factory.length">32</parameter>
+        <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
+        <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
+        <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
     </parameters>
 
     <services>
@@ -28,13 +40,22 @@
             <argument type="string">%admin_security.templates.login%</argument>
         </service>
 
+        <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%">
+            <argument type="service" id="templating" />
+            <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
+            <argument type="service" id="admin_security.repository.user"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="form.factory"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
         <service id="admin_security.controller.password_reset.request" class="%admin_security.controller.password_reset.request.class%">
             <argument type="service" id="templating" />
             <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="admin_security.repository.user"/>
-            <argument type="service" id="admin_security.token_factory"/>
+            <argument type="service" id="admin_security.token_factory.password_reset"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
 
@@ -57,32 +78,37 @@
         </service>
 
         <!-- Mailer -->
-        <service id="admin_security.mailer.password_reset" class="FSi\Bundle\AdminSecurityBundle\Mailer\Mailer">
-            <argument type="service" id="swiftmailer.mailer" />
+        <service id="admin_security.mailer.message_factory" class="%admin_security.mailer.message_factory.class%">
             <argument type="service" id="twig" />
-            <argument type="service" id="router" />
             <argument type="service" id="request_stack" />
+        </service>
+
+        <service id="admin_security.mailer.activation" class="%admin_security.mailer.activation.class%">
+            <argument type="service" id="swiftmailer.mailer" />
+            <argument type="service" id="admin_security.mailer.message_factory" />
+            <argument type="string">%admin_security.activation.mailer.template%</argument>
+            <argument type="string">%admin_security.activation.mailer.from%</argument>
+            <argument type="string">%admin_security.activation.mailer.replay_to%</argument>
+        </service>
+
+        <service id="admin_security.mailer.password_reset" class="%admin_security.mailer.password_reset.class%">
+            <argument type="service" id="swiftmailer.mailer" />
+            <argument type="service" id="admin_security.mailer.message_factory" />
             <argument type="string">%admin_security.password_reset.mailer.template%</argument>
             <argument type="string">%admin_security.password_reset.mailer.from%</argument>
             <argument type="string">%admin_security.password_reset.mailer.replay_to%</argument>
         </service>
 
         <!-- Forms -->
-        <service id="admin_security.form.change_password_type" class="%admin_security.form.change_password_type.class%">
+        <service id="admin_security.form.change_password.type" class="%admin_security.form.type.change_password.class%">
             <tag name="form.type" alias="admin_change_password" />
         </service>
 
-        <service id="admin_security.form.change_password" class="Symfony\Component\Form\FormInterface"
-                factory-service="form.factory" factory-method="create">
-            <argument type="service" id="admin_security.form.change_password_type" />
-            <argument type="collection"/>
-        </service>
-
-        <service id="admin_security.form.type.password_reset.request.type" class="FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType">
+        <service id="admin_security.form.type.password_reset.request" class="%admin_security.form.type.password_reset.request.class%">
             <tag name="form.type" alias="admin_password_reset_request" />
         </service>
 
-        <service id="admin_security.form.type.password_reset.change_password.type" class="FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType">
+        <service id="admin_security.form.type.password_reset.change_password" class="%admin_security.form.type.password_reset.change_password.class%">
             <tag name="form.type" alias="admin_password_reset_change_password" />
         </service>
 
@@ -92,8 +118,32 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.doctrine_user_listener" class="%admin_security.listener.doctrine_user_listener.class%">
-            <argument type="service" id="doctrine" />
+        <service id="admin_security.listener.activate_user_listener" class="%admin_security.listener.activate_user_listener.class%">
+            <argument type="service" id="admin_security.mailer.activation"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.user_created" class="%admin_security.listener.user_created.class%">
+            <argument type="service" id="admin_security.token_factory.activation" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.user_password_changed" class="%admin_security.listener.user_password_changed.class%">
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.enforce_password_change" class="%admin_security.listener.enforce_password_change.class%">
+            <argument type="service" id="admin_security.firewall_mapper"/>
+            <argument type="service" id="security.authorization_checker"/>
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="router"/>
+            <argument type="string">%admin_security.firewall_name%</argument>
+            <argument type="string">%admin_security.listener.enforce_password_change.change_password_route%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.activation_mailer_listener" class="%admin_security.listener.activation_mailer_listener.class%">
+            <argument type="service" id="admin_security.mailer.activation"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -114,11 +164,27 @@
             <tag name="kernel.event_listener" event="fsi_admin.menu.tools" method="createAccountMenu" />
         </service>
 
+        <service id="admin_security.listener.doctrine_user_listener" class="%admin_security.listener.doctrine_user_listener.class%">
+            <argument type="service" id="doctrine" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
         <!-- factories -->
-        <service id="admin_security.token_factory" class="%admin_security.token_factory.class%">
+        <service id="admin_security.token_factory.activation" class="%admin_security.token_factory.activation.class%">
             <argument type="service" id="security.secure_random" />
-            <argument type="string">%admin_security.token_factory.ttl%</argument>
-            <argument type="string">%admin_security.token_factory.length%</argument>
+            <argument type="string">%admin_security.activation.token_ttl%</argument>
+            <argument type="string">%admin_security.activation.token_length%</argument>
+        </service>
+
+        <service id="admin_security.token_factory.password_reset" class="%admin_security.token_factory.password_reset.class%">
+            <argument type="service" id="security.secure_random" />
+            <argument type="string">%admin_security.password_reset.token_ttl%</argument>
+            <argument type="string">%admin_security.password_reset.token_length%</argument>
+        </service>
+
+        <!-- Security -->
+        <service id="admin_security.firewall_mapper" class="%admin_security.firewall_mapper.class%">
+            <argument type="collection"></argument>
         </service>
     </services>
 

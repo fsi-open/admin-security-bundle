@@ -25,8 +25,8 @@ class PasswordResetChangePassword extends Page
 
     public function fillForm()
     {
-        $this->fillField('New password', 'test');
-        $this->fillField('Repeat new password', 'test');
+        $this->fillField('New password', 'admin-new');
+        $this->fillField('Repeat new password', 'admin-new');
     }
 
     public function fillFormWithInvalidData()

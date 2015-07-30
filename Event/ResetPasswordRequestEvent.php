@@ -11,7 +11,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
 use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ResetPasswordRequestEvent extends Event
 {
@@ -21,7 +20,7 @@ class ResetPasswordRequestEvent extends Event
     private $user;
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface $user
+     * @param UserPasswordResetInterface $user
      */
     function __construct(UserPasswordResetInterface $user)
     {
@@ -29,7 +28,7 @@ class ResetPasswordRequestEvent extends Event
     }
 
     /**
-     * @return UserInterface
+     * @return UserPasswordResetInterface
      */
     public function getUser()
     {
