@@ -2,7 +2,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
 use Swift_Mailer;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -63,6 +63,10 @@ class Mailer implements MailerInterface
         $this->replayToEmail = $replayToEmail;
     }
 
+    /**
+     * @param UserPasswordResetInterface $user
+     * @return int
+     */
     public function sendPasswordResetMail(UserPasswordResetInterface $user)
     {
         $masterRequest = $this->requestStack->getMasterRequest();
@@ -90,6 +94,10 @@ class Mailer implements MailerInterface
         return $this->mailer->send($message);
     }
 
+    /**
+     * @param array $data
+     * @return array
+     */
     protected function prepareMessage($data)
     {
         $templateContext = $this->twig->mergeGlobals($data);

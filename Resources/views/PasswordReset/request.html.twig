@@ -15,8 +15,8 @@
         {% endfor %}
     {% endif %}
 
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
     {{ form_widget(form) }}
-    <input type="submit" class="btn btn-primary" value="Send me reset password instructions" />
+    <input type="submit" class="btn btn-lg btn-primary btn-block" value="{{ 'admin.password_reset.request.form.button.send'|trans({}, 'FSiAdminSecurity') }}" />
     {{ form_end(form) }}
 {% endblock %}

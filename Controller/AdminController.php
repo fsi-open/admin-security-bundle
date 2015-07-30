@@ -11,14 +11,15 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use Symfony\Component\Routing\RouterInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\SecurityContext;
 
 class AdminController
 {
@@ -43,9 +44,9 @@ class AdminController
     private $templating;
 
     /**
-     * @var \Symfony\Component\Form\FormInterface
+     * @var \Symfony\Component\Form\FormFactoryInterface
      */
-    private $changePasswordForm;
+    private $formFactory;
 
     /**
      * @var string
@@ -54,22 +55,22 @@ class AdminController
 
     /**
      * @param EngineInterface $templating
-     * @param FormInterface $changePasswordForm
+     * @param FormFactoryInterface $formFactory
      * @param TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param RouterInterface $router
+     * @param EventDispatcherInterface $eventDispatcher
      * @param string $changePasswordActionTemplate
      */
     public function __construct(
         EngineInterface $templating,
-        FormInterface $changePasswordForm,
+        FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         $changePasswordActionTemplate
     ) {
         $this->templating = $templating;
-        $this->changePasswordForm = $changePasswordForm;
+        $this->formFactory = $formFactory;
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
@@ -78,15 +79,19 @@ class AdminController
 
     public function changePasswordAction(Request $request)
     {
-        $this->changePasswordForm->handleRequest($request);
+        $user = $this->tokenStorage->getToken()->getUser();
+        if (!($user instanceof UserPasswordChangeInterface)) {
+            throw new NotFoundHttpException();
+        }
 
-        if ($this->changePasswordForm->isValid()) {
-            $user = $this->tokenStorage->getToken()->getUser();
-            $formData = $this->changePasswordForm->getData();
+        $form = $this->formFactory->create('admin_change_password', $user);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
 
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user, $formData['plainPassword'])
+                new ChangePasswordEvent($user, $user->getPlainPassword())
             );
 
             $request->getSession()->invalidate();
@@ -100,8 +105,9 @@ class AdminController
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
-        return $this->templating->renderResponse($this->changePasswordActionTemplate, array(
-            'form' => $this->changePasswordForm->createView()
-        ));
+        return $this->templating->renderResponse(
+            $this->changePasswordActionTemplate,
+            array('form' => $form->createView())
+        );
     }
 }

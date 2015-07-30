@@ -7,28 +7,19 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Model;
-
-use Symfony\Component\Security\Core\User\UserInterface;
+namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 interface UserRepositoryInterface
 {
     /**
-     * @param $confirmationToken
+     * @param string $confirmationToken
      * @return UserInterface|null
      */
     public function findUserByConfirmationToken($confirmationToken);
 
     /**
-     * @param $email
+     * @param string $email
      * @return UserInterface|null
      */
     public function findUserByEmail($email);
-
-    /**
-     * @param UserInterface $user
-     * @param bool $flush
-     * @return
-     */
-    public function save(UserInterface $user, $flush = true);
 }

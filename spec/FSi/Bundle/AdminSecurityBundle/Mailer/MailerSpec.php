@@ -33,7 +33,7 @@ class MailerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface $user
      * @param \Twig_Environment $twig
      * @param \Twig_Template $template
      * @param \Swift_Mailer $mailer

@@ -22,10 +22,21 @@ admin:
   welcome: Witaj %username%
   password_reset:
     request:
+      form:
+        email: Email
+        button:
+          send: Wyślij mi instrukcje
       mail_sent: Instrukcja zmiany hasła została wysłana pod podany adres email
       mail_subject: Zmiana hasła
       mail:
         info: "Aby ustawić nowe hasło proszę otworzyć link:"
         requested_by: "%ip% - %user_agent%"
-      submit: Wyślij instrukcję zmiany hasła
       already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.
+    change_password:
+      form:
+        password: Nowe hasło
+        repeat_password: Powtórz nowe hasło
+        button:
+          change_password: Zmień hasło
+      message:
+        success: Twoje hasło zostało poprawnie zmienione

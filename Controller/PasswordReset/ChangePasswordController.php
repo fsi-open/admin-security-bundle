@@ -9,9 +9,12 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +34,7 @@ class ChangePasswordController
     private $changePasswordActionTemplate;
 
     /**
-     * @var UserRepositoryInterface
+     * @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface
      */
     private $userRepository;
 
@@ -44,7 +47,11 @@ class ChangePasswordController
      * @var FormFactoryInterface
      */
     private $formFactory;
-    private $tokenTtl;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
         EngineInterface $templating,
@@ -52,25 +59,24 @@ class ChangePasswordController
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
-        $tokenTtl
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
-        $this->tokenTtl = $tokenTtl;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function changePasswordAction(Request $request, $token)
     {
-        /** @var UserPasswordResetInterface $user */
         $user = $this->userRepository->findUserByConfirmationToken($token);
-        if (null === $user) {
+        if (!($user instanceof UserPasswordResetInterface)) {
             throw new NotFoundHttpException();
         }
 
-        if (!$user->isPasswordRequestNonExpired($this->tokenTtl)) {
+        if (!$user->getPasswordResetToken()->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 
@@ -78,13 +84,16 @@ class ChangePasswordController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $user->setConfirmationToken(null);
-            $user->setPasswordRequestedAt(null);
-            $this->userRepository->save($user);
+            $user->removePasswordResetToken();
+
+            $this->eventDispatcher->dispatch(
+                AdminSecurityEvents::CHANGE_PASSWORD,
+                new ChangePasswordEvent($user)
+            );
 
             $request->getSession()->getFlashBag()->add(
                 'success',
-                'admin.change_password_message.success'
+                'admin.password_reset.change_password.message.success'
             );
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));

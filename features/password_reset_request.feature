@@ -11,7 +11,7 @@ Feature: Request URI for password change form
   Scenario: Request reset link with invalid email address
     Given I am on the "Password Reset Request" page
     When I fill form with non-existent email address
-    And I press "Send me reset password instructions" button
+    And I press "Send me instructions" button
     Then I should see password reset request form message "Reset password instructions sent"
     And no emails were sent
 
@@ -19,7 +19,7 @@ Feature: Request URI for password change form
   Scenario: Request reset link with valid email address
     Given I am on the "Password Reset Request" page
     When I fill form with correct email address
-    And I press "Send me reset password instructions" button
+    And I press "Send me instructions" button
     Then I should see password reset request form message "Reset password instructions sent"
     And I should receive email:
       | subject   | Reset Password     |
@@ -31,7 +31,7 @@ Feature: Request URI for password change form
     Given user "admin@fsi.pl" has confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
     And I am on the "Password Reset Request" page
     When I fill form with correct email address
-    And I press "Send me reset password instructions" button
+    And I press "Send me instructions" button
     Then I should see message "You already requested password reset instructions. Check your email."
     And I should be on the "Password Reset Request" page
     And user "admin@fsi.pl" should still have confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"

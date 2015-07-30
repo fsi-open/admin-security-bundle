@@ -10,10 +10,14 @@
         <parameter key="admin_security.controller.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
         <parameter key="admin_security.form.change_password_type.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
-        <parameter key="admin_security.listener.doctrine_change_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineChangePasswordListener</parameter>
+        <parameter key="admin_security.listener.doctrine_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineUserListener</parameter>
+        <parameter key="admin_security.listener.user_encode_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserEncodePasswordListener</parameter>
+        <parameter key="admin_security.listener.reset_password_request_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ResetPasswordRequestMailerListener</parameter>
         <parameter key="admin_security.listener.secured_element_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\SecuredElementListener</parameter>
         <parameter key="admin_security.listener.tools_menu_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ToolsMenuListener</parameter>
-        <parameter key="admin_security.token_generator.class">FSi\Bundle\AdminSecurityBundle\Token\TokenGenerator</parameter>
+        <parameter key="admin_security.token_factory.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
+        <parameter key="admin_security.token_factory.ttl">43200</parameter>
+        <parameter key="admin_security.token_factory.length">32</parameter>
     </parameters>
 
     <services>
@@ -30,9 +34,8 @@
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="admin_security.repository.user"/>
-            <argument type="service" id="admin_security.token_generator"/>
-            <argument type="service" id="admin_security.mailer.password_reset"/>
-            <argument type="string">%admin_security.password_reset.token_ttl%</argument>
+            <argument type="service" id="admin_security.token_factory"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%">
@@ -41,22 +44,16 @@
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
-            <argument type="string">%admin_security.password_reset.token_ttl%</argument>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%">
             <argument type="service" id="templating" />
-            <argument type="service" id="admin_security.form.change_password" />
+            <argument type="service" id="form.factory" />
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
             <argument type="service" id="event_dispatcher" />
             <argument type="string">%admin_security.templates.change_password%</argument>
-        </service>
-
-        <!-- Repository -->
-        <service id="admin_security.repository.user" class="Doctrine\ORM\EntityRepository">
-            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
-            <argument type="string">%admin_security.model.user%</argument>
         </service>
 
         <!-- Mailer -->
@@ -71,7 +68,9 @@
         </service>
 
         <!-- Forms -->
-        <service id="admin_security.form.change_password_type" class="%admin_security.form.change_password_type.class%" />
+        <service id="admin_security.form.change_password_type" class="%admin_security.form.change_password_type.class%">
+            <tag name="form.type" alias="admin_change_password" />
+        </service>
 
         <service id="admin_security.form.change_password" class="Symfony\Component\Form\FormInterface"
                 factory-service="form.factory" factory-method="create">
@@ -88,10 +87,19 @@
         </service>
 
         <!-- Event listeners -->
-        <service id="admin_security.listener.doctrine_change_password_listener" class="%admin_security.listener.doctrine_change_password_listener.class%">
-            <argument type="service" id="doctrine" />
+        <service id="admin_security.listener.user_encode_password_listener" class="%admin_security.listener.user_encode_password_listener.class%">
             <argument type="service" id="security.encoder_factory" />
-            <tag name="kernel.event_listener" event="admin.security.change_password" method="onChangePassword" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.doctrine_user_listener" class="%admin_security.listener.doctrine_user_listener.class%">
+            <argument type="service" id="doctrine" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.reset_password_request_mailer_listener" class="%admin_security.listener.reset_password_request_mailer_listener.class%">
+            <argument type="service" id="admin_security.mailer.password_reset"/>
+            <tag name="kernel.event_subscriber" />
         </service>
 
         <service id="admin_security.listener.secured_element_listener" class="%admin_security.listener.secured_element_listener.class%">
@@ -106,9 +114,11 @@
             <tag name="kernel.event_listener" event="fsi_admin.menu.tools" method="createAccountMenu" />
         </service>
 
-        <!-- token generator -->
-        <service id="admin_security.token_generator" class="%admin_security.token_generator.class%">
+        <!-- factories -->
+        <service id="admin_security.token_factory" class="%admin_security.token_factory.class%">
             <argument type="service" id="security.secure_random" />
+            <argument type="string">%admin_security.token_factory.ttl%</argument>
+            <argument type="string">%admin_security.token_factory.length%</argument>
         </service>
     </services>
 

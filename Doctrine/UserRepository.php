@@ -10,8 +10,8 @@
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {
@@ -20,7 +20,7 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
      */
     public function findUserByConfirmationToken($confirmationToken)
     {
-        return $this->findOneBy(['confirmationToken' => $confirmationToken]);
+        return $this->findOneBy(['passwordResetToken.token' => $confirmationToken]);
     }
 
     /**
@@ -28,16 +28,6 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
      */
     public function findUserByEmail($email)
     {
-        // FIXME: there is no email in any of model interfaces supplied by AdminSecurityBundle
         return $this->findOneBy(['email' => $email]);
-    }
-
-    public function save(UserInterface $user, $flush = true)
-    {
-        $this->_em->persist($user);
-
-        if ($flush) {
-            $this->_em->flush($user);
-        }
     }
 }

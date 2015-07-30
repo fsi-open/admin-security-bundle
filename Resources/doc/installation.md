@@ -1,4 +1,4 @@
-# Installation in 5 simple steps
+# Installation
 
 ## 1. Download Admin Security Bundle
 
@@ -6,7 +6,7 @@ Add to composer.json
 
 ```
 "require": {
-    "fsi/admin-security-bundle": "dev-master"
+    "fsi/admin-security-bundle": "~1.1@dev"
 }
 ```
 
@@ -41,33 +41,88 @@ admin:
     prefix: /admin
 
 admin_security:
-      resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
-      prefix: /admin
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
+    prefix: /admin
+
+admin_password_reset:
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yml"
+    prefix: /admin
 ```
 
-## 4. Enable translations
+The last routing entry is optional if you don't want to use the built-in password resetting feature.
 
+## 4. Create your user class
+
+The most common case is to extend the base entity user class provided by this bundle. If you don't want or don't need
+to use FOSUserBundle you should choose bare user entity:
+
+```php
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use FSi\Bundle\AdminSecurityBundle\Entity\User as BaseUser;
+
+/**
+ * @ORM\Entity(repositoryClass="FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository")
+ * @ORM\Table(name="user")
+ */
+class User extends BaseUser
+{
+}
 ```
+
+If you also need FOSUserBundle features on the same entity (i.e because you already use them in your app) you should
+choose special compatibility entity class:
+
+```php
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use FSi\Bundle\AdminSecurityBundle\Entity\FOSUBUser;
+
+/**
+ * @ORM\Entity(repositoryClass="FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository")
+ * @ORM\Table(name="user")
+ */
+class User extends FOSUBUser
+{
+}
+```
+
+## 5. Configure fsi_admin_security
+
+Minimal required configuration:
+
+```yml
 # app/config/config.yml
 
-framework:
-    translator:      { fallback: %locale% }
+fsi_admin_security:
+    model:
+        user: AppBundle\User
+    password_reset:
+        mailer:
+            from: admin@example.com
 ```
 
-## 5. Configure security.yml
+
+## 6. Configure security.yml
 
 ```
 # app/config/security.yml
 
 security:
     encoders:
-        Symfony\Component\Security\Core\User\User: plaintext
+        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: sha512
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    admin: { password: admin, roles: [ 'ROLE_ADMIN' ] }
+        entity_provider:
+            entity:
+                class: AppBundle:User
+                property: email
 
     firewalls:
         dev:
@@ -77,6 +132,7 @@ security:
         admin_panel:
             pattern:    ^/admin
             form_login:
+                provider: entity_provider
                 check_path: fsi_admin_security_user_check
                 login_path: fsi_admin_security_user_login
             logout:
@@ -85,40 +141,8 @@ security:
 
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/password-reset/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
 ```
 
-Security configuration when FOSUserBundle is used:
-
-```
-# app/config/security.yml
-
-security:
-    encoders:
-        FOS\UserBundle\Model\UserInterface: sha512
-
-    providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username
-
-    firewalls:
-        dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
-        admin_panel:
-            pattern:    ^/admin
-            form_login:
-                provider: fos_userbundle
-                check_path: fsi_admin_security_user_check
-                login_path: fsi_admin_security_user_login
-            logout:
-                path:   fsi_admin_security_user_logout
-            anonymous:    ~
-
-    access_control:
-        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-```
-
-Now when your admin panel is secured you should read how to [secure specific admin elements](secured_admin_elements.md)
+Now when your admin panel is secured you should read how to [secure specific admin elements](secured_admin_elements.md).

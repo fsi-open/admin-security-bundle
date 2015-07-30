@@ -7,12 +7,12 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Token;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
-interface TokenGeneratorInterface
+interface TokenFactoryInterface
 {
     /**
-     * @return string
+     * @return TokenInterface
      */
-    public function generateToken();
+    public function createToken();
 }
