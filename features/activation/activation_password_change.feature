@@ -24,9 +24,10 @@ Feature: Activation of disabled user with enforced password change
     Then i should see 404 error
 
   Scenario: Submit activation form with valid data
-    When i open activation page with token received by user "user@example.com" in the email
-    And i fill in new password with confirmation
-    And I press "Change password" button
+    Given i open activation page with token received by user "user@example.com" in the email
+    Then I should see message "Please setup a new password to activate your account"
+    When i fill in new password with confirmation
+    And I press "Activate account" button
     And I should be redirected to "Login" page
     Then user "user@example.com" should have changed password
     And I should see message "Your password has been successfully changed and your account has been activated"
@@ -35,5 +36,5 @@ Feature: Activation of disabled user with enforced password change
   Scenario: Submit activation form with invalid data
     When i open activation page with token received by user "user@example.com" in the email
     And i fill in new password with invalid confirmation
-    And I press "Change password" button
+    And I press "Activate account" button
     Then I should see information about passwords mismatch

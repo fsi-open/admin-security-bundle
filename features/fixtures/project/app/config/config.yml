@@ -41,6 +41,8 @@ fsi_admin_security:
         mailer:
             from: from-admin@fsi.pl
     templates:
+        activation:
+            change_password: ::activation.html.twig
         password_reset:
             request: ::request.html.twig
             change_password: ::change_password.html.twig

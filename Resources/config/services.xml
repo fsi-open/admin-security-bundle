@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="admin_security.controller.security.class">FSi\Bundle\AdminSecurityBundle\Controller\SecurityController</parameter>
-        <parameter key="admin_security.controller.activation.class">FSi\Bundle\AdminSecurityBundle\Controller\ActivationController</parameter>
+        <parameter key="admin_security.controller.activation.class">FSi\Bundle\AdminSecurityBundle\Controller\Activation\ActivationController</parameter>
         <parameter key="admin_security.controller.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController</parameter>
         <parameter key="admin_security.controller.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
@@ -43,7 +43,7 @@
 
         <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%">
             <argument type="service" id="templating" />
-            <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
+            <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Controller;
+namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -36,7 +36,7 @@ class ActivationController
     private $changePasswordActionTemplate;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 
@@ -76,6 +76,11 @@ class ActivationController
         $user = $this->tryFindUserByActivationToken($token);
 
         if ($this->isUserEnforcedToChangePassword($user)) {
+            $request->getSession()->getFlashBag()->add(
+                'info',
+                'admin.activation.message.change_password'
+            );
+
             return new RedirectResponse($this->router->generate('fsi_admin_activation_change_password', array('token' => $token)));
         } else {
             $this->eventDispatcher->dispatch(
