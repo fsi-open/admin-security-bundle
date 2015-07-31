@@ -91,11 +91,8 @@ class AdminController
 
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user, $user->getPlainPassword())
+                new ChangePasswordEvent($user)
             );
-
-            $request->getSession()->invalidate();
-            $this->tokenStorage->setToken(null);
 
             $request->getSession()->getFlashBag()->set(
                 'success',

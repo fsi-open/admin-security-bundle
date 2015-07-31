@@ -89,8 +89,6 @@ class AdminControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $tokenStorage->setToken(null)->shouldBeCalled();
-        $session->invalidate()->shouldBeCalled();
         $session->getFlashBag()->shouldBeCalled()->willReturn($flashBag);
 
         $flashBag->set(

@@ -82,9 +82,8 @@ class ResetRequestController
 
         if ($form->isValid()) {
 
-            /** @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface $user */
             $user = $this->getUser($form);
-            if (null === $user) {
+            if (!($user instanceof UserPasswordResetInterface)) {
                 return $this->addFlashAndRedirect(
                     $request,
                     'alert-success',

@@ -20,6 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -55,6 +56,14 @@ class ActivationController
      */
     private $eventDispatcher;
 
+    /**
+     * @param EngineInterface $templating
+     * @param string $changePasswordActionTemplate
+     * @param UserRepositoryInterface $userRepository
+     * @param RouterInterface $router
+     * @param FormFactoryInterface $formFactory
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
@@ -71,6 +80,11 @@ class ActivationController
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse
+     */
     public function activateAction(Request $request, $token)
     {
         $user = $this->tryFindUserByActivationToken($token);
@@ -96,6 +110,11 @@ class ActivationController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse|Response
+     */
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->tryFindUserByActivationToken($token);

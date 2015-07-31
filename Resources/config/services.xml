@@ -20,6 +20,7 @@
         <parameter key="admin_security.listener.activate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener</parameter>
         <parameter key="admin_security.listener.deactivate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DeactivateUserListener</parameter>
         <parameter key="admin_security.listener.clear_change_password_enforcement.class">FSi\Bundle\AdminSecurityBundle\EventListener\ClearChangePasswordEnforcementListener</parameter>
+        <parameter key="admin_security.listener.logout_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\LogoutUserListener</parameter>
         <parameter key="admin_security.listener.set_last_login.class">FSi\Bundle\AdminSecurityBundle\EventListener\SetLastLoginListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.class">FSi\Bundle\AdminSecurityBundle\EventListener\EnforcePasswordChangeListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
