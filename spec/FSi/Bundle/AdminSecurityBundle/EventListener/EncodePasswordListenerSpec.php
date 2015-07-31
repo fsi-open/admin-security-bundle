@@ -6,7 +6,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class UserEncodePasswordListenerSpec extends ObjectBehavior
+class EncodePasswordListenerSpec extends ObjectBehavior
 {
     /**
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory

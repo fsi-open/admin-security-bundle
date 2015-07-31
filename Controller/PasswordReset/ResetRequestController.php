@@ -51,11 +51,6 @@ class ResetRequestController
     private $userRepository;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface
-     */
-    private $tokenGenerator;
-
-    /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
@@ -66,7 +61,6 @@ class ResetRequestController
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
-        TokenFactoryInterface $tokenGenerator,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->templating = $templating;
@@ -74,7 +68,6 @@ class ResetRequestController
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->userRepository = $userRepository;
-        $this->tokenGenerator = $tokenGenerator;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -106,8 +99,6 @@ class ResetRequestController
                     'admin.password_reset.request.already_requested'
                 );
             }
-
-            $user->setPasswordResetToken($this->tokenGenerator->createToken());
 
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::RESET_PASSWORD_REQUEST,

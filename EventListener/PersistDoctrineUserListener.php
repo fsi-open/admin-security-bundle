@@ -20,7 +20,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
-class DoctrineUserListener implements EventSubscriberInterface
+class PersistDoctrineUserListener implements EventSubscriberInterface
 {
     /**
      * @var \Doctrine\Bundle\DoctrineBundle\Registry

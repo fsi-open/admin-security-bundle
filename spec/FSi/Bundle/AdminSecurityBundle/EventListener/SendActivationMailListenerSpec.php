@@ -6,14 +6,15 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ActivationMailerListenerSpec extends ObjectBehavior
+class SendActivationMailListenerSpec extends ObjectBehavior
 {
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
      */
-    function let($mailer)
+    function let($mailer, $tokenFactory)
     {
-        $this->beConstructedWith($mailer);
+        $this->beConstructedWith($mailer, $tokenFactory);
     }
 
     function it_subscribes_user_created_event()
@@ -25,14 +26,18 @@ class ActivationMailerListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
      */
-    function it_sends_email_if_user_is_not_enabled($mailer, $event, $user)
+    function it_sends_email_if_user_is_not_enabled($mailer, $tokenFactory, $token, $event, $user)
     {
         $user->isEnabled()->willReturn(false);
         $event->getUser()->willReturn($user);
+        $tokenFactory->createToken()->willReturn($token);
 
+        $user->setActivationToken($token)->shouldBeCalled();
         $mailer->send($user)->shouldBeCalled();
 
         $this->onUserCreated($event);

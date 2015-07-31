@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class UserEncodePasswordListener implements EventSubscriberInterface
+class EncodePasswordListener implements EventSubscriberInterface
 {
     /**
      * @var EncoderFactoryInterface

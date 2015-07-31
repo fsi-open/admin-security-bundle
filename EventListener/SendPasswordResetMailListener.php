@@ -12,18 +12,25 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ResetPasswordRequestMailerListener implements EventSubscriberInterface
+class SendPasswordResetMailListener implements EventSubscriberInterface
 {
     /**
      * @var MailerInterface
      */
     private $mailer;
 
-    function __construct(MailerInterface $mailer)
+    /**
+     * @var TokenFactoryInterface
+     */
+    private $tokenFactory;
+
+    function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
     {
         $this->mailer = $mailer;
+        $this->tokenFactory = $tokenFactory;
     }
 
     /**
@@ -41,6 +48,8 @@ class ResetPasswordRequestMailerListener implements EventSubscriberInterface
      */
     public function onResetPasswordRequest(ResetPasswordRequestEvent $event)
     {
-        $this->mailer->send($event->getUser());
+        $user = $event->getUser();
+        $user->setPasswordResetToken($this->tokenFactory->createToken());
+        $this->mailer->send($user);
     }
 }

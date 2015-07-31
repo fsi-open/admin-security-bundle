@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ToolsMenuListener
+class BuildAccountMenuListener
 {
     /**
      * @var TranslatorInterface

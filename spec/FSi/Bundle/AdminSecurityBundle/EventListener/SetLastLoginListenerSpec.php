@@ -6,7 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Security\Http\SecurityEvents;
 
-class LastLoginListenerSpec extends ObjectBehavior
+class SetLastLoginListenerSpec extends ObjectBehavior
 {
     function it_subscribes_for_interactive_login_event()
     {

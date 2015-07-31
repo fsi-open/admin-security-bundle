@@ -8,14 +8,14 @@ FSiAdminSecurityBundle provides some useful events which cause some default acti
 user instance. Its build-in subscribers:
 
 - [encode the new password](EventListener/UserEncodepasswordListener.php)
-- [ensure user is no longer enforced to change password if it was before](EventListener/UserPasswordChangedListener.php)
+- [ensure user is no longer enforced to change password if it was before](EventListener/ClearChangePasswordEnforcementListener.php)
 
 ## Password reset request event
 
 ``FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents::RESET_PASSWORD_REQUEST`` is fired when user requested to
 reset his/her password. Its built-in subscribers:
 
-- [send an email to the user](EventListener/ResetPasswordRequestMailerListener.php)
+- [send an email to the user](EventListener/SendPasswordResetMailListener.php)
 
 ## User created event
 
@@ -23,7 +23,7 @@ reset his/her password. Its built-in subscribers:
 from the console command. Its build-in subscribers:
 
 - [set user activation token if user is not enabled](EventListener/UserCreatedListener.php)
-- [send an email to the user](EventListener/ActivationMailerListener.php)
+- [send an email to the user](EventListener/SendActivationMailListener.php)
 
 ## Activation event
 
@@ -35,4 +35,4 @@ Its build-in subscribers:
 ## Other listeners 
 
 There is also one subscriber which subscribes all of the above events and is responsible for saving changes to the
-corresponding ORM/ODM - [DoctrineUserListener](EventListener/DoctrineUserListener.php) by the ODM/ORM.
+corresponding ORM/ODM - [PersistDoctrineUserListener](EventListener/PersistDoctrineUserListener.php) by the ODM/ORM.

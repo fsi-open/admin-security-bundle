@@ -6,7 +6,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class UserPasswordChangedListenerSpec extends ObjectBehavior
+class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 {
     function it_subscribes_change_password_event()
     {

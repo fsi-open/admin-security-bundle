@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class UserPasswordChangedListener implements EventSubscriberInterface
+class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {

@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
-class LastLoginListener implements EventSubscriberInterface
+class SetLastLoginListener implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
