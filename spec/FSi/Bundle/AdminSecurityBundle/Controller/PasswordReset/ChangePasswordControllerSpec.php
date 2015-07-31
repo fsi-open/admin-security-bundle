@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

@@ -12,9 +12,8 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
@@ -53,15 +52,15 @@ class EncodePasswordListener implements EventSubscriberInterface
     public function onUserCreated(UserEvent $event)
     {
         $user = $event->getUser();
-        if ($user instanceof UserPasswordChangeInterface) {
+        if ($user instanceof ChangeablePasswordInterface) {
             $this->updateUserPassword($user);
         }
     }
 
     /**
-     * @param UserPasswordChangeInterface $user
+     * @param ChangeablePasswordInterface $user
      */
-    protected function updateUserPassword(UserPasswordChangeInterface $user)
+    protected function updateUserPassword(ChangeablePasswordInterface $user)
     {
         if (0 !== strlen($password = $user->getPlainPassword())) {
             $encoder = $this->getEncoder($user);

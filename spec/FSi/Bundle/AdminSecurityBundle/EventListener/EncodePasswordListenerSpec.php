@@ -26,7 +26,7 @@ class EncodePasswordListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function it_does_nothing_if_plain_password_is_not_set($event, $user)
     {

@@ -11,12 +11,8 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
 {
@@ -34,7 +30,7 @@ class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        if (($user instanceof UserEnforcePasswordChangeInterface) && $user->isForcedToChangePassword()) {
+        if (($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword()) {
             $user->enforcePasswordChange(false);
         }
     }

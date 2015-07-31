@@ -11,7 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -86,7 +86,7 @@ class ChangePasswordController
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
-        if (!($user instanceof UserPasswordResetInterface)) {
+        if (!($user instanceof ResettablePasswordInterface)) {
             throw new NotFoundHttpException();
         }
 

@@ -9,7 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
-interface UserPasswordChangeInterface
+interface ChangeablePasswordInterface
 {
     /**
      * Gets the plain password.

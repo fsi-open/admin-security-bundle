@@ -11,7 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,12 +51,12 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $email      = $input->getArgument('email');
-        $password   = $input->getArgument('password');
+        $email = $input->getArgument('email');
+        $password = $input->getArgument('password');
 
         $userRepository = $this->getContainer()->get('admin_security.repository.user');
         $user = $userRepository->findUserByEmail($email);
-        if (!($user instanceof UserPasswordChangeInterface)) {
+        if (!($user instanceof ChangeablePasswordInterface)) {
             throw new \InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
         $user->setPlainPassword($password);

@@ -10,7 +10,6 @@
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -57,10 +56,10 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username   = $input->getArgument('username');
-        $email      = $input->getArgument('email');
-        $password   = $input->getArgument('password');
-        $role       = $input->getArgument('role');
+        $username = $input->getArgument('username');
+        $email = $input->getArgument('email');
+        $password = $input->getArgument('password');
+        $role = $input->getArgument('role');
 
         $userClass = $this->getContainer()->getParameter('admin_security.model.user');
         /** @var UserInterface $user */

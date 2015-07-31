@@ -81,7 +81,7 @@ class ActivationControllerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      */
     function it_throws_http_not_found_when_user_is_enabled($userRepository, $request, $user)
     {
@@ -97,7 +97,7 @@ class ActivationControllerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_throws_http_not_found_when_activation_token_expired($userRepository, $request, $user, $token)

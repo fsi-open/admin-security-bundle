@@ -12,8 +12,8 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -152,13 +152,13 @@ class ActivationController
 
     /**
      * @param $token
-     * @return UserActivableInterface|null
+     * @return ActivableInterface|null
      */
     private function tryFindUserByActivationToken($token)
     {
         $user = $this->userRepository->findUserByActivationToken($token);
 
-        if (!($user instanceof UserActivableInterface)) {
+        if (!($user instanceof ActivableInterface)) {
             throw new NotFoundHttpException();
         }
 
@@ -192,6 +192,6 @@ class ActivationController
      */
     private function isUserEnforcedToChangePassword($user)
     {
-        return ($user instanceof UserEnforcePasswordChangeInterface) && $user->isForcedToChangePassword();
+        return ($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword();
     }
 }

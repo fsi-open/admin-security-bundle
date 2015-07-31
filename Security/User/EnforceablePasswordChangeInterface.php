@@ -9,7 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
-interface UserEnforcePasswordChangeInterface extends UserPasswordChangeInterface
+interface EnforceablePasswordChangeInterface extends ChangeablePasswordInterface
 {
     /**
      * @return bool

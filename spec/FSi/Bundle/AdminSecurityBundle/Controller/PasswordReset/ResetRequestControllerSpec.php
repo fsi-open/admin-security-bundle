@@ -3,10 +3,8 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {

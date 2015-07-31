@@ -13,13 +13,13 @@ interface UserRepositoryInterface
 {
     /**
      * @param string $confirmationToken
-     * @return UserPasswordResetInterface|null
+     * @return ResettablePasswordInterface|null
      */
     public function findUserByPasswordResetToken($confirmationToken);
 
     /**
      * @param string $activationToken
-     * @return UserActivableInterface|null
+     * @return ActivableInterface|null
      */
     public function findUserByActivationToken($activationToken);
 

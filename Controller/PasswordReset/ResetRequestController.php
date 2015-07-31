@@ -11,8 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -83,7 +82,7 @@ class ResetRequestController
         if ($form->isValid()) {
 
             $user = $this->getUser($form);
-            if (!($user instanceof UserPasswordResetInterface)) {
+            if (!($user instanceof ResettablePasswordInterface)) {
                 return $this->addFlashAndRedirect(
                     $request,
                     'alert-success',
@@ -132,7 +131,7 @@ class ResetRequestController
 
     /**
      * @param FormInterface $form
-     * @return UserPasswordResetInterface|null
+     * @return ResettablePasswordInterface|null
      */
     private function getUser(FormInterface $form)
     {
@@ -140,10 +139,10 @@ class ResetRequestController
     }
 
     /**
-     * @param UserPasswordResetInterface $user
+     * @param ResettablePasswordInterface $user
      * @return bool
      */
-    private function hasNonExpiredPasswordResetToken(UserPasswordResetInterface $user)
+    private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user)
     {
         return $user->getPasswordResetToken() && $user->getPasswordResetToken()->isNonExpired();
     }

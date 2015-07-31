@@ -9,11 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
-use Swift_Mailer;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Twig_Environment;
 
 class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface

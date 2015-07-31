@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -33,7 +32,7 @@ class AdminControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormView $formView
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -61,7 +60,7 @@ class AdminControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Session $session

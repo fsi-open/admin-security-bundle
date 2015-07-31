@@ -29,7 +29,7 @@ class SendActivationMailListenerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      */
     function it_sends_email_if_user_is_not_enabled($mailer, $tokenFactory, $token, $event, $user)
     {
@@ -46,7 +46,7 @@ class SendActivationMailListenerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
      * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      */
     function it_does_not_send_email_if_user_is_enabled($mailer, $event, $user)
     {
