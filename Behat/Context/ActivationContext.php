@@ -8,10 +8,10 @@ use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
-use FSi\Bundle\AdminSecurityBundle\Entity\Token;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ActivationContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
@@ -133,7 +133,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function iOpenActivationPageWithTokenReceivedByUserInTheEmail($userEmail)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user */
+        /** @var UserInterface $user */
         $user = $this->getUserRepository()->findOneBy(array('email' => $userEmail));
 
         /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
@@ -172,7 +172,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @param string $token
      * @param \DateInterval $ttl
-     * @return \FSi\Bundle\AdminSecurityBundle\Entity\Token
+     * @return Token
      */
     private function createToken($token, $ttl)
     {

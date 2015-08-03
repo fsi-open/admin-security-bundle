@@ -11,8 +11,8 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -35,7 +35,7 @@ class ChangePasswordController
     private $changePasswordActionTemplate;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 

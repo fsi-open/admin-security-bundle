@@ -9,6 +9,8 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
+use FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface;
+
 interface TokenFactoryInterface
 {
     /**

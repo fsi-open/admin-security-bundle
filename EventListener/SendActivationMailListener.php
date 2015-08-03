@@ -13,7 +13,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\ActivableInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SendActivationMailListener implements EventSubscriberInterface

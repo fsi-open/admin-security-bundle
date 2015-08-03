@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\FirewallMapCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,6 +22,22 @@ class FSiAdminSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new FirewallMapCompilerPass());
+
+        $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');
+
+        $mappings = array(
+            $doctrineConfigDir . '/model' => 'FSi\Bundle\AdminSecurityBundle\Security\Model',
+        );
+
+        $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
+
+        if (class_exists('FOS\UserBundle\Entity\User')) {
+            $mappings = array(
+                $doctrineConfigDir . '/legacy' => 'FSi\Bundle\AdminSecurityBundle\Security\FOSUser',
+            );
+
+            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
+        }
     }
 
     /**

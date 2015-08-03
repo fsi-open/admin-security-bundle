@@ -7,11 +7,11 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Entity;
+namespace FSi\Bundle\AdminSecurityBundle\Security\FOSUser;
 
 use FOS\UserBundle\Entity\User as BaseUser;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface;
 
 abstract class FOSUser extends BaseUser implements UserInterface
 {

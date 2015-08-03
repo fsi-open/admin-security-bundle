@@ -120,7 +120,7 @@ fsi_admin_security:
 
 security:
     encoders:
-        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: sha512
+        FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface: sha512
 
     providers:
         entity_provider:

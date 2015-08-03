@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\User;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
 
 interface ChangeablePasswordInterface
 {

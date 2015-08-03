@@ -26,7 +26,7 @@ class EncodePasswordListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ChangeablePasswordInterface $user
      */
     function it_does_nothing_if_plain_password_is_not_set($event, $user)
     {
@@ -42,7 +42,7 @@ class EncodePasswordListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
      * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
      */
     function it_encodes_password_for_user($encoderFactory, $encoder, $event, $user)
     {
@@ -62,7 +62,7 @@ class EncodePasswordListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
      * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
      * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
      */
     function it_encodes_password_for_new_user($encoderFactory, $encoder, $event, $user)
     {

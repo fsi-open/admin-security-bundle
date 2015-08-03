@@ -17,7 +17,7 @@ class ActivateUserListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ActivableInterface $user
      */
     function it_activates_user($event, $user)
     {

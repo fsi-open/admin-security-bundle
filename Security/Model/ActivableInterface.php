@@ -7,10 +7,9 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\User;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
 
 use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
 interface ActivableInterface extends EmailableInterface
 {

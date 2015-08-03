@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
 
 use DateInterval;
 use DateTime;

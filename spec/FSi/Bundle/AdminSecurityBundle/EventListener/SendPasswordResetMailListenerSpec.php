@@ -27,9 +27,9 @@ class SendPasswordResetMailListenerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ResettablePasswordInterface $user
      */
     function it_sends_email($mailer, $tokenFactory, $token, $event, $user)
     {

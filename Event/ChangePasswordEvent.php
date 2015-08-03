@@ -9,7 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\ChangeablePasswordInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class ChangePasswordEvent extends Event

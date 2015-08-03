@@ -7,9 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\User;
-
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
 
 abstract class User implements UserInterface
 {
@@ -70,7 +68,7 @@ abstract class User implements UserInterface
     protected $activationToken;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
+     * @var TokenInterface
      */
     protected $passwordResetToken;
 
@@ -248,7 +246,7 @@ abstract class User implements UserInterface
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $passwordResetToken
+     * @param TokenInterface $passwordResetToken
      */
     public function setPasswordResetToken(TokenInterface $passwordResetToken)
     {

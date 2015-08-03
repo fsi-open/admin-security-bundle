@@ -18,7 +18,7 @@ class SetLastLoginListenerSpec extends ObjectBehavior
     /**
      * @param \Symfony\Component\Security\Http\Event\InteractiveLoginEvent $event
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
      */
     function it_sets_last_login($event, $token, $user)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\FSi\Bundle\AdminSecurityBundle\Security\Token;
+namespace spec\FSi\Bundle\AdminSecurityBundle\Security\Model;
 
 use DateInterval;
 use DateTime;

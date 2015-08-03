@@ -8,10 +8,9 @@ use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
-use FSi\Bundle\AdminSecurityBundle\Entity\Token;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
@@ -195,7 +194,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     /**
      * @param string $confirmationToken
      * @param \DateInterval $ttl
-     * @return \FSi\Bundle\AdminSecurityBundle\Entity\Token
+     * @return Token
      */
     private function createToken($confirmationToken, $ttl)
     {

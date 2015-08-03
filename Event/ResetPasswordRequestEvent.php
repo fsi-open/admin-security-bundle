@@ -9,7 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Model\ResettablePasswordInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class ResetPasswordRequestEvent extends Event

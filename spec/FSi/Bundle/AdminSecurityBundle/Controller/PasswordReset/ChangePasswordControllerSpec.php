@@ -15,7 +15,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
@@ -34,9 +34,9 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\HttpFoundation\Session\Session $session

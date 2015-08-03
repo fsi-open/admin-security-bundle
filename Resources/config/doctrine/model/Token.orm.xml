@@ -4,12 +4,14 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="FSi\Bundle\AdminSecurityBundle\Entity\FOSUser">
+    <embeddable name="FSi\Bundle\AdminSecurityBundle\Security\Model\Token">
 
-        <embedded name="activationToken" column-prefix="activation_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
+        <field name="token" column="token" type="string" nullable="true" />
 
-        <embedded name="passwordResetToken" column-prefix="password_reset_token_" class="FSi\Bundle\AdminSecurityBundle\Entity\Token" />
+        <field name="createdAt" column="created_at" type="datetime" nullable="true" />
 
-    </mapped-superclass>
+        <field name="expiresAt" column="expires_at" type="datetime" nullable="true" />
+
+    </embeddable>
 
 </doctrine-mapping>

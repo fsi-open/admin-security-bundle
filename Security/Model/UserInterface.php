@@ -7,9 +7,8 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\User;
+namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
 
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 interface UserInterface extends AdvancedUserInterface, ResettablePasswordInterface, EnforceablePasswordChangeInterface,
