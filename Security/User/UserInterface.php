@@ -1,12 +1,19 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterface, UserEnforcePasswordChangeInterface,
-    UserActivableInterface, \Serializable
+interface UserInterface extends AdvancedUserInterface, ResettablePasswordInterface, EnforceablePasswordChangeInterface,
+    ActivableInterface, \Serializable
 {
     /**
      * Sets the username.
@@ -36,16 +43,6 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
     public function setLocked($boolean);
 
     /**
-     * @return \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface
-     */
-    public function getActivationToken();
-
-    /**
-     * @param TokenInterface $confirmationToken
-     */
-    public function setActivationToken(TokenInterface $confirmationToken);
-
-    /**
      * Sets the last login time
      *
      * @param \DateTime $time
@@ -53,6 +50,13 @@ interface UserInterface extends AdvancedUserInterface, UserPasswordResetInterfac
      * @return self
      */
     public function setLastLogin(\DateTime $time);
+
+    /**
+     * Gets the last login time.
+     *
+     * @return \DateTime
+     */
+    public function getLastLogin();
 
     /**
      * Never use this to check if this user has access to anything!

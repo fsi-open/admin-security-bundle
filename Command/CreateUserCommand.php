@@ -1,9 +1,7 @@
 <?php
 
-/*
- * This file is part of the FOSUserBundle package.
- *
- * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +10,6 @@
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -21,11 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @author Matthieu Bontemps <matthieu@knplabs.com>
- * @author Thibault Duplessis <thibault.duplessis@gmail.com>
- * @author Luis Cordova <cordoval@gmail.com>
- */
 class CreateUserCommand extends ContainerAwareCommand
 {
     /**
@@ -45,15 +37,15 @@ class CreateUserCommand extends ContainerAwareCommand
                 new InputOption('enforce-password-change', null, InputOption::VALUE_NONE, 'Enforce user to change password during next login'),
             ))
             ->setHelp(<<<EOT
-The <info>fos:user:create</info> command creates a user:
+The <info>fsi:user:create</info> command creates a user:
 
-  <info>php app/console fsi:user:create matthieu</info>
+  <info>php app/console fsi:user:create john</info>
 
 This interactive shell will ask you for an email and then a password.
 
-You can alternatively specify the email and password as the second and third arguments:
+You can alternatively specify the email, password and role as the second, third and fourth arguments:
 
-  <info>php app/console fos:user:create matthieu matthieu@example.com mypassword</info>
+  <info>php app/console fsi:user:create john john@example.com mypassword ROLE_ADMIN</info>
 
 EOT
             );
@@ -64,10 +56,10 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username   = $input->getArgument('username');
-        $email      = $input->getArgument('email');
-        $password   = $input->getArgument('password');
-        $role       = $input->getArgument('role');
+        $username = $input->getArgument('username');
+        $email = $input->getArgument('email');
+        $password = $input->getArgument('password');
+        $role = $input->getArgument('role');
 
         $userClass = $this->getContainer()->getParameter('admin_security.model.user');
         /** @var UserInterface $user */

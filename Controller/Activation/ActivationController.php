@@ -7,19 +7,20 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Controller;
+namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -36,7 +37,7 @@ class ActivationController
     private $changePasswordActionTemplate;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 
@@ -55,6 +56,14 @@ class ActivationController
      */
     private $eventDispatcher;
 
+    /**
+     * @param EngineInterface $templating
+     * @param string $changePasswordActionTemplate
+     * @param UserRepositoryInterface $userRepository
+     * @param RouterInterface $router
+     * @param FormFactoryInterface $formFactory
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
@@ -71,11 +80,21 @@ class ActivationController
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse
+     */
     public function activateAction(Request $request, $token)
     {
         $user = $this->tryFindUserByActivationToken($token);
 
         if ($this->isUserEnforcedToChangePassword($user)) {
+            $request->getSession()->getFlashBag()->add(
+                'info',
+                'admin.activation.message.change_password'
+            );
+
             return new RedirectResponse($this->router->generate('fsi_admin_activation_change_password', array('token' => $token)));
         } else {
             $this->eventDispatcher->dispatch(
@@ -91,6 +110,11 @@ class ActivationController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse|Response
+     */
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->tryFindUserByActivationToken($token);
@@ -128,13 +152,13 @@ class ActivationController
 
     /**
      * @param $token
-     * @return UserActivableInterface|null
+     * @return ActivableInterface|null
      */
     private function tryFindUserByActivationToken($token)
     {
         $user = $this->userRepository->findUserByActivationToken($token);
 
-        if (!($user instanceof UserActivableInterface)) {
+        if (!($user instanceof ActivableInterface)) {
             throw new NotFoundHttpException();
         }
 
@@ -168,6 +192,6 @@ class ActivationController
      */
     private function isUserEnforcedToChangePassword($user)
     {
-        return ($user instanceof UserEnforcePasswordChangeInterface) && $user->isForcedToChangePassword();
+        return ($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword();
     }
 }

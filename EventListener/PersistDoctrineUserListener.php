@@ -17,8 +17,10 @@ use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
 
-class DoctrineUserListener implements EventSubscriberInterface
+class PersistDoctrineUserListener implements EventSubscriberInterface
 {
     /**
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
@@ -42,7 +44,9 @@ class DoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         );
     }
 
@@ -50,6 +54,14 @@ class DoctrineUserListener implements EventSubscriberInterface
      * @param ActivationEvent $event
      */
     public function onActivation(ActivationEvent $event)
+    {
+        $this->flushUserObjectManager($event->getUser());
+    }
+
+    /**
+     * @param ActivationEvent $event
+     */
+    public function onDeactivation(ActivationEvent $event)
     {
         $this->flushUserObjectManager($event->getUser());
     }
@@ -78,6 +90,13 @@ class DoctrineUserListener implements EventSubscriberInterface
         $this->flushUserObjectManager($event->getUser());
     }
 
+    /**
+     * @param InteractiveLoginEvent $event
+     */
+    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    {
+        $this->flushUserObjectManager($event->getAuthenticationToken()->getUser());
+    }
 
     /**
      * @param object $user

@@ -11,7 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -80,7 +80,7 @@ class AdminController
     public function changePasswordAction(Request $request)
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        if (!($user instanceof UserPasswordChangeInterface)) {
+        if (!($user instanceof ChangeablePasswordInterface)) {
             throw new NotFoundHttpException();
         }
 
@@ -91,11 +91,8 @@ class AdminController
 
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user, $user->getPlainPassword())
+                new ChangePasswordEvent($user)
             );
-
-            $request->getSession()->invalidate();
-            $this->tokenStorage->setToken(null);
 
             $request->getSession()->getFlashBag()->set(
                 'success',

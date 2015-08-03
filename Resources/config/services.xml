@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="admin_security.controller.security.class">FSi\Bundle\AdminSecurityBundle\Controller\SecurityController</parameter>
-        <parameter key="admin_security.controller.activation.class">FSi\Bundle\AdminSecurityBundle\Controller\ActivationController</parameter>
+        <parameter key="admin_security.controller.activation.class">FSi\Bundle\AdminSecurityBundle\Controller\Activation\ActivationController</parameter>
         <parameter key="admin_security.controller.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController</parameter>
         <parameter key="admin_security.controller.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController</parameter>
         <parameter key="admin_security.controller.admin.class">FSi\Bundle\AdminSecurityBundle\Controller\AdminController</parameter>
@@ -16,17 +16,19 @@
         <parameter key="admin_security.form.type.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
         <parameter key="admin_security.form.type.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType</parameter>
         <parameter key="admin_security.form.type.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType</parameter>
-        <parameter key="admin_security.listener.doctrine_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DoctrineUserListener</parameter>
-        <parameter key="admin_security.listener.user_encode_password_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserEncodePasswordListener</parameter>
+        <parameter key="admin_security.listener.encode_password.class">FSi\Bundle\AdminSecurityBundle\EventListener\EncodePasswordListener</parameter>
         <parameter key="admin_security.listener.activate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener</parameter>
-        <parameter key="admin_security.listener.user_created.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserCreatedListener</parameter>
-        <parameter key="admin_security.listener.user_password_changed.class">FSi\Bundle\AdminSecurityBundle\EventListener\UserPasswordChangedListener</parameter>
+        <parameter key="admin_security.listener.deactivate_user_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\DeactivateUserListener</parameter>
+        <parameter key="admin_security.listener.clear_change_password_enforcement.class">FSi\Bundle\AdminSecurityBundle\EventListener\ClearChangePasswordEnforcementListener</parameter>
+        <parameter key="admin_security.listener.logout_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\LogoutUserListener</parameter>
+        <parameter key="admin_security.listener.set_last_login.class">FSi\Bundle\AdminSecurityBundle\EventListener\SetLastLoginListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.class">FSi\Bundle\AdminSecurityBundle\EventListener\EnforcePasswordChangeListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
-        <parameter key="admin_security.listener.activation_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ActivationMailerListener</parameter>
-        <parameter key="admin_security.listener.reset_password_request_mailer_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ResetPasswordRequestMailerListener</parameter>
-        <parameter key="admin_security.listener.secured_element_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\SecuredElementListener</parameter>
-        <parameter key="admin_security.listener.tools_menu_listener.class">FSi\Bundle\AdminSecurityBundle\EventListener\ToolsMenuListener</parameter>
+        <parameter key="admin_security.listener.send_activation_mail.class">FSi\Bundle\AdminSecurityBundle\EventListener\SendActivationMailListener</parameter>
+        <parameter key="admin_security.listener.send_password_reset_mail.class">FSi\Bundle\AdminSecurityBundle\EventListener\SendPasswordResetMailListener</parameter>
+        <parameter key="admin_security.listener.remove_not_granted_elements.class">FSi\Bundle\AdminSecurityBundle\EventListener\RemoveNotGrantedElementsListener</parameter>
+        <parameter key="admin_security.listener.build_account_menu.class">FSi\Bundle\AdminSecurityBundle\EventListener\BuildAccountMenuListener</parameter>
+        <parameter key="admin_security.listener.persist_doctrine_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PersistDoctrineUserListener</parameter>
         <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
@@ -42,7 +44,7 @@
 
         <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%">
             <argument type="service" id="templating" />
-            <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
+            <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
@@ -55,7 +57,6 @@
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="admin_security.repository.user"/>
-            <argument type="service" id="admin_security.token_factory.password_reset"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
 
@@ -113,22 +114,20 @@
         </service>
 
         <!-- Event listeners -->
-        <service id="admin_security.listener.user_encode_password_listener" class="%admin_security.listener.user_encode_password_listener.class%">
+        <service id="admin_security.listener.encode_password" class="%admin_security.listener.encode_password.class%">
             <argument type="service" id="security.encoder_factory" />
             <tag name="kernel.event_subscriber" />
         </service>
 
         <service id="admin_security.listener.activate_user_listener" class="%admin_security.listener.activate_user_listener.class%">
-            <argument type="service" id="admin_security.mailer.activation"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.user_created" class="%admin_security.listener.user_created.class%">
-            <argument type="service" id="admin_security.token_factory.activation" />
+        <service id="admin_security.listener.deactivate_user_listener" class="%admin_security.listener.deactivate_user_listener.class%">
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.user_password_changed" class="%admin_security.listener.user_password_changed.class%">
+        <service id="admin_security.listener.clear_change_password_enforcement" class="%admin_security.listener.clear_change_password_enforcement.class%">
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -142,29 +141,35 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.activation_mailer_listener" class="%admin_security.listener.activation_mailer_listener.class%">
+        <service id="admin_security.listener.set_last_login" class="%admin_security.listener.set_last_login.class%">
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.send_activation_mail" class="%admin_security.listener.send_activation_mail.class%">
             <argument type="service" id="admin_security.mailer.activation"/>
+            <argument type="service" id="admin_security.token_factory.activation"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.reset_password_request_mailer_listener" class="%admin_security.listener.reset_password_request_mailer_listener.class%">
+        <service id="admin_security.listener.send_password_reset_mail" class="%admin_security.listener.send_password_reset_mail.class%">
             <argument type="service" id="admin_security.mailer.password_reset"/>
+            <argument type="service" id="admin_security.token_factory.password_reset"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.secured_element_listener" class="%admin_security.listener.secured_element_listener.class%">
+        <service id="admin_security.listener.remove_not_granted_elements" class="%admin_security.listener.remove_not_granted_elements.class%">
             <argument type="service" id="admin.manager" />
             <argument type="service" id="security.context" />
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="0"/>
         </service>
 
-        <service id="admin_security.listener.tools_menu_listener" class="%admin_security.listener.tools_menu_listener.class%">
+        <service id="admin_security.listener.build_account_menu" class="%admin_security.listener.build_account_menu.class%">
             <argument type="service" id="translator" />
             <argument type="service" id="security.context" />
             <tag name="kernel.event_listener" event="fsi_admin.menu.tools" method="createAccountMenu" />
         </service>
 
-        <service id="admin_security.listener.doctrine_user_listener" class="%admin_security.listener.doctrine_user_listener.class%">
+        <service id="admin_security.listener.persist_doctrine_user" class="%admin_security.listener.persist_doctrine_user.class%">
             <argument type="service" id="doctrine" />
             <tag name="kernel.event_subscriber" />
         </service>

@@ -6,8 +6,9 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Security\Http\SecurityEvents;
 
-class DoctrineUserListenerSpec extends ObjectBehavior
+class PersistDoctrineUserListenerSpec extends ObjectBehavior
 {
     /**
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
@@ -25,7 +26,9 @@ class DoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         ));
     }
 
@@ -78,6 +81,22 @@ class DoctrineUserListenerSpec extends ObjectBehavior
     }
 
     /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     */
+    function it_flushes_om_after_deactivation($event, $objectManager)
+    {
+        $user = new User();
+
+        $event->getUser()->willReturn($user);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onDeactivation($event);
+    }
+
+    /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
      * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
      */
@@ -91,5 +110,22 @@ class DoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onUserCreated($event);
+    }
+
+    /**
+     * @param \Symfony\Component\Security\Http\Event\InteractiveLoginEvent $event
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     */
+    function it_flushes_om_after_user_logged_in($event, $token, $objectManager)
+    {
+        $user = new User();
+        $token->getUser()->willReturn($user);
+        $event->getAuthenticationToken()->willReturn($token);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onInteractiveLogin($event);
     }
 }

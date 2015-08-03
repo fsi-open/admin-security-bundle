@@ -12,18 +12,26 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ActivationMailerListener implements EventSubscriberInterface
+class SendActivationMailListener implements EventSubscriberInterface
 {
     /**
      * @var MailerInterface
      */
     private $mailer;
 
-    function __construct(MailerInterface $mailer)
+    /**
+     * @var TokenFactoryInterface
+     */
+    private $tokenFactory;
+
+    function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
     {
         $this->mailer = $mailer;
+        $this->tokenFactory = $tokenFactory;
     }
 
     /**
@@ -41,7 +49,10 @@ class ActivationMailerListener implements EventSubscriberInterface
      */
     public function onUserCreated(UserEvent $event)
     {
-        if (!$event->getUser()->isEnabled()) {
+        $user = $event->getUser();
+
+        if (($user instanceof ActivableInterface) && !$user->isEnabled()) {
+            $user->setActivationToken($this->tokenFactory->createToken());
             $this->mailer->send($event->getUser());
         }
     }

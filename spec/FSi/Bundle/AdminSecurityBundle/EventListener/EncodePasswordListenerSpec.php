@@ -6,7 +6,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class UserEncodePasswordListenerSpec extends ObjectBehavior
+class EncodePasswordListenerSpec extends ObjectBehavior
 {
     /**
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
@@ -26,7 +26,7 @@ class UserEncodePasswordListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function it_does_nothing_if_plain_password_is_not_set($event, $user)
     {

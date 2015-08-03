@@ -7,7 +7,7 @@ use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ToolsMenuListenerSpec extends ObjectBehavior
+class BuildAccountMenuListenerSpec extends ObjectBehavior
 {
     /**
      * @param \Symfony\Component\Translation\TranslatorInterface $translator

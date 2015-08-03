@@ -3,10 +3,8 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
@@ -20,10 +18,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
-    function let($templating, $formFactory, $router, $userRepository, $tokenFactory, $eventDispatcher)
+    function let($templating, $formFactory, $router, $userRepository, $eventDispatcher)
     {
         $this->beConstructedWith(
             $templating,
@@ -31,7 +28,6 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $formFactory,
             $router,
             $userRepository,
-            $tokenFactory,
             $eventDispatcher
         );
     }
@@ -43,8 +39,6 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormInterface $form2
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
@@ -57,8 +51,6 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $form2,
         $userRepository,
         $user,
-        $tokenFactory,
-        $token,
         $eventDispatcher,
         $session,
         $flashBag,
@@ -74,10 +66,6 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
         $user->getPasswordResetToken()->willReturn(null);
-
-        $tokenFactory->createToken()->willReturn($token);
-
-        $user->setPasswordResetToken($token)->shouldBeCalled();
 
         $eventDispatcher->dispatch(
             AdminSecurityEvents::RESET_PASSWORD_REQUEST,

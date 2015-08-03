@@ -11,13 +11,14 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -53,6 +54,14 @@ class ChangePasswordController
      */
     private $eventDispatcher;
 
+    /**
+     * @param EngineInterface $templating
+     * @param string $changePasswordActionTemplate
+     * @param UserRepositoryInterface $userRepository
+     * @param RouterInterface $router
+     * @param FormFactoryInterface $formFactory
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
@@ -69,10 +78,15 @@ class ChangePasswordController
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse|Response
+     */
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
-        if (!($user instanceof UserPasswordResetInterface)) {
+        if (!($user instanceof ResettablePasswordInterface)) {
             throw new NotFoundHttpException();
         }
 

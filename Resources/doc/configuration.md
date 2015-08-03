@@ -23,9 +23,11 @@ fsi_admin_security:
         token_ttl: 43200
         token_length: 32
     templates:
+        activation:
+            change_password: 'FSiAdminSecurityBundle:Activation:change_password.html.twig'
         password_reset:
-            request: '::request.html.twig'
-            change_password: '::change_password.html.twig'
+            request: 'FSiAdminSecurityBundle:PasswordReset:request.html.twig'
+            change_password: 'FSiAdminSecurityBundle:PasswordReset:change_password.html.twig'
         login: 'FSiAdminSecurityBundle:Security:login.html.twig'
         change_password: 'FSiAdminSecurityBundle:Admin:change_password.html.twig'
 ```

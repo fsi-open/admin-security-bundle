@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class SecuredElementListener
+class RemoveNotGrantedElementsListener
 {
     /**
      * @var AuthorizationCheckerInterface

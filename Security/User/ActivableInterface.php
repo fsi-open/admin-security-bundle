@@ -12,17 +12,27 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
-interface UserPasswordResetInterface extends UserPasswordChangeInterface, EmailableInterface
+interface ActivableInterface extends EmailableInterface
 {
+    /**
+     * @return bool
+     */
+    public function isEnabled();
+
+    /**
+     * @param boolean $boolean
+     */
+    public function setEnabled($boolean);
+
     /**
      * @return TokenInterface
      */
-    public function getPasswordResetToken();
+    public function getActivationToken();
 
     /**
      * @param TokenInterface $token
      */
-    public function setPasswordResetToken(TokenInterface $token);
+    public function setActivationToken(TokenInterface $token);
 
-    public function removePasswordResetToken();
+    public function removeActivationToken();
 }

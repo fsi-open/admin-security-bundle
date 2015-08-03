@@ -6,12 +6,12 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ActivateUserListenerSpec extends ObjectBehavior
+class DeactivateUserListenerSpec extends ObjectBehavior
 {
-    function it_subscribes_activation_event()
+    function it_subscribes_deactivation_event()
     {
         $this->getSubscribedEvents()->shouldReturn(array(
-            AdminSecurityEvents::ACTIVATION => 'onActivation'
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation'
         ));
     }
 
@@ -23,9 +23,8 @@ class ActivateUserListenerSpec extends ObjectBehavior
     {
         $event->getUser()->willReturn($user);
 
-        $user->setEnabled(true)->shouldBeCalled();
-        $user->removeActivationToken()->shouldBeCalled();
+        $user->setEnabled(false)->shouldBeCalled();
 
-        $this->onActivation($event);
+        $this->onDeactivation($event);
     }
 }

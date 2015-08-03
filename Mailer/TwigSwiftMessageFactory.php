@@ -1,12 +1,15 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordResetInterface;
-use Swift_Mailer;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
 use Twig_Environment;
 
 class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface

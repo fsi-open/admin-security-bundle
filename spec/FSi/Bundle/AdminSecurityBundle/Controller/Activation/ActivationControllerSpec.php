@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
+namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
@@ -81,7 +81,7 @@ class ActivationControllerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      */
     function it_throws_http_not_found_when_user_is_enabled($userRepository, $request, $user)
     {
@@ -97,7 +97,7 @@ class ActivationControllerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_throws_http_not_found_when_activation_token_expired($userRepository, $request, $user, $token)
@@ -117,11 +117,12 @@ class ActivationControllerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_redirects_to_change_password_if_user_has_enforced_password_change(
-        $userRepository, $router, $request, $user, $token
+        $userRepository, $router, $request, $flashBag, $user, $token
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
@@ -131,16 +132,16 @@ class ActivationControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_activation_change_password', array('token' => 'activation-token'))
             ->willReturn('change_password_url');
 
+        $flashBag->add('info', 'admin.activation.message.change_password')->shouldBeCalled();
+
         $response = $this->activateAction($request, 'activation-token');
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
         $response->getTargetUrl()->shouldReturn('change_password_url');
     }
 
     /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
@@ -148,7 +149,7 @@ class ActivationControllerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_activates_user(
-        $templating, $userRepository, $router, $formFactory, $eventDispatcher, $request, $flashBag, $user, $token
+        $userRepository, $router, $eventDispatcher, $request, $flashBag, $user, $token
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);

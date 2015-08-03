@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -123,6 +130,12 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('login')->defaultValue('FSiAdminSecurityBundle:Security:login.html.twig')->end()
                         ->scalarNode('change_password')->defaultValue('FSiAdminSecurityBundle:Admin:change_password.html.twig')->end()
+                        ->arrayNode('activation')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('change_password')->defaultValue('FSiAdminSecurityBundle:Activation:change_password.html.twig')->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('password_reset')
                             ->addDefaultsIfNotSet()
                             ->children()

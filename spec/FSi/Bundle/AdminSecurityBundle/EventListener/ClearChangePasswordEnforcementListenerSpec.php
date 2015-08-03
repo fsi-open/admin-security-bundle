@@ -6,7 +6,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class UserPasswordChangedListenerSpec extends ObjectBehavior
+class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 {
     function it_subscribes_change_password_event()
     {
@@ -17,7 +17,7 @@ class UserPasswordChangedListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
     function it_does_nothing_if_has_not_enforced_password_change($event, $user)
     {
@@ -31,7 +31,7 @@ class UserPasswordChangedListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserEnforcePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
     function it_ceases_enforced_password_change($event, $user)
     {

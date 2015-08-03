@@ -9,26 +9,26 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class ActivationEvent extends Event
 {
     /**
-     * @var UserActivableInterface
+     * @var ActivableInterface
      */
     private $user;
 
     /**
-     * @param UserActivableInterface $user
+     * @param ActivableInterface $user
      */
-    function __construct(UserActivableInterface $user)
+    function __construct(ActivableInterface $user)
     {
         $this->user = $user;
     }
 
     /**
-     * @return UserActivableInterface
+     * @return ActivableInterface
      */
     public function getUser()
     {

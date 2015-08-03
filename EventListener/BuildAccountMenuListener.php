@@ -1,17 +1,22 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\MenuEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminBundle\Menu\Item\RoutableItem;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserPasswordChangeInterface;
-use Symfony\Component\Routing\RouterInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class ToolsMenuListener
+class BuildAccountMenuListener
 {
     /**
      * @var TranslatorInterface
@@ -93,6 +98,6 @@ class ToolsMenuListener
      */
     private function canChangeUserPassword()
     {
-        return $this->tokenStorage->getToken()->getUser() instanceof UserPasswordChangeInterface;
+        return $this->tokenStorage->getToken()->getUser() instanceof ChangeablePasswordInterface;
     }
 }

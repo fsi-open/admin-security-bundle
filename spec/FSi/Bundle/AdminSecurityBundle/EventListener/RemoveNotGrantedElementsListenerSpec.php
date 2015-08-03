@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpKernel\Kernel;
 
-class SecuredElementListenerSpec extends ObjectBehavior
+class RemoveNotGrantedElementsListenerSpec extends ObjectBehavior
 {
     /**
      * @param \FSi\Bundle\AdminBundle\Admin\Manager $adminManager
