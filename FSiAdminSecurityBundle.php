@@ -33,7 +33,7 @@ class FSiAdminSecurityBundle extends Bundle
 
         if (class_exists('FOS\UserBundle\Entity\User')) {
             $mappings = array(
-                $doctrineConfigDir . '/legacy' => 'FSi\Bundle\AdminSecurityBundle\Security\FOSUser',
+                $doctrineConfigDir . '/legacy' => 'FSi\Bundle\AdminSecurityBundle\Security\Legacy',
             );
 
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));

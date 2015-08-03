@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="FSi\Bundle\AdminSecurityBundle\Security\FOSUser\FOSUser">
+    <mapped-superclass name="FSi\Bundle\AdminSecurityBundle\Security\Legacy\FOSUser">
 
         <embedded name="activationToken" column-prefix="activation_token_" class="FSi\Bundle\AdminSecurityBundle\Security\Model\Token" />
 
