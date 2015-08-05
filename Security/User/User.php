@@ -7,7 +7,9 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
+namespace FSi\Bundle\AdminSecurityBundle\Security\User;
+
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
 abstract class User implements UserInterface
 {

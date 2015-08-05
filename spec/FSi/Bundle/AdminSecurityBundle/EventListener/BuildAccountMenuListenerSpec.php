@@ -13,7 +13,7 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Translation\TranslatorInterface $translator
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      */
     function let($translator, $tokenStorage, $token, $user)
     {

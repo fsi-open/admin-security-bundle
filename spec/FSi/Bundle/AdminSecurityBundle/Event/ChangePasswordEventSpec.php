@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 class ChangePasswordEventSpec extends ObjectBehavior
 {
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ChangeablePasswordInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function let($user)
     {
@@ -20,7 +20,7 @@ class ChangePasswordEventSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ChangeablePasswordInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function it_returns_user($user)
     {

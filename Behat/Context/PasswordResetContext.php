@@ -8,7 +8,7 @@ use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
-use FSi\Bundle\AdminSecurityBundle\Security\Model\Token;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 

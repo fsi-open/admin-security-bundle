@@ -10,7 +10,7 @@
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use DateTime;
-use FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;

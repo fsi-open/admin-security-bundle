@@ -10,7 +10,7 @@ class ActivationControllerSpec extends ObjectBehavior
 {
     /**
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
@@ -19,7 +19,7 @@ class ActivationControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      */
     function let(
         $templating,
@@ -50,7 +50,7 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
      */
     function it_throws_http_not_found_when_token_does_not_exists($userRepository, $request)
@@ -64,7 +64,7 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Security\Core\User\UserInterface $symfonyUser
      */
@@ -79,9 +79,9 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
      */
     function it_throws_http_not_found_when_user_is_enabled($userRepository, $request, $user)
     {
@@ -95,10 +95,10 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\ActivableInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_throws_http_not_found_when_activation_token_expired($userRepository, $request, $user, $token)
     {
@@ -114,12 +114,12 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_redirects_to_change_password_if_user_has_enforced_password_change(
         $userRepository, $router, $request, $flashBag, $user, $token
@@ -140,13 +140,13 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_activates_user(
         $userRepository, $router, $eventDispatcher, $request, $flashBag, $user, $token
@@ -170,10 +170,10 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_throws_http_not_found_during_change_password_if_user_is_not_enforced_to_change_password(
         $userRepository, $request, $user, $token
@@ -190,13 +190,13 @@ class ActivationControllerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormView $formView
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      * @param \Symfony\Component\HttpFoundation\Response $response
      */
     function it_renders_form_to_change_password(
@@ -217,15 +217,15 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface $token
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      */
     function it_handles_change_password_form(
         $userRepository, $router, $formFactory, $form, $eventDispatcher, $request, $flashBag, $user, $token

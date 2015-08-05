@@ -11,8 +11,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
 use DateTime;
-use FSi\Bundle\AdminSecurityBundle\Security\Model\Token;
-use FSi\Bundle\AdminSecurityBundle\Security\Model\TokenInterface;
 use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class TokenFactory implements TokenFactoryInterface

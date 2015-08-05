@@ -10,7 +10,7 @@
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
-use FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {

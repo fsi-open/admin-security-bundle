@@ -17,7 +17,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
     function let($templating, $formFactory, $router, $userRepository, $eventDispatcher)
@@ -37,8 +37,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormInterface $form2
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\HttpFoundation\Session\Session $session
      * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag

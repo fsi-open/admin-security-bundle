@@ -17,7 +17,7 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\EnforceablePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
     function it_does_nothing_if_has_not_enforced_password_change($event, $user)
     {
@@ -31,7 +31,7 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\EnforceablePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
     function it_ceases_enforced_password_change($event, $user)
     {

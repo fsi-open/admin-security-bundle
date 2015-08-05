@@ -9,7 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use FSi\Bundle\AdminSecurityBundle\Security\Model\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class ActivationEvent extends Event

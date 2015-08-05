@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Security\Model;
+namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 

@@ -89,7 +89,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\EnforceablePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      * @param \Symfony\Component\Routing\RouterInterface $router
      */
     function it_does_nothing_when_user_has_not_enforce_password_change(
@@ -114,7 +114,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\EnforceablePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
     function it_does_nothing_when_current_route_is_for_changing_password(
         $event, $request, $firewallMapper, $authorizationChecker, $tokenStorage, $token, $user
@@ -139,7 +139,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Model\EnforceablePasswordChangeInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      * @param \Symfony\Component\Routing\RouterInterface $router
      */
     function it_redirects_to_change_password(

@@ -26,14 +26,15 @@ class FSiAdminSecurityBundle extends Bundle
         $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');
 
         $mappings = array(
-            $doctrineConfigDir . '/model' => 'FSi\Bundle\AdminSecurityBundle\Security\Model',
+            $doctrineConfigDir . '/User' => 'FSi\Bundle\AdminSecurityBundle\Security\User',
+            $doctrineConfigDir . '/Token' => 'FSi\Bundle\AdminSecurityBundle\Security\Token',
         );
 
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
 
-        if (class_exists('FOS\UserBundle\Entity\User')) {
+        if ($container->hasExtension('fos_user')) {
             $mappings = array(
-                $doctrineConfigDir . '/legacy' => 'FSi\Bundle\AdminSecurityBundle\Security\Legacy',
+                $doctrineConfigDir . '/FOS' => 'FSi\Bundle\AdminSecurityBundle\Security\FOS',
             );
 
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
