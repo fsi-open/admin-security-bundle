@@ -9,13 +9,10 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Doctrine\ORM\Tools\SchemaTool;
-use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;

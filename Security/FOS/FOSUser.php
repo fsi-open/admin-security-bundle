@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Entity;
+namespace FSi\Bundle\AdminSecurityBundle\Security\FOS;
 
 use FOS\UserBundle\Entity\User as BaseUser;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;

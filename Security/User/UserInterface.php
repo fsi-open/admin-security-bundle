@@ -9,7 +9,6 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 interface UserInterface extends AdvancedUserInterface, ResettablePasswordInterface, EnforceablePasswordChangeInterface,

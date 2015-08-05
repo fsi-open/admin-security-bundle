@@ -35,7 +35,7 @@ class ChangePasswordController
     private $changePasswordActionTemplate;
 
     /**
-     * @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface
+     * @var UserRepositoryInterface
      */
     private $userRepository;
 

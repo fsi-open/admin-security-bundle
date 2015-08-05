@@ -2,7 +2,6 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Symfony\Component\Filesystem\Filesystem;
