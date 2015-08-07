@@ -23,11 +23,12 @@ class ChangePasswordTypeSpec extends ObjectBehavior
             'required' => true,
             'translation_domain' => 'FSiAdminSecurity',
             'constraints' => array(
-                new UserPassword(array('message' => 'admin.invalid_password'))
+                new UserPassword(array('message' => 'admin_user.current_password.invalid'))
             )
         ))->shouldBeCalled()->willReturn($formBuilder);
 
         $formBuilder->add('plainPassword', 'repeated', array(
+            'invalid_message' => 'admin_user.password.mismatch',
             'type' => 'password',
             'translation_domain' => 'FSiAdminSecurity',
             'first_options' => array(

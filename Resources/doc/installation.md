@@ -105,7 +105,7 @@ Minimal required configuration:
 # app/config/config.yml
 
 fsi_admin_security:
-    driver: orm
+    storage: orm
     firewall_name: admin_panel
     mailer:
         from: admin@example.com

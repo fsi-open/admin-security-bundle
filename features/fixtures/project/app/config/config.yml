@@ -28,7 +28,7 @@ doctrine:
         auto_mapping: true
 
 fsi_admin_security:
-    driver: orm
+    storage: orm
     firewall_name: admin_panel
     mailer:
         reply_to: do-not-reply@example.com

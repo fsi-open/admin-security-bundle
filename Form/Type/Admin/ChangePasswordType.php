@@ -11,6 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ChangePasswordType extends AbstractType
@@ -35,11 +36,12 @@ class ChangePasswordType extends AbstractType
             'required' => true,
             'translation_domain' => 'FSiAdminSecurity',
             'constraints' => array(
-                new UserPassword(array('message' => 'admin.invalid_password'))
+                new UserPassword(array('message' => 'admin_user.current_password.invalid'))
             )
         ));
 
         $builder->add('plainPassword', 'repeated', array(
+            'invalid_message' => 'admin_user.password.mismatch',
             'type' => 'password',
             'translation_domain' => 'FSiAdminSecurity',
             'first_options' => array(
@@ -53,5 +55,13 @@ class ChangePasswordType extends AbstractType
                 'translation_domain' => 'FSiAdminSecurity'
             )
         ));
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('validation_groups', array('ChangePassword', 'Default'));
     }
 }

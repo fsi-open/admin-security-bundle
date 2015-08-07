@@ -189,6 +189,6 @@ class AdminUserContext extends PageObjectContext
     {
         /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form $form */
         $form = $this->getElement('Form');
-        expect($form->getFieldErrors('New password'))->toBe('This value is not valid.');
+        expect($form->getFieldErrors('New password'))->toBe('The entered passwords don\'t match');
     }
 }
