@@ -85,7 +85,7 @@ class ResetRequestController
             if (!($user instanceof ResettablePasswordInterface)) {
                 return $this->addFlashAndRedirect(
                     $request,
-                    'alert-success',
+                    'success',
                     'admin.password_reset.request.mail_sent'
                 );
             }
@@ -93,7 +93,7 @@ class ResetRequestController
             if ($this->hasNonExpiredPasswordResetToken($user)) {
                 return $this->addFlashAndRedirect(
                     $request,
-                    'alert-warning',
+                    'warning',
                     'admin.password_reset.request.already_requested'
                 );
             }
@@ -105,7 +105,7 @@ class ResetRequestController
 
             return $this->addFlashAndRedirect(
                 $request,
-                'alert-success',
+                'success',
                 'admin.password_reset.request.mail_sent'
             );
         }

@@ -78,7 +78,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $request->getSession()->willReturn($session);
         $session->getFlashBag()->willReturn($flashBag);
 
-        $flashBag->add('alert-success', 'admin.password_reset.request.mail_sent')->shouldBeCalled();
+        $flashBag->add('success', 'admin.password_reset.request.mail_sent')->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
