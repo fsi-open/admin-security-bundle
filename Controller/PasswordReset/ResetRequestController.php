@@ -126,7 +126,7 @@ class ResetRequestController
     {
         $request->getSession()->getFlashBag()->add($type, $message);
 
-        return new RedirectResponse($this->router->generate('fsi_admin_security_password_reset_request'));
+        return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 
     /**

@@ -33,5 +33,5 @@ Feature: Request URI for password change form
     When I fill form with correct email address
     And I press "Send me instructions" button
     Then I should see message "You already requested password reset instructions. Check your email."
-    And I should be on the "Password Reset Request" page
+    And I should be on the "Login" page
     And user "admin@fsi.pl" should still have confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"

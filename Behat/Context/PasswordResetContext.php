@@ -122,7 +122,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     {
         /** @var \SensioLabs\Behat\PageObjectExtension\PageObject\Page $page */
         $page = $this->getPage($pageName);
-        $page->isOpen();
+        expect($page->isOpen())->toBe(true);
     }
 
     /**
