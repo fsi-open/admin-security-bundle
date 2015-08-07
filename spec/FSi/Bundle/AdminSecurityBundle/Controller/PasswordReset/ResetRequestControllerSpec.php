@@ -80,7 +80,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
 
         $flashBag->add('alert-success', 'admin.password_reset.request.mail_sent')->shouldBeCalled();
 
-        $router->generate('fsi_admin_security_password_reset_request')->willReturn('url');
+        $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
         $response = $this->requestAction($request);
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');

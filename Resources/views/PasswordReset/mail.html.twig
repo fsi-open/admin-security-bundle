@@ -9,6 +9,6 @@
         <a href="{{ changePasswordUrl }}">{{ changePasswordUrl }}</a>
     </p>
     <p>
-        {{ 'admin.password_reset.request.mail.requested_by'|trans({'%ip%': request.clientIp, '%user_agent%': request.headers.user_agent}, 'FSiAdminSecurity') }}
+        {{ 'admin.password_reset.request.mail.requested_by'|trans({'%ip%': request.clientIp, '%user_agent%': request.headers.get('User-Agent')}, 'FSiAdminSecurity') }}
     </p>
 {%- endblock %}
