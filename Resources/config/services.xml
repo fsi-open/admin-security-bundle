@@ -131,6 +131,12 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <service id="admin_security.listener.logout_user" class="%admin_security.listener.logout_user.class%">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="security.token_storage" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
         <service id="admin_security.listener.enforce_password_change" class="%admin_security.listener.enforce_password_change.class%">
             <argument type="service" id="admin_security.firewall_mapper"/>
             <argument type="service" id="security.authorization_checker"/>

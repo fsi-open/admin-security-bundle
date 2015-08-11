@@ -31,13 +31,40 @@ class LogoutUserListenerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
      * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      */
-    function it_logouts_the_user($tokenStorage, $session, $event)
+    function it_logouts_the_user($tokenStorage, $token, $session, $event, $user)
     {
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
+        $event->getUser()->willReturn($user);
+
         $session->invalidate()->shouldBeCalled();
         $tokenStorage->setToken(null)->shouldBeCalled();
+
+        $this->onChangePassword($event);
+    }
+
+    /**
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
+     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $currentUser
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $changedUser
+     */
+    function it_does_not_logout_the_user_if_it_is_not_currently_logged(
+        $tokenStorage, $token, $session, $event, $currentUser, $changedUser
+    ) {
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($currentUser);
+        $event->getUser()->willReturn($changedUser);
+
+        $session->invalidate()->shouldNotBeCalled();
+        $tokenStorage->setToken(null)->shouldNotBeCalled();
 
         $this->onChangePassword($event);
     }
