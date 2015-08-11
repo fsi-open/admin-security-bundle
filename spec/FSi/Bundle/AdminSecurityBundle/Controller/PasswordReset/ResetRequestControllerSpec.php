@@ -66,6 +66,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
         $user->getPasswordResetToken()->willReturn(null);
+        $user->isAccountNonLocked()->willReturn(true);
 
         $eventDispatcher->dispatch(
             AdminSecurityEvents::RESET_PASSWORD_REQUEST,
