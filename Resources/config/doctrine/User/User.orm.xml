@@ -10,9 +10,9 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="username" column="username" type="string" length="255" />
+        <field name="username" column="username" type="string" length="255" unique="true" />
 
-        <field name="email" column="email" type="string" length="255" />
+        <field name="email" column="email" type="string" length="255" unique="true" />
 
         <field name="enabled" column="enabled" type="boolean" />
 
