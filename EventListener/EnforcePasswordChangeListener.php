@@ -107,6 +107,8 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
 
         if ($event->getRequest()->get('_route') !== $this->changePasswordRoute) {
             $event->setResponse(new RedirectResponse($this->router->generate($this->changePasswordRoute)));
+        } else {
+            $event->stopPropagation();
         }
     }
 }
