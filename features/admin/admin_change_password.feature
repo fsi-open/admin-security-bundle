@@ -37,7 +37,7 @@ Feature: Admin change password
     And I press "Save"
     And I should see "Current password" field error in change password form with message
       """
-      Invalid password
+      The entered password is invalid
       """
 
   Scenario: Submit change form with with different new repeated password
@@ -46,5 +46,5 @@ Feature: Admin change password
     And I press "Save"
     And I should see "New password" field error in change password form with message
       """
-      This value is not valid.
+      The entered passwords don't match
       """

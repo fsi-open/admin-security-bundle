@@ -11,12 +11,14 @@ namespace FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('plainPassword', 'repeated', array(
+            'invalid_message' => 'admin_user.password.mismatch',
             'type' => 'password',
             'translation_domain' => 'FSiAdminSecurity',
             'first_options' => array(
@@ -36,5 +38,13 @@ class ChangePasswordType extends AbstractType
     public function getName()
     {
         return 'admin_password_reset_change_password';
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('validation_groups', array('ResetPassword', 'Default'));
     }
 }

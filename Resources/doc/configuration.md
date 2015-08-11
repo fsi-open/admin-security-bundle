@@ -2,7 +2,7 @@
 
 ```yml
 fsi_admin_security:
-    driver: null                                                                # required
+    storage: null                                                               # required
     model:
         user: null                                                              # required
     mailer:

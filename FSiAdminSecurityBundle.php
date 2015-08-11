@@ -11,6 +11,7 @@ namespace FSi\Bundle\AdminSecurityBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\FirewallMapCompilerPass;
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -22,6 +23,7 @@ class FSiAdminSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new FirewallMapCompilerPass());
+        $container->addCompilerPass(new ValidationCompilerPass());
 
         $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');
 

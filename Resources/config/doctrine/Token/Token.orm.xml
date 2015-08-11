@@ -6,7 +6,7 @@
 
     <embeddable name="FSi\Bundle\AdminSecurityBundle\Security\Token\Token">
 
-        <field name="token" column="token" type="string" nullable="true" />
+        <field name="token" column="token" type="string" nullable="true" unique="true" />
 
         <field name="createdAt" column="created_at" type="datetime" nullable="true" />
 

@@ -116,7 +116,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
      */
-    function it_does_nothing_when_current_route_is_for_changing_password(
+    function it_stops_event_propagation_when_already_on_change_password_page(
         $event, $request, $firewallMapper, $authorizationChecker, $tokenStorage, $token, $user
     ) {
         $event->getRequest()->willReturn($request);
@@ -127,6 +127,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('change_password');
 
+        $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::any())->shouldNotBeCalled();
 
         $this->onKernelRequest($event);

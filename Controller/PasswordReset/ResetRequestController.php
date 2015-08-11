@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class ResetRequestController
 {
@@ -95,6 +96,14 @@ class ResetRequestController
                     $request,
                     'warning',
                     'admin.password_reset.request.already_requested'
+                );
+            }
+
+            if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
+                return $this->addFlashAndRedirect(
+                    $request,
+                    'warning',
+                    'admin.password_reset.request.account_locked'
                 );
             }
 

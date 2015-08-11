@@ -32,6 +32,7 @@ admin:
         info: "To reset your password - please visit:"
         requested_by: "%ip% - %user_agent%"
       already_requested: You already requested password reset instructions. Check your email.
+      account_locked: User account is locked.
     change_password:
       form:
         password: New password

@@ -32,6 +32,7 @@ admin:
         info: "Aby ustawić nowe hasło proszę otworzyć link:"
         requested_by: "%ip% - %user_agent%"
       already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.
+      account_locked: Twoje konto jest zablokowane.
     change_password:
       form:
         password: Nowe hasło

@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('fsi_admin_security');
 
-        $supportedDrivers = array('orm');
+        $supportedStorages = array('orm');
 
         $rootNode
             ->beforeNormalization()
@@ -49,10 +49,10 @@ class Configuration implements ConfigurationInterface
                 })
             ->end()
             ->children()
-                ->scalarNode('driver')
+                ->scalarNode('storage')
                     ->validate()
-                        ->ifNotInArray($supportedDrivers)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of ' . json_encode($supportedDrivers))
+                        ->ifNotInArray($supportedStorages)
+                        ->thenInvalid('The driver %s is not supported. Please choose one of ' . json_encode($supportedStorages))
                     ->end()
                     ->cannotBeOverwritten()
                     ->isRequired()

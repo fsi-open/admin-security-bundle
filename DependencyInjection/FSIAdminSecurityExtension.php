@@ -27,6 +27,7 @@ class FSIAdminSecurityExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('admin_security.storage', $config['storage']);
         $container->setParameter('admin_security.firewall_name', $config['firewall_name']);
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
         $this->setModelParameters($container, $config['model']);
@@ -35,7 +36,7 @@ class FSIAdminSecurityExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-        $loader->load(sprintf('%s.xml', $config['driver']));
+        $loader->load(sprintf('%s.xml', $config['storage']));
     }
 
     /**
