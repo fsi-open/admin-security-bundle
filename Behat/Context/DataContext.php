@@ -87,7 +87,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
 
         $user->setUsername($nick)
             ->setEmail($nick)
-            ->setRoles(array($role))
+            ->addRole($role)
             ->setPlainPassword($password)
             ->setEnabled(true);
 

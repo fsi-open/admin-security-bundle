@@ -58,31 +58,6 @@ interface UserInterface extends AdvancedUserInterface, ResettablePasswordInterfa
     public function getLastLogin();
 
     /**
-     * Never use this to check if this user has access to anything!
-     *
-     * Use the SecurityContext, or an implementation of AccessDecisionManager
-     * instead, e.g.
-     *
-     *         $securityContext->isGranted('ROLE_USER');
-     *
-     * @param string $role
-     *
-     * @return boolean
-     */
-    public function hasRole($role);
-
-    /**
-     * Sets the roles of the user.
-     *
-     * This overwrites any previous roles.
-     *
-     * @param array $roles
-     *
-     * @return self
-     */
-    public function setRoles(array $roles);
-
-    /**
      * Adds a role to the user.
      *
      * @param string $role
