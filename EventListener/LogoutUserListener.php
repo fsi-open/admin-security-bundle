@@ -52,7 +52,9 @@ class LogoutUserListener implements EventSubscriberInterface
      */
     public function onChangePassword(ChangePasswordEvent $event)
     {
-        $this->requestStack->getMasterRequest()->getSession()->invalidate();
-        $this->tokenStorage->setToken(null);
+        if ($this->tokenStorage->getToken()->getUser() === $event->getUser()) {
+            $this->requestStack->getMasterRequest()->getSession()->invalidate();
+            $this->tokenStorage->setToken(null);
+        }
     }
 }
