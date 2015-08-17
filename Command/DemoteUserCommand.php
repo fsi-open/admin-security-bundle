@@ -10,7 +10,6 @@
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
-use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
