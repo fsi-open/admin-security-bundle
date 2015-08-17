@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PromoteUserCommand extends ContainerAwareCommand
+class DemoteUserCommand extends ContainerAwareCommand
 {
     /**
      * @see Command
@@ -27,16 +27,16 @@ class PromoteUserCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('fsi:user:promote')
-            ->setDescription('Promote a user.')
+            ->setName('fsi:user:demote')
+            ->setDescription('Demote a user.')
             ->setDefinition(array(
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('role', InputArgument::REQUIRED, 'The role'),
             ))
             ->setHelp(<<<EOT
-The <info>fsi:user:promote</info> command promotes the user
+The <info>fsi:user:demote</info> command demotes the user
 
-  <info>php app/console fsi:user:promote john@example.com ROLE_ADMIN</info>
+  <info>php app/console fsi:user:demote john@example.com ROLE_ADMIN</info>
 
 EOT
             );
@@ -57,14 +57,14 @@ EOT
             throw new \InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
 
-        $user->addRole($role);
+        $user->removeRole($role);
 
         $this->getContainer()->get('event_dispatcher')->dispatch(
-            AdminSecurityEvents::PROMOTE_USER,
+            AdminSecurityEvents::DEMOTE_USER,
             new UserEvent($user)
         );
 
-        $output->writeln(sprintf('User <comment>%s</comment> has been promoted', $email));
+        $output->writeln(sprintf('User <comment>%s</comment> has been demoted', $email));
     }
 
     /**
