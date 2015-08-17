@@ -28,6 +28,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::ACTIVATION => 'onActivation',
             AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         ));
     }
@@ -110,6 +111,22 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onUserCreated($event);
+    }
+
+    /**
+     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     */
+    function it_flushes_om_after_promote_user($event, $objectManager)
+    {
+        $user = new User();
+
+        $event->getUser()->willReturn($user);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onPromoteUser($event);
     }
 
     /**

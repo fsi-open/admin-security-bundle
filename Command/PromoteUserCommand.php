@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace FSi\Bundle\AdminSecurityBundle\Command;
+
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class PromoteUserCommand extends ContainerAwareCommand
+{
+    /**
+     * @see Command
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('fsi:user:promote')
+            ->setDescription('Promote a user.')
+            ->setDefinition(array(
+                new InputArgument('email', InputArgument::REQUIRED, 'The email'),
+                new InputArgument('role', InputArgument::REQUIRED, 'The role'),
+            ))
+            ->setHelp(<<<EOT
+The <info>fsi:user:promote</info> command promotes the user
+
+  <info>php app/console fsi:user:promote john@example.com ROLE_ADMIN</info>
+
+EOT
+            );
+    }
+
+    /**
+     * @see Command
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $email = $input->getArgument('email');
+        $role = $input->getArgument('role');
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->getContainer()->get('admin_security.repository.user');
+        $user = $userRepository->findUserByEmail($email);
+        if (!($user instanceof UserInterface)) {
+            throw new \InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+        }
+
+        $user->addRole($role);
+
+        $this->getContainer()->get('event_dispatcher')->dispatch(
+            AdminSecurityEvents::PROMOTE_USER,
+            new ActivationEvent($user)
+        );
+
+        $output->writeln(sprintf('User <comment>%s</comment> has been promoted', $email));
+    }
+
+    /**
+     * @see Command
+     */
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        if (!$input->getArgument('email')) {
+            $email = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                'Please choose an email:',
+                function($email) {
+                    if (empty($email)) {
+                        throw new \Exception('Email can not be empty');
+                    }
+
+                    return $email;
+                }
+            );
+            $input->setArgument('email', $email);
+        }
+
+        if (!$input->getArgument('role')) {
+            $email = $this->getHelper('dialog')->askAndValidate(
+                $output,
+                'Please choose a role:',
+                function($email) {
+                    if (empty($email)) {
+                        throw new \Exception('Role can not be empty');
+                    }
+
+                    return $email;
+                }
+            );
+            $input->setArgument('role', $email);
+        }
+    }
+}

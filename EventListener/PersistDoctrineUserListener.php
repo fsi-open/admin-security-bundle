@@ -46,6 +46,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::ACTIVATION => 'onActivation',
             AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
         );
     }
@@ -86,6 +87,14 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
      * @param UserEvent $event
      */
     public function onUserCreated(UserEvent $event)
+    {
+        $this->flushUserObjectManager($event->getUser());
+    }
+
+    /**
+     * @param UserEvent $event
+     */
+    public function onPromoteUser(UserEvent $event)
     {
         $this->flushUserObjectManager($event->getUser());
     }
