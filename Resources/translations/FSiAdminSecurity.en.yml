@@ -52,3 +52,13 @@ admin:
       change_password: Please setup a new password to activate your account
       change_password_success: Your password has been successfully changed and your account has been activated
       success: Your account has been successfully activated
+  user_list:
+    datagrid:
+      email: Email
+      enabled: Enabled?
+      last_login: Last login at
+      roles: Roles
+      actions: Actions
+    batch_action:
+      delete: Delete
+      password_reset: Reset password

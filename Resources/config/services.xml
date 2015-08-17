@@ -29,9 +29,13 @@
         <parameter key="admin_security.listener.remove_not_granted_elements.class">FSi\Bundle\AdminSecurityBundle\EventListener\RemoveNotGrantedElementsListener</parameter>
         <parameter key="admin_security.listener.build_account_menu.class">FSi\Bundle\AdminSecurityBundle\EventListener\BuildAccountMenuListener</parameter>
         <parameter key="admin_security.listener.persist_doctrine_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PersistDoctrineUserListener</parameter>
+        <parameter key="admin_security.listener.admin_user_element_pre_save.class">FSi\Bundle\AdminSecurityBundle\EventListener\PrepareUserListener</parameter>
         <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
+        <parameter key="admin_security.admin.user.class">FSi\Bundle\AdminSecurityBundle\Admin\UserElement</parameter>
+        <parameter key="admin_security.admin.password_reset.class">FSi\Bundle\AdminSecurityBundle\Admin\PasswordResetBatchElement</parameter>
+        <parameter key="admin_security.form.type.user.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType</parameter>
     </parameters>
 
     <services>
@@ -113,6 +117,12 @@
             <tag name="form.type" alias="admin_password_reset_change_password" />
         </service>
 
+        <service id="admin_security.form.type.user" class="%admin_security.form.type.user.class%">
+            <tag name="form.type" alias="admin_user" />
+            <argument type="string">%admin_security.model.user%</argument>
+            <argument>%security.role_hierarchy.roles%</argument>
+        </service>
+
         <!-- Event listeners -->
         <service id="admin_security.listener.encode_password" class="%admin_security.listener.encode_password.class%">
             <argument type="service" id="security.encoder_factory" />
@@ -180,6 +190,15 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <service id="admin_security.listener.admin_user_element_pre_save" class="%admin_security.listener.admin_user_element_pre_save.class%">
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="security.secure_random" />
+            <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="admin_security.token_factory.password_reset"/>
+            <argument type="service" id="admin_security.mailer.password_reset"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
         <!-- factories -->
         <service id="admin_security.token_factory.activation" class="%admin_security.token_factory.activation.class%">
             <argument type="service" id="security.secure_random" />
@@ -195,7 +214,24 @@
 
         <!-- Security -->
         <service id="admin_security.firewall_mapper" class="%admin_security.firewall_mapper.class%">
-            <argument type="collection"></argument>
+            <argument type="collection"/>
+        </service>
+
+        <!-- Admin elements -->
+        <!-- FIXME: depends on doctrine -->
+        <service id="admin_security.admin.user" class="%admin_security.admin.user.class%">
+            <argument type="collection"/>
+            <argument type="string">%admin_security.model.user%</argument>
+            <tag name="admin.element"/>
+        </service>
+
+        <!-- FIXME: depends on doctrine -->
+        <service id="admin_security.admin.password_reset" class="%admin_security.admin.password_reset.class%">
+            <argument type="collection"/>
+            <argument type="string">%admin_security.model.user%</argument>
+            <argument type="service" id="admin_security.token_factory.password_reset"/>
+            <argument type="service" id="admin_security.mailer.password_reset"/>
+            <tag name="admin.element"/>
         </service>
     </services>
 

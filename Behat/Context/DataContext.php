@@ -10,6 +10,7 @@
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
@@ -81,15 +82,14 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
     /**
      * @Given /^there is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
      */
-    public function thereIsUserWithRoleAndPassword($nick, $role, $password)
+    public function thereIsUserWithRoleAndPassword($email, $role, $password)
     {
         $user = new User();
-
-        $user->setUsername($nick)
-            ->setEmail($nick)
-            ->addRole($role)
-            ->setPlainPassword($password)
-            ->setEnabled(true);
+        $user->setUsername($email);
+        $user->setEmail($email);
+        $user->addRole($role);
+        $user->setPlainPassword($password);
+        $user->setEnabled(true);
 
         if (0 !== strlen($password = $user->getPlainPassword())) {
             $encoder = $this->kernel->getContainer()->get('security.encoder_factory')->getEncoder($user);
@@ -97,8 +97,29 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
             $user->eraseCredentials();
         }
 
-        $manager = $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User');
+        $manager = $this->getDoctrine()->getManagerForClass(get_class($user));
         $manager->persist($user);
+        $manager->flush();
+    }
+
+    /**
+     * @Given there are following users:
+     */
+    public function thereAreFollowingUsers(TableNode $table)
+    {
+        $manager = $this->getDoctrine()->getManagerForClass('FSiFixturesBundle:User');
+
+        foreach ($table->getHash() as $userInfo) {
+            $user = new User();
+            $user->setUsername($userInfo['Email']);
+            $user->setEmail($userInfo['Email']);
+            $user->addRole($userInfo['Role']);
+            $user->setPassword('temp password');
+            $user->setEnabled(true);
+
+            $manager->persist($user);
+        }
+
         $manager->flush();
     }
 

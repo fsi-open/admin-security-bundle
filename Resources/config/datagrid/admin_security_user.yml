@@ -1,0 +1,33 @@
+columns:
+  email:
+    type: text
+    options:
+      label: admin.user_list.datagrid.email
+      translation_domain: FSiAdminSecurity
+  enabled:
+    type: boolean
+    options:
+      label: admin.user_list.datagrid.enabled
+      translation_domain: FSiAdminSecurity
+  last_login:
+    type: datetime
+    options:
+      label: admin.user_list.datagrid.last_login
+      translation_domain: FSiAdminSecurity
+  roles:
+    type: collection
+    options:
+      label: admin.user_list.datagrid.roles
+      translation_domain: FSiAdminSecurity
+      collection_glue: ', '
+  batch:
+    type: batch
+    options:
+      actions:
+        delete:
+          label: admin.user_list.batch_action.delete
+          route_name: fsi_admin_batch
+          additional_parameters: { element: admin_security_user }
+        password_reset:
+          label: admin.user_list.batch_action.password_reset
+          element: admin_security_password_reset

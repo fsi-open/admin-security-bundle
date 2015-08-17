@@ -10,6 +10,7 @@ security:
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_REDACTOR
+        ROLE_REDACTOR: ROLE_USER
 
     firewalls:
         dev:

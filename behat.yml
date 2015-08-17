@@ -1,4 +1,4 @@
-default:
+default: &default
     suites:
         admin:
             paths: [ %paths.base%/features/admin ]
@@ -7,6 +7,7 @@ default:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\PasswordResetContext
+                - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserManagementContext
         password_reset:
             paths: [ %paths.base%/features/password_reset ]
             contexts:
@@ -30,6 +31,10 @@ default:
             sessions:
                 default:
                     symfony2: ~
+                javascript:
+                    selenium2:
+                        browser: firefox
+            javascript_session: javascript
         Behat\Symfony2Extension:
             kernel:
                 env: test
@@ -40,3 +45,9 @@ default:
             namespaces:
                 page: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page
                 element: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element
+
+travis:
+    <<: *default
+    extensions:
+        Behat\MinkExtension:
+            base_url: "http://localhost:8080/app_test.php"
