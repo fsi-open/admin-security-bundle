@@ -16,4 +16,6 @@ class AdminSecurityEvents
     const ACTIVATION = 'admin.security.activation';
     const DEACTIVATION = 'admin.security.deactivation';
     const USER_CREATED = 'admin.security.user_created';
+    const PROMOTE_USER = 'admin.security.promote_user';
+    const DEMOTE_USER = 'admin.security.demote_user';
 }
