@@ -9,7 +9,7 @@ use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
-use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;

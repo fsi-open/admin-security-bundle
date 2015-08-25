@@ -69,7 +69,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FSi\Bundle\AdminSecurityBundle\Entity\User as BaseUser;
 
 /**
- * @ORM\Entity(repositoryClass="FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="user")
  */
 class User extends BaseUser
@@ -89,7 +89,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FSi\Bundle\AdminSecurityBundle\Entity\FOSUser;
 
 /**
- * @ORM\Entity(repositoryClass="FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="user")
  */
 class User extends FOSUser

@@ -7,9 +7,9 @@ use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
-use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -162,7 +162,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
     }
 
     /**
-     * @return UserRepository
+     * @return UserRepositoryInterface
      */
     private function getUserRepository()
     {
