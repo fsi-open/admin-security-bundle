@@ -57,6 +57,8 @@ admin:
       email: Email
       enabled: Enabled?
       last_login: Last login at
+      password_reset_token: Password reset request
+      activation_token: Activation request
       roles: Roles
       actions: Actions
     batch_action:

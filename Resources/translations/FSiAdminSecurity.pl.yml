@@ -57,6 +57,8 @@ admin:
       email: Email
       enabled: Włączony?
       last_login: Ostatnie logowanie
+      password_reset_token: Prośba o zresetowanie hasła
+      activation_token: Prośba o aktywację
       roles: Role
       actions: Akcje
     batch_action:

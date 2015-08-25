@@ -11,10 +11,10 @@ Feature: User management
   Scenario: Display list of users
     Given I am on the "User list" page
     Then I should see following table:
-      | Email            | Enabled? | Last login at | Role          |
-      | admin            | Yes      |               | ROLE_ADMIN    |
-      | red1@example.com | Yes      |               | ROLE_REDACTOR |
-      | red2@example.com | Yes      |               | ROLE_REDACTOR |
+      | Email            | Enabled? | Password reset request | Activation request | Role          |
+      | admin            | Yes      | No                     | No                 | ROLE_ADMIN    |
+      | red1@example.com | Yes      | No                     | No                 | ROLE_REDACTOR |
+      | red2@example.com | Yes      | No                     | No                 | ROLE_REDACTOR |
 
   Scenario: Batch actions
     Given I am on the "User list" page
@@ -29,9 +29,9 @@ Feature: User management
     Given I am on the "User list" page
     When I delete second user on the list
     Then I should see following table:
-      | Email            | Enabled? | Last login at | Role          |
-      | admin            | Yes      |               | ROLE_ADMIN    |
-      | red2@example.com | Yes      |               | ROLE_REDACTOR |
+      | Email            | Enabled? | Password reset request | Activation request | Role          |
+      | admin            | Yes      | No                     | No                 | ROLE_ADMIN    |
+      | red2@example.com | Yes      | No                     | No                 | ROLE_REDACTOR |
 
   @email
   @javascript
@@ -43,4 +43,8 @@ Feature: User management
       | from     | from-admin@fsi.pl        |
       | to       | red1@example.com         |
       | reply_to | do-not-reply@example.com |
-
+    And I should see following table:
+      | Email            | Enabled? | Password reset request | Activation request | Role          |
+      | admin            | Yes      | No                     | No                 | ROLE_ADMIN    |
+      | red1@example.com | Yes      | Yes                    | No                 | ROLE_REDACTOR |
+      | red2@example.com | Yes      | No                     | No                 | ROLE_REDACTOR |

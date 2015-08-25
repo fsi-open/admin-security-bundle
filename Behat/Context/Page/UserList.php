@@ -52,39 +52,4 @@ class UserList extends Page
             return true;
         });
     }
-
-    /**
-     * @param int $number
-     * @return NodeElement
-     */
-    public function getRow($number)
-    {
-        $row = $this->find('xpath', '//tbody/tr[' . $number . ']');
-
-        if (!isset($row)) {
-            throw new UnexpectedPageException(sprintf('Row "%s" does not exist in DataGrid', $number));
-        }
-
-        return $row;
-    }
-    /**
-     * @param int $rowNum
-     * @param int $columnNum
-     */
-    public function checkCellCheckbox($rowNum, $columnNum = 1)
-    {
-        $row = $this->getRow($rowNum);
-        $cell = $row->find('xpath', '//td['. $columnNum .']');
-        $checkbox = $cell->find('css', 'input[type="checkbox"]');
-
-        if (!isset($checkbox)) {
-            throw new UnexpectedPageException(sprintf(
-                'Can\'t find checkbox in %d column of %d row',
-                $columnNum,
-                $rowNum
-            ));
-        }
-
-        $checkbox->check();
-    }
 }

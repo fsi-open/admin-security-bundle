@@ -3,6 +3,7 @@
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Datagrid;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
@@ -13,9 +14,18 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iShouldSeeTable(TableNode $table)
     {
-        expect($this->getUserListPage()->getUsersCount())->toBe(count($table->getHash()));
+        $datagrid = $this->getDatagrid();
 
-        // FIXME: more checks!
+        expect($datagrid->getRowCount())->toBe(count($table->getHash()));
+
+        foreach ($table->getHash() as $rowIndex => $row) {
+
+            foreach ($row as $key => $value) {
+                $cell = $datagrid->getCellByColumnName($key, $rowIndex + 1);
+
+                expect($cell->getText())->toBe($value);
+            }
+        }
     }
 
     /**
@@ -35,7 +45,10 @@ class AdminUserManagementContext extends PageObjectContext
     {
         $page = $this->getUserListPage();
         $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.delete');
-        $page->checkCellCheckbox(2);
+
+        $datagrid = $this->getDatagrid();
+        $datagrid->checkCellCheckbox(2);
+
         $page->pressButton('Ok');
     }
 
@@ -46,7 +59,10 @@ class AdminUserManagementContext extends PageObjectContext
     {
         $page = $this->getUserListPage();
         $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.password_reset');
-        $page->checkCellCheckbox(2);
+
+        $datagrid = $this->getDatagrid();
+        $datagrid->checkCellCheckbox(2);
+
         $page->pressButton('Ok');
     }
 
@@ -57,5 +73,13 @@ class AdminUserManagementContext extends PageObjectContext
     private function getUserListPage()
     {
         return $this->getPage('UserList');
+    }
+
+    /**
+     * @return Datagrid
+     */
+    private function getDatagrid()
+    {
+        return $this->getElement('Datagrid');
     }
 }
