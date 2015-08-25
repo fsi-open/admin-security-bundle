@@ -33,8 +33,8 @@
         <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
-        <parameter key="admin_security.admin.user.class">FSi\Bundle\AdminSecurityBundle\Admin\UserElement</parameter>
-        <parameter key="admin_security.admin.password_reset.class">FSi\Bundle\AdminSecurityBundle\Admin\PasswordResetBatchElement</parameter>
+        <parameter key="admin_security.admin.user.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement</parameter>
+        <parameter key="admin_security.admin.password_reset.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\PasswordResetBatchElement</parameter>
         <parameter key="admin_security.form.type.user.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType</parameter>
     </parameters>
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\FSi\Bundle\AdminSecurityBundle\Admin;
+namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

@@ -1,6 +1,6 @@
 <?php
 
-namespace FSi\Bundle\AdminSecurityBundle\Admin;
+namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
@@ -25,9 +25,7 @@ class UserElement extends CRUDElement
      */
     protected function initDataGrid(DataGridFactoryInterface $factory)
     {
-        $dataGrid = $factory->createDataGrid('admin_security_user');
-
-        return $dataGrid;
+        return $factory->createDataGrid('admin_security_user');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace FSi\Bundle\AdminSecurityBundle\Admin;
+namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
