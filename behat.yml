@@ -8,6 +8,7 @@ default: &default
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\PasswordResetContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserManagementContext
+                - FSi\Bundle\AdminSecurityBundle\Behat\Context\MailContext
         password_reset:
             paths: [ %paths.base%/features/password_reset ]
             contexts:

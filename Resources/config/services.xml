@@ -229,8 +229,7 @@
         <service id="admin_security.admin.password_reset" class="%admin_security.admin.password_reset.class%">
             <argument type="collection"/>
             <argument type="string">%admin_security.model.user%</argument>
-            <argument type="service" id="admin_security.token_factory.password_reset"/>
-            <argument type="service" id="admin_security.mailer.password_reset"/>
+            <argument type="service" id="event_dispatcher"/>
             <tag name="admin.element"/>
         </service>
     </services>

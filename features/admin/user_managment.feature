@@ -10,7 +10,7 @@ Feature: User management
 
   Scenario: Display list of users
     Given I am on the "User list" page
-    Then i should see following table:
+    Then I should see following table:
       | Email            | Enabled? | Last login at | Role          |
       | admin            | Yes      |               | ROLE_ADMIN    |
       | red1@example.com | Yes      |               | ROLE_REDACTOR |
@@ -18,7 +18,7 @@ Feature: User management
 
   Scenario: Batch actions
     Given I am on the "User list" page
-    Then i should have following list batch actions:
+    Then I should have following list batch actions:
 #      | Delete         |
 #      | Password reset |
       | admin.user_list.batch_action.delete         |
@@ -27,8 +27,20 @@ Feature: User management
   @javascript
   Scenario: Delete user
     Given I am on the "User list" page
-    When i delete second user on the list
-    Then i should see following table:
+    When I delete second user on the list
+    Then I should see following table:
       | Email            | Enabled? | Last login at | Role          |
       | admin            | Yes      |               | ROLE_ADMIN    |
       | red2@example.com | Yes      |               | ROLE_REDACTOR |
+
+  @email
+  @javascript
+  Scenario: Reset password
+    Given I am on the "User list" page
+    When I reset password for the second user on the list
+    Then an email should be sent:
+      | subject  | Reset Password           |
+      | from     | from-admin@fsi.pl        |
+      | to       | red1@example.com         |
+      | reply_to | do-not-reply@example.com |
+

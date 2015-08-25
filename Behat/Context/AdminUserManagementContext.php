@@ -9,7 +9,7 @@ use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 class AdminUserManagementContext extends PageObjectContext
 {
     /**
-     * @Then i should see following table:
+     * @Then I should see following table:
      */
     public function iShouldSeeTable(TableNode $table)
     {
@@ -19,7 +19,7 @@ class AdminUserManagementContext extends PageObjectContext
     }
 
     /**
-     * @Then i should have following list batch actions:
+     * @Then I should have following list batch actions:
      */
     public function iShouldHaveFollowingListBatchActions(TableNode $table)
     {
@@ -29,7 +29,7 @@ class AdminUserManagementContext extends PageObjectContext
     }
 
     /**
-     * @When i delete second user on the list
+     * @When I delete second user on the list
      */
     public function iDeleteFirstUserOnTheList()
     {
@@ -37,11 +37,19 @@ class AdminUserManagementContext extends PageObjectContext
         $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.delete');
         $page->checkCellCheckbox(2);
         $page->pressButton('Ok');
-
-//        $page->waitFor(10, function($page) {
-//            var_dump($page->getHtml());
-//        });
     }
+
+    /**
+     * @When I reset password for the second user on the list
+     */
+    public function iResetPasswordForTheSecondUserOnTheList()
+    {
+        $page = $this->getUserListPage();
+        $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.password_reset');
+        $page->checkCellCheckbox(2);
+        $page->pressButton('Ok');
+    }
+
 
     /**
      * @return UserList

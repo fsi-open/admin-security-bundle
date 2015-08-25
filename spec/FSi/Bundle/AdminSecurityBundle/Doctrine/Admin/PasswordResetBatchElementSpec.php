@@ -2,18 +2,18 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class PasswordResetBatchElementSpec extends ObjectBehavior
 {
     /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
-    function let($tokenFactory, $mailer)
+    function let($eventDispatcher)
     {
-        $this->beConstructedWith(array(), 'FQCN\User\Model', $tokenFactory, $mailer);
+        $this->beConstructedWith(array(), 'FQCN\User\Model', $eventDispatcher);
     }
 
     function it_is_batch_element()
@@ -33,21 +33,14 @@ class PasswordResetBatchElementSpec extends ObjectBehavior
 
     /**
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      */
-    function it_should_send_password_reset_email_to_selected_user($user, $tokenFactory, $mailer, $token)
+    function it_should_dispatch_password_reset_event($user, $eventDispatcher)
     {
-        $tokenFactory->createToken()->willReturn($token);
-        $user->setPasswordResetToken($token)->shouldBeCalled();
-        $mailer->send($user)->shouldBeCalled();
+        $eventDispatcher->dispatch(AdminSecurityEvents::RESET_PASSWORD_REQUEST, Argument::allOf(
+            Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent')
+        ))->shouldBeCalled();
 
         $this->apply($user);
-    }
-
-    function it_should_handle_only_object_with_resettable_password_interface()
-    {
-        $this->shouldThrow('\InvalidArgumentException')->during('apply', array(new \stdClass()));
     }
 }

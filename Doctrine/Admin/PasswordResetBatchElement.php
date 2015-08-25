@@ -3,9 +3,10 @@
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PasswordResetBatchElement extends BatchElement
 {
@@ -15,21 +16,15 @@ class PasswordResetBatchElement extends BatchElement
     private $userModel;
 
     /**
-     * @var TokenFactoryInterface
+     * @var EventDispatcherInterface
      */
-    private $tokenFactory;
+    private $eventDispatcher;
 
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
-
-    public function __construct($options, $userModel, TokenFactoryInterface $tokenFactory, MailerInterface $mailer)
+    public function __construct($options, $userModel, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($options);
         $this->userModel = $userModel;
-        $this->tokenFactory = $tokenFactory;
-        $this->mailer = $mailer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -37,14 +32,10 @@ class PasswordResetBatchElement extends BatchElement
      */
     public function apply($object)
     {
-        if (!$object instanceof ResettablePasswordInterface) {
-            throw new \InvalidArgumentException(
-                'Object should implement FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface'
-            );
-        }
-
-        $object->setPasswordResetToken($this->tokenFactory->createToken());
-        $this->mailer->send($object);
+        $this->eventDispatcher->dispatch(
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+            new ResetPasswordRequestEvent($object)
+        );
     }
 
     /**
