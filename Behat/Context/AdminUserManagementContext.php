@@ -66,6 +66,24 @@ class AdminUserManagementContext extends PageObjectContext
         $page->pressButton('Ok');
     }
 
+    /**
+     * @When I click :name link
+     */
+    public function iPressLink($name)
+    {
+        $page = $this->getUserListPage();
+        $page->clickLink($name);
+    }
+
+    /**
+     * @Then I fill form with valid user data
+     */
+    public function iFillFormWithValidUserData()
+    {
+        $page = $this->getUserListPage();
+        $page->fillField('Email', 'new-user@fsi.pl');
+        $page->checkField('ROLE_ADMIN');
+    }
 
     /**
      * @return UserList

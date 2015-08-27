@@ -12,6 +12,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UserType extends AbstractType
 {
@@ -55,6 +56,13 @@ class UserType extends AbstractType
             'choices' => $roleList,
             'expanded' => true,
             'multiple' => true,
+        ));
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => $this->dataClass
         ));
     }
 

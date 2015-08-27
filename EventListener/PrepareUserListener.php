@@ -11,55 +11,29 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvents;
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class PrepareUserListener implements EventSubscriberInterface
 {
     /**
-     * @var TokenStorageInterface
+     * @var EventDispatcherInterface
      */
-    private $tokenStorage;
+    private $eventDispatcher;
 
     /**
      * @var SecureRandomInterface
      */
     private $secureRandom;
 
-    /**
-     * @var EncoderFactoryInterface
-     */
-    private $encoderFactory;
-
-    /**
-     * @var TokenFactoryInterface
-     */
-    private $tokenFactory;
-
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
-
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        SecureRandomInterface $secureRandom,
-        EncoderFactoryInterface $encoderFactory,
-        TokenFactoryInterface $tokenFactory,
-        MailerInterface $mailer
-    ) {
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(EventDispatcherInterface $eventDispatcher, SecureRandomInterface $secureRandom)
+    {
+        $this->eventDispatcher = $eventDispatcher;
         $this->secureRandom = $secureRandom;
-        $this->encoderFactory = $encoderFactory;
-        $this->tokenFactory = $tokenFactory;
-        $this->mailer = $mailer;
     }
 
     /**
@@ -69,35 +43,26 @@ class PrepareUserListener implements EventSubscriberInterface
     {
         return array(
             FormEvents::FORM_DATA_PRE_SAVE => array(
-                array('setRandomPassword', 2),
-                array('sendPasswordResetEmail', 3),
+                'prepareAndDispatchUserCreated',
             )
         );
     }
 
-    public function setRandomPassword(FormEvent $event)
+    public function prepareAndDispatchUserCreated(FormEvent $event)
     {
         $entity = $event->getForm()->getData();
 
-        if (!$entity instanceof ChangeablePasswordInterface) {
+        if (!$entity instanceof UserInterface) {
             return;
         }
 
-        $encoder = $this->encoderFactory->getEncoder($entity);
-        $hashedPassword = $encoder->encodePassword($this->secureRandom->nextBytes(32), $entity->getSalt());
-        $entity->setPassword($hashedPassword);
-        $entity->eraseCredentials();
-    }
+        $entity->setEnabled(false);
+        $entity->enforcePasswordChange(true);
+        $entity->setPlainPassword($this->secureRandom->nextBytes(32));
 
-    public function sendPasswordResetEmail(FormEvent $event)
-    {
-        $entity = $event->getForm()->getData();
-
-        if (!$entity instanceof ResettablePasswordInterface) {
-            return;
-        }
-
-        $entity->setPasswordResetToken($this->tokenFactory->createToken());
-        $this->mailer->send($entity);
+        $this->eventDispatcher->dispatch(
+            AdminSecurityEvents::USER_CREATED,
+            new UserEvent($entity)
+        );
     }
 }
