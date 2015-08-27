@@ -64,3 +64,8 @@ admin:
     batch_action:
       delete: Delete
       password_reset: Reset password
+
+crud:
+  list:
+    batch:
+      empty_choice: Select action

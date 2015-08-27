@@ -44,7 +44,7 @@ class AdminUserManagementContext extends PageObjectContext
     public function iDeleteFirstUserOnTheList()
     {
         $page = $this->getUserListPage();
-        $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.delete');
+        $page->getBatchActionsElement()->selectOption('Delete');
 
         $datagrid = $this->getDatagrid();
         $datagrid->checkCellCheckbox(2);
@@ -58,7 +58,7 @@ class AdminUserManagementContext extends PageObjectContext
     public function iResetPasswordForTheSecondUserOnTheList()
     {
         $page = $this->getUserListPage();
-        $page->getBatchActionsElement()->selectOption('admin.user_list.batch_action.password_reset');
+        $page->getBatchActionsElement()->selectOption('Reset password');
 
         $datagrid = $this->getDatagrid();
         $datagrid->checkCellCheckbox(2);

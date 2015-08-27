@@ -19,10 +19,8 @@ Feature: User management
   Scenario: Batch actions
     Given I am on the "User list" page
     Then I should have following list batch actions:
-#      | Delete         |
-#      | Password reset |
-      | admin.user_list.batch_action.delete         |
-      | admin.user_list.batch_action.password_reset |
+      | Delete         |
+      | Reset password |
 
   @javascript
   Scenario: Delete user

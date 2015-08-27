@@ -35,6 +35,7 @@ columns:
   batch:
     type: batch
     options:
+      translation_domain: FSiAdminSecurity
       actions:
         delete:
           label: admin.user_list.batch_action.delete

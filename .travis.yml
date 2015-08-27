@@ -23,6 +23,7 @@ sudo: false
 matrix:
   allow_failures:
     - env: SYMFONY_VERSION=dev-master
+    - env: SYMFONY_VERSION=2.8.*@dev
     - php: hhvm
   exclude:
     - env: SYMFONY_VERSION=dev-master
@@ -42,7 +43,7 @@ before_script:
 
 script:
   - bin/phpspec run -f pretty
-  - bin/behat --no-snippets --format=progress --profile=travis -vvv features/admin/user_managment.feature
+  - bin/behat --no-snippets --format=progress --profile=travis -v
 
 after_failure:
   - cat /tmp/FSiAdminSecurityBundle/logs/test.log
