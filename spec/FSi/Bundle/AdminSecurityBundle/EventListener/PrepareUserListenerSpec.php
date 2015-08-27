@@ -31,22 +31,6 @@ class PrepareUserListenerSpec extends ObjectBehavior
     /**
      * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
      * @param \Symfony\Component\Form\FormInterface $form
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_should_set_email_as_username_and_enable_user($event, $form, $user)
-    {
-        $form->getData()->willReturn($user);
-
-        $user->getEmail()->willReturn('test@example.com');
-        $user->setUsername('test@example.com')->shouldBeCalled();
-        $user->setEnabled(true)->shouldBeCalled();
-
-        $this->setEmailAsUsernameAndEnableUser($event);
-    }
-
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $passwordEncoder

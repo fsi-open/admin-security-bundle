@@ -22,6 +22,7 @@
         <parameter key="admin_security.listener.clear_change_password_enforcement.class">FSi\Bundle\AdminSecurityBundle\EventListener\ClearChangePasswordEnforcementListener</parameter>
         <parameter key="admin_security.listener.logout_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\LogoutUserListener</parameter>
         <parameter key="admin_security.listener.set_last_login.class">FSi\Bundle\AdminSecurityBundle\EventListener\SetLastLoginListener</parameter>
+        <parameter key="admin_security.listener.set_email_as_username">FSi\Bundle\AdminSecurityBundle\EventListener\SetEmailAsUsernameListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.class">FSi\Bundle\AdminSecurityBundle\EventListener\EnforcePasswordChangeListener</parameter>
         <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
         <parameter key="admin_security.listener.send_activation_mail.class">FSi\Bundle\AdminSecurityBundle\EventListener\SendActivationMailListener</parameter>
@@ -158,6 +159,10 @@
         </service>
 
         <service id="admin_security.listener.set_last_login" class="%admin_security.listener.set_last_login.class%">
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.set_email_as_username" class="%admin_security.listener.set_email_as_username%">
             <tag name="kernel.event_subscriber" />
         </service>
 

@@ -69,28 +69,10 @@ class PrepareUserListener implements EventSubscriberInterface
     {
         return array(
             FormEvents::FORM_DATA_PRE_SAVE => array(
-                array('setEmailAsUsernameAndEnableUser', 1),
                 array('setRandomPassword', 2),
                 array('sendPasswordResetEmail', 3),
             )
         );
-    }
-
-    public function setEmailAsUsernameAndEnableUser(FormEvent $event)
-    {
-        $entity = $event->getForm()->getData();
-
-        if (!$entity instanceof UserInterface) {
-            return;
-        }
-
-        $entity->setUsername($entity->getEmail());
-        $entity->setEnabled(true);
-
-//        if ($entity->getUsername() === $this->tokenStorage->getToken()->getUsername()) {
-//            // you cannot delete yourself
-//            return;
-//        }
     }
 
     public function setRandomPassword(FormEvent $event)

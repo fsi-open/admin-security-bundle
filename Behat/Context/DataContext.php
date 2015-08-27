@@ -14,10 +14,12 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Tools\SchemaTool;
 use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class DataContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext, SnippetAcceptingContext
 {
@@ -144,7 +146,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
     {
         $user = $this->findUserByUsername('admin');
 
-        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
+        /** @var UserPasswordEncoderInterface $encoder */
         $encoder = $this->kernel->getContainer()->get('security.password_encoder');
 
         expect($user->getPassword())->toBe($encoder->encodePassword($user, 'admin-new'));
@@ -185,7 +187,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
     }
 
     /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry
+     * @return Registry
      */
     protected function getDoctrine()
     {
