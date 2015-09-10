@@ -17,7 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class UserType extends AbstractType
 {
     /**
-     * @var
+     * @var string
      */
     private $dataClass;
 
