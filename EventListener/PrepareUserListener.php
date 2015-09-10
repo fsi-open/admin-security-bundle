@@ -56,6 +56,11 @@ class PrepareUserListener implements EventSubscriberInterface
             return;
         }
 
+        // do not dispatch event and do not set random password for existing users
+        if ($entity->getPassword()) {
+            return;
+        }
+
         $entity->setEnabled(false);
         $entity->enforcePasswordChange(true);
         $entity->setPlainPassword($this->secureRandom->nextBytes(32));
