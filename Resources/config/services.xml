@@ -220,14 +220,12 @@
         </service>
 
         <!-- Admin elements -->
-        <!-- FIXME: depends on doctrine -->
         <service id="admin_security.admin.user" class="%admin_security.admin.user.class%">
             <argument type="collection"/>
             <argument type="string">%admin_security.model.user%</argument>
             <tag name="admin.element"/>
         </service>
 
-        <!-- FIXME: depends on doctrine -->
         <service id="admin_security.admin.password_reset" class="%admin_security.admin.password_reset.class%">
             <argument type="collection"/>
             <argument type="string">%admin_security.model.user%</argument>
