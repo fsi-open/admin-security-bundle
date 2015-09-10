@@ -9,7 +9,6 @@ php:
 
 cache:
   directories:
-    - vendor
     - bin
 
 env:
