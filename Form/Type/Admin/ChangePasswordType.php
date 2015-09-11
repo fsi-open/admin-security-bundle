@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 class ChangePasswordType extends AbstractType
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -25,8 +25,7 @@ class ChangePasswordType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -58,7 +57,7 @@ class ChangePasswordType extends AbstractType
     }
 
     /**
-     * @param OptionsResolver $resolver
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {

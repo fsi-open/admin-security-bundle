@@ -79,7 +79,6 @@ class CommandContext implements KernelAwareContext
         $this->tester->execute(array(
             'command' => $command->getName(),
             'email' => $email,
-            'username' => $email,
             'password' => 'admin',
             'role' => 'ROLE_ADMIN',
             '--inactive' => true,
@@ -98,7 +97,6 @@ class CommandContext implements KernelAwareContext
         $this->tester->execute(array(
             'command' => $command->getName(),
             'email' => $email,
-            'username' => $email,
             'password' => 'admin',
             'role' => 'ROLE_ADMIN',
             '--inactive' => true

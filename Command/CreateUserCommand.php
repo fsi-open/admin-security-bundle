@@ -29,7 +29,6 @@ class CreateUserCommand extends ContainerAwareCommand
             ->setName('fsi:user:create')
             ->setDescription('Create a user.')
             ->setDefinition(array(
-                new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
                 new InputArgument('role', InputArgument::REQUIRED, 'Role'),
@@ -56,7 +55,6 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username = $input->getArgument('username');
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
         $role = $input->getArgument('role');
@@ -64,7 +62,6 @@ EOT
         $userClass = $this->getContainer()->getParameter('admin_security.model.user');
         /** @var UserInterface $user */
         $user = new $userClass();
-        $user->setUserName($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->addRole($role);
@@ -80,7 +77,7 @@ EOT
             new UserEvent($user)
         );
 
-        $output->writeln(sprintf('Created user <comment>%s</comment>', $username));
+        $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
     }
 
     /**
@@ -88,21 +85,6 @@ EOT
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        if (!$input->getArgument('username')) {
-            $username = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Please choose a username:',
-                function($username) {
-                    if (empty($username)) {
-                        throw new \Exception('Username can not be empty');
-                    }
-
-                    return $username;
-                }
-            );
-            $input->setArgument('username', $username);
-        }
-
         if (!$input->getArgument('email')) {
             $email = $this->getHelper('dialog')->askAndValidate(
                 $output,

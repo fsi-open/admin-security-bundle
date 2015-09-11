@@ -9,10 +9,10 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
-use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,7 +49,7 @@ EOT
         $email = $input->getArgument('email');
         $role = $input->getArgument('role');
 
-        /** @var UserRepository $userRepository */
+        /** @var UserRepositoryInterface $userRepository */
         $userRepository = $this->getContainer()->get('admin_security.repository.user');
         $user = $userRepository->findUserByEmail($email);
         if (!($user instanceof UserInterface)) {

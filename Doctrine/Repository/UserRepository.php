@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace FSi\Bundle\AdminSecurityBundle\Doctrine;
+namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;

@@ -7,9 +7,12 @@ use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
-use FSi\Bundle\AdminSecurityBundle\Doctrine\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
@@ -120,7 +123,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iShouldBeOnThePage($pageName)
     {
-        /** @var \SensioLabs\Behat\PageObjectExtension\PageObject\Page $page */
+        /** @var Page $page */
         $page = $this->getPage($pageName);
         expect($page->isOpen())->toBe(true);
     }
@@ -138,7 +141,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iShouldSeePasswordResetRequestFormMessage($message)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest $page */
+        /** @var PasswordResetRequest $page */
         $page = $this->getPage('Password Reset Request');
         expect($page->getMessage())->toBe($message);
     }
@@ -148,7 +151,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iTryOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->openWithoutVerification(['confirmationToken' => $confirmationToken]);
     }
@@ -158,7 +161,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->open(['confirmationToken' => $confirmationToken]);
     }
@@ -168,7 +171,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->fillForm();
     }
@@ -178,7 +181,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->fillFormWithInvalidData();
     }

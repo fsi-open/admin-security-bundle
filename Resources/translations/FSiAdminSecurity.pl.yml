@@ -52,3 +52,20 @@ admin:
       change_password: Proszę ustawić nowe hasło aby aktywować konto
       change_password_success: Twoje hasło zostało poprawnie zmienione oraz twoje konto zostało aktywowane
       success: Twoje konto zostało poprawnie aktywowane
+  user_list:
+    datagrid:
+      email: Email
+      enabled: Włączony?
+      last_login: Ostatnie logowanie
+      password_reset_token: Prośba o zresetowanie hasła
+      activation_token: Prośba o aktywację
+      roles: Role
+      actions: Akcje
+    batch_action:
+      delete: Usuń
+      password_reset: Przypomnij hasło
+
+crud:
+  list:
+    batch:
+      empty_choice: Wybierz akcję
