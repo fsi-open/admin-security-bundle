@@ -44,13 +44,11 @@ class BuildAccountMenuListener
 
         $rootItem = $this->createRootItem();
 
-        if (!$this->canChangeUserPassword()) {
-            return null;
+        if ($this->canChangeUserPassword()) {
+            $changePasswordItem = new RoutableItem('account.change-password', 'fsi_admin_change_password');
+            $changePasswordItem->setLabel($this->translator->trans('admin.change_password', array(), 'FSiAdminSecurity'));
+            $rootItem->addChild($changePasswordItem);
         }
-
-        $changePasswordItem = new RoutableItem('account.change-password', 'fsi_admin_change_password');
-        $changePasswordItem->setLabel($this->translator->trans('admin.change_password', array(), 'FSiAdminSecurity'));
-        $rootItem->addChild($changePasswordItem);
 
         $logoutItem = new RoutableItem('account.logout', 'fsi_admin_security_user_logout');
         $logoutItem->setLabel($this->translator->trans('admin.logout', array(), 'FSiAdminSecurity'));
