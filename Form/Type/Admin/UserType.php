@@ -45,15 +45,15 @@ class UserType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email');
-
-        $roleList = array();
-        foreach ($this->roles as $role => $child) {
-            $roleList[$role] = sprintf('%s [ %s ]', $role, join(', ', $child));
-        }
+        $builder->add('email', 'email', array(
+            'label' => 'admin.admin_user.email',
+            'translation_domain' => 'FSiAdminSecurity',
+        ));
 
         $builder->add('roles', 'choice', array(
-            'choices' => $roleList,
+            'label' => 'admin.admin_user.roles',
+            'translation_domain' => 'FSiAdminSecurity',
+            'choices' => $this->getRoleList(),
             'expanded' => true,
             'multiple' => true,
         ));
@@ -69,5 +69,19 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('data_class', $this->dataClass);
+    }
+
+    /**
+     * @return array
+     */
+    private function getRoleList()
+    {
+        $roleList = array();
+
+        foreach ($this->roles as $role => $child) {
+            $roleList[$role] = sprintf('%s [ %s ]', $role, join(', ', $child));
+        }
+
+        return $roleList;
     }
 }

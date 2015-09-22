@@ -64,6 +64,9 @@ admin:
     batch_action:
       delete: Delete
       password_reset: Reset password
+  admin_user:
+    email: Email address
+    roles: User roles
 
 crud:
   list:
