@@ -63,3 +63,7 @@ monolog:
             level:  debug
         console:
             type:   console
+
+fsi_admin:
+    templates:
+        datagrid_theme: @FSiAdminSecurity/Admin/datagrid.html.twig

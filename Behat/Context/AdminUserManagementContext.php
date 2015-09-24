@@ -41,7 +41,7 @@ class AdminUserManagementContext extends PageObjectContext
     /**
      * @When I delete second user on the list
      */
-    public function iDeleteFirstUserOnTheList()
+    public function iDeleteSecondUserOnTheList()
     {
         $page = $this->getUserListPage();
         $page->getBatchActionsElement()->selectOption('Delete');
