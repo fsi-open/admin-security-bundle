@@ -31,6 +31,7 @@
         <parameter key="admin_security.listener.build_account_menu.class">FSi\Bundle\AdminSecurityBundle\EventListener\BuildAccountMenuListener</parameter>
         <parameter key="admin_security.listener.persist_doctrine_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PersistDoctrineUserListener</parameter>
         <parameter key="admin_security.listener.admin_user_element_pre_save.class">FSi\Bundle\AdminSecurityBundle\EventListener\PrepareUserListener</parameter>
+        <parameter key="admin_security.listener.prevent_deleting_current_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PreventDeletingCurrentUser</parameter>
         <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
@@ -198,6 +199,12 @@
         <service id="admin_security.listener.admin_user_element_pre_save" class="%admin_security.listener.admin_user_element_pre_save.class%">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="security.secure_random"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.prevent_deleting_current_user" class="%admin_security.listener.prevent_deleting_current_user.class%">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="router"/>
             <tag name="kernel.event_subscriber" />
         </service>
 

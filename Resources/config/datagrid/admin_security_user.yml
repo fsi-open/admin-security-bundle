@@ -26,12 +26,6 @@ columns:
       label: admin.user_list.datagrid.activation_token
       translation_domain: FSiAdminSecurity
       field_mapping: [ 'activationToken.isNonExpired' ]
-  roles:
-    type: collection
-    options:
-      label: admin.user_list.datagrid.roles
-      translation_domain: FSiAdminSecurity
-      collection_glue: ', '
   batch:
     type: batch
     options:
