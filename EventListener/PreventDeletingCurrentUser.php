@@ -9,11 +9,14 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Event\BatchEvents;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PreventDeletingCurrentUser implements EventSubscriberInterface
@@ -23,9 +26,15 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
      */
     private $tokenStorage;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router)
     {
         $this->tokenStorage = $tokenStorage;
+        $this->router = $router;
     }
 
     /**
@@ -62,12 +71,21 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param FormEvent $event
-     */
     private function setRedirectResponse(FormEvent $event)
     {
         $event->stopPropagation();
-        $event->setResponse(new RedirectResponse($event->getRequest()->get('redirect_uri')));
+        $redirectUrl = $this->getRedirectUrl($event->getElement(), $event->getRequest());
+        $event->setResponse(new RedirectResponse($redirectUrl));
+    }
+
+    private function getRedirectUrl(Element $element, Request $request)
+    {
+        $redirectUrl = $request->get('redirect_uri');
+
+        if ($redirectUrl === null) {
+            return $this->router->generate($element->getRoute(), $element->getRouteParameters());
+        }
+
+        return $redirectUrl;
     }
 }
