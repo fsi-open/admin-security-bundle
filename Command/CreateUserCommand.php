@@ -38,13 +38,13 @@ class CreateUserCommand extends ContainerAwareCommand
             ->setHelp(<<<EOT
 The <info>fsi:user:create</info> command creates a user:
 
-  <info>php app/console fsi:user:create john</info>
+  <info>php app/console fsi:user:create</info>
 
 This interactive shell will ask you for an email and then a password.
 
-You can alternatively specify the email, password and role as the second, third and fourth arguments:
+You can alternatively specify the email, password and role as the first, second and third arguments:
 
-  <info>php app/console fsi:user:create john john@example.com mypassword ROLE_ADMIN</info>
+  <info>php app/console fsi:user:create john@example.com mypassword ROLE_ADMIN</info>
 
 EOT
             );
