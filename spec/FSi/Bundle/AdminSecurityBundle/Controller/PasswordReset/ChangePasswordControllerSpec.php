@@ -19,8 +19,9 @@ class ChangePasswordControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function let($templating, $userRepository, $router, $formFactory, $eventDispatcher)
+    function let($templating, $userRepository, $router, $formFactory, $eventDispatcher, $flashMessages)
     {
         $this->beConstructedWith(
             $templating,
@@ -28,7 +29,8 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             $userRepository,
             $router,
             $formFactory,
-            $eventDispatcher
+            $eventDispatcher,
+            $flashMessages
         );
     }
 
@@ -39,13 +41,12 @@ class ChangePasswordControllerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
-     * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
     function it_changes_password(
-        $request, $userRepository, $user, $token, $formFactory, $form, $session, $flashBag, $router, $eventDispatcher
+        $request, $userRepository, $user, $token, $formFactory, $form, $router, $eventDispatcher, $flashMessages
     ) {
         $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);
         $user->getPasswordResetToken()->willReturn($token);
@@ -64,10 +65,8 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $request->getSession()->willReturn($session);
-        $session->getFlashBag()->willReturn($flashBag);
-
-        $flashBag->add('success', 'admin.password_reset.change_password.message.success')->shouldBeCalled();
+        $flashMessages->success('admin.password_reset.change_password.message.success', 'FSiAdminSecurity')
+            ->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 

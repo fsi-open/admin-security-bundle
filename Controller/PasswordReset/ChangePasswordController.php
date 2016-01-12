@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -55,12 +56,18 @@ class ChangePasswordController
     private $eventDispatcher;
 
     /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
+    /**
      * @param EngineInterface $templating
      * @param string $changePasswordActionTemplate
      * @param UserRepositoryInterface $userRepository
      * @param RouterInterface $router
      * @param FormFactoryInterface $formFactory
      * @param EventDispatcherInterface $eventDispatcher
+     * @param FlashMessages $flashMessages
      */
     public function __construct(
         EngineInterface $templating,
@@ -68,7 +75,8 @@ class ChangePasswordController
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
@@ -76,6 +84,7 @@ class ChangePasswordController
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
     }
 
     /**
@@ -105,10 +114,7 @@ class ChangePasswordController
                 new ChangePasswordEvent($user)
             );
 
-            $request->getSession()->getFlashBag()->add(
-                'success',
-                'admin.password_reset.change_password.message.success'
-            );
+            $this->flashMessages->success('admin.password_reset.change_password.message.success', 'FSiAdminSecurity');
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }

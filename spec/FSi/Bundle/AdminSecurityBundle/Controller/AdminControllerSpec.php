@@ -14,8 +14,9 @@ class AdminControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function let($templating, $formFactory, $tokenStorage, $router, $eventDispatcher)
+    function let($templating, $formFactory, $tokenStorage, $router, $eventDispatcher, $flashMessages)
     {
         $this->beConstructedWith(
             $templating,
@@ -23,6 +24,7 @@ class AdminControllerSpec extends ObjectBehavior
             $tokenStorage,
             $router,
             $eventDispatcher,
+            $flashMessages,
             'FSiAdminSecurityBundle:Admin:change_password.html.twig'
         );
     }
@@ -63,13 +65,12 @@ class AdminControllerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @param \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag $flashBag
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
     function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
-        $formFactory, $tokenStorage, $token, $user, $form, $request, $session, $flashBag, $router, $eventDispatcher
+        $formFactory, $tokenStorage, $token, $user, $form, $request, $router, $eventDispatcher, $flashMessages
     ) {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
@@ -77,7 +78,6 @@ class AdminControllerSpec extends ObjectBehavior
         $formFactory->create('admin_change_password', $user)->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);
-        $request->getSession()->willReturn($session);
 
         $token->getUser()->shouldBeCalled()->willReturn($user);
         $eventDispatcher->dispatch(
@@ -88,12 +88,8 @@ class AdminControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $session->getFlashBag()->shouldBeCalled()->willReturn($flashBag);
+        $flashMessages->success('admin.change_password_message.success', 'FSiAdminSecurity')->shouldBeCalled();
 
-        $flashBag->set(
-            'success',
-            'admin.change_password_message.success'
-        )->shouldBeCalled();
         $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 
         $response = $this->changePasswordAction($request);

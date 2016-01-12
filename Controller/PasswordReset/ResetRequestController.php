@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -55,13 +56,19 @@ class ResetRequestController
      */
     private $eventDispatcher;
 
+    /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
     public function __construct(
         EngineInterface $templating,
         $requestActionTemplate,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $this->templating = $templating;
         $this->requestActionTemplate = $requestActionTemplate;
@@ -69,6 +76,7 @@ class ResetRequestController
         $this->router = $router;
         $this->userRepository = $userRepository;
         $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
     }
 
     /**
@@ -84,27 +92,15 @@ class ResetRequestController
 
             $user = $this->getUser($form);
             if (!($user instanceof ResettablePasswordInterface)) {
-                return $this->addFlashAndRedirect(
-                    $request,
-                    'success',
-                    'admin.password_reset.request.mail_sent'
-                );
+                return $this->addFlashAndRedirect('success', 'admin.password_reset.request.mail_sent');
             }
 
             if ($this->hasNonExpiredPasswordResetToken($user)) {
-                return $this->addFlashAndRedirect(
-                    $request,
-                    'warning',
-                    'admin.password_reset.request.already_requested'
-                );
+                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.already_requested');
             }
 
             if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
-                return $this->addFlashAndRedirect(
-                    $request,
-                    'warning',
-                    'admin.password_reset.request.account_locked'
-                );
+                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.account_locked');
             }
 
             $this->eventDispatcher->dispatch(
@@ -112,11 +108,7 @@ class ResetRequestController
                 new ResetPasswordRequestEvent($user)
             );
 
-            return $this->addFlashAndRedirect(
-                $request,
-                'success',
-                'admin.password_reset.request.mail_sent'
-            );
+            return $this->addFlashAndRedirect('success', 'admin.password_reset.request.mail_sent');
         }
 
         return $this->templating->renderResponse(
@@ -126,14 +118,13 @@ class ResetRequestController
     }
 
     /**
-     * @param Request $request
      * @param string $type
      * @param string $message
      * @return RedirectResponse
      */
-    private function addFlashAndRedirect(Request $request, $type, $message)
+    private function addFlashAndRedirect($type, $message)
     {
-        $request->getSession()->getFlashBag()->add($type, $message);
+        $this->flashMessages->{$type}($message, 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
