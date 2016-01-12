@@ -19,6 +19,6 @@ class PasswordResetRequest extends Page
 
     public function getMessage()
     {
-        return $this->find('css', '.flash')->getText();
+        return $this->find('css', '.alert')->getText();
     }
 }

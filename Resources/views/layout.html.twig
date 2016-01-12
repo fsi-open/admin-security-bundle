@@ -70,15 +70,14 @@
 <div class="container">
     {% block themes %}{% endblock %}
     {% block body %}
-        {% if app.request.hasPreviousSession %}
-            {% for type, messages in app.session.flashbag.all() %}
-                {% for message in messages %}
-                    <div class="alert flash alert-{{ type }}">
-                        {{ message|trans({}, 'FSiAdminSecurity') }}
-                    </div>
-                {% endfor %}
+        {% set typeClass = {success: 'success', error: 'danger', warning: 'warning', info: 'info'} %}
+        {% for type,typeMessages in fsi_admin_messages() %}
+            {% for message in typeMessages %}
+                <div class="alert alert-{{ typeClass[type] }}">
+                    {{ (message.text)|trans({}, message.domain) }}
+                </div>
             {% endfor %}
-        {% endif %}
+        {% endfor %}
     {% endblock %}
 </div>
 </body>

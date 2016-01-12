@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
@@ -57,12 +58,18 @@ class ActivationController
     private $eventDispatcher;
 
     /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
+    /**
      * @param EngineInterface $templating
      * @param string $changePasswordActionTemplate
      * @param UserRepositoryInterface $userRepository
      * @param RouterInterface $router
      * @param FormFactoryInterface $formFactory
      * @param EventDispatcherInterface $eventDispatcher
+     * @param FlashMessages $flashMessages
      */
     public function __construct(
         EngineInterface $templating,
@@ -70,7 +77,8 @@ class ActivationController
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
@@ -78,35 +86,30 @@ class ActivationController
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
     }
 
     /**
-     * @param Request $request
      * @param string $token
      * @return RedirectResponse
      */
-    public function activateAction(Request $request, $token)
+    public function activateAction($token)
     {
         $user = $this->tryFindUserByActivationToken($token);
 
         if ($this->isUserEnforcedToChangePassword($user)) {
-            $request->getSession()->getFlashBag()->add(
-                'info',
-                'admin.activation.message.change_password'
-            );
+            $this->flashMessages->info('admin.activation.message.change_password', 'FSiAdminSecurity');
 
-            return new RedirectResponse($this->router->generate('fsi_admin_activation_change_password', array('token' => $token)));
+            return new RedirectResponse(
+                $this->router->generate('fsi_admin_activation_change_password', array('token' => $token))
+            );
         } else {
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::ACTIVATION,
                 new ActivationEvent($user)
             );
 
-            return $this->addFlashAndRedirect(
-                $request,
-                'success',
-                'admin.activation.message.success'
-            );
+            return $this->addFlashAndRedirect('success', 'admin.activation.message.success');
         }
     }
 
@@ -137,11 +140,7 @@ class ActivationController
                 new ChangePasswordEvent($user)
             );
 
-            return $this->addFlashAndRedirect(
-                $request,
-                'success',
-                'admin.activation.message.change_password_success'
-            );
+            return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
 
         return $this->templating->renderResponse(
@@ -174,14 +173,13 @@ class ActivationController
     }
 
     /**
-     * @param Request $request
      * @param string $type
      * @param string $message
      * @return RedirectResponse
      */
-    private function addFlashAndRedirect(Request $request, $type, $message)
+    private function addFlashAndRedirect($type, $message)
     {
-        $request->getSession()->getFlashBag()->add($type, $message);
+        $this->flashMessages->{$type}($message, 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }

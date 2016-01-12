@@ -19,8 +19,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Routing\RouterInterface $router
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function let($templating, $formFactory, $router, $userRepository, $eventDispatcher)
+    function let($templating, $formFactory, $router, $userRepository, $eventDispatcher, $flashMessages)
     {
         $this->beConstructedWith(
             $templating,
@@ -28,7 +29,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $formFactory,
             $router,
             $userRepository,
-            $eventDispatcher
+            $eventDispatcher,
+            $flashMessages
         );
     }
 
@@ -40,9 +42,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
      * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
     function it_updates_confirmation_token_and_sends_mail(
         $request,
@@ -52,9 +53,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $userRepository,
         $user,
         $eventDispatcher,
-        $session,
-        $flashBag,
-        $router
+        $router,
+        $flashMessages
     ) {
         $formFactory->create('admin_password_reset_request')->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
@@ -76,10 +76,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $request->getSession()->willReturn($session);
-        $session->getFlashBag()->willReturn($flashBag);
-
-        $flashBag->add('success', 'admin.password_reset.request.mail_sent')->shouldBeCalled();
+        $flashMessages->success('admin.password_reset.request.mail_sent', 'FSiAdminSecurity')->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 

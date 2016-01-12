@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
@@ -54,11 +55,17 @@ class AdminController
     private $changePasswordActionTemplate;
 
     /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
+    /**
      * @param EngineInterface $templating
      * @param FormFactoryInterface $formFactory
      * @param TokenStorageInterface $tokenStorage
      * @param RouterInterface $router
      * @param EventDispatcherInterface $eventDispatcher
+     * @param FlashMessages $flashMessages
      * @param string $changePasswordActionTemplate
      */
     public function __construct(
@@ -67,6 +74,7 @@ class AdminController
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages,
         $changePasswordActionTemplate
     ) {
         $this->templating = $templating;
@@ -74,6 +82,7 @@ class AdminController
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
         $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
     }
 
@@ -94,10 +103,7 @@ class AdminController
                 new ChangePasswordEvent($user)
             );
 
-            $request->getSession()->getFlashBag()->set(
-                'success',
-                'admin.change_password_message.success'
-            );
+            $this->flashMessages->success('admin.change_password_message.success', 'FSiAdminSecurity');
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
