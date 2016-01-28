@@ -3,16 +3,15 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Event;
 
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {
     /**
-     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function let($user)
     {
-        $this->beConstructedWith($user, 'plain_password');
+        $this->beConstructedWith($user);
     }
 
     function it_is_event()
@@ -21,15 +20,10 @@ class ChangePasswordEventSpec extends ObjectBehavior
     }
 
     /**
-     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
      */
     function it_returns_user($user)
     {
         $this->getUser()->shouldReturn($user);
-    }
-
-    function it_returns_plain_password()
-    {
-        $this->getPlainPassword()->shouldReturn('plain_password');
     }
 }

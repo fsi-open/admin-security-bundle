@@ -45,15 +45,18 @@
         .form-signin .form-control:focus {
             z-index: 2;
         }
-        .form-signin input[type="text"] {
+        .form-signin input[name="_username"] {
             margin-bottom: -1px;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
+        .form-signin input[name="_password"] {
+            margin-bottom: 15px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
+        }
+        .flash {
+            margin: 0 15px;
         }
     </style>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -65,7 +68,17 @@
 
 <body>
 <div class="container">
-    {% block body %}{% endblock %}
+    {% block themes %}{% endblock %}
+    {% block body %}
+        {% set typeClass = {success: 'success', error: 'danger', warning: 'warning', info: 'info'} %}
+        {% for type,typeMessages in fsi_admin_messages() %}
+            {% for message in typeMessages %}
+                <div class="alert alert-{{ typeClass[type] }}">
+                    {{ (message.text)|trans({}, message.domain) }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endblock %}
 </div>
 </body>
 </html>

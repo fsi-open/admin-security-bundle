@@ -12,6 +12,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
+            new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
@@ -19,7 +20,6 @@ class AppKernel extends Kernel
             new FSi\Bundle\DataGridBundle\DataGridBundle(),
             new FSi\Bundle\AdminBundle\FSiAdminBundle(),
             new FSi\FixturesBundle\FSiFixturesBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
             new FSi\Bundle\AdminSecurityBundle\FSiAdminSecurityBundle()
         );
     }

@@ -7,9 +7,13 @@ use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
@@ -74,14 +78,11 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationToken($username, $confirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
+        $user->setPasswordResetToken($this->createToken($confirmationToken, new DateInterval('PT3600S')));
 
-        $user->setConfirmationToken($confirmationToken);
-        $user->setPasswordRequestedAt(new \DateTime());
-
-        $userManager->updateUser($user);
+        $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User')->flush();
     }
 
     /**
@@ -89,11 +90,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userShouldStillHaveConfirmationToken($username, $expectedConfirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
-
-        expect($user->getConfirmationToken())->toBe($expectedConfirmationToken);
+        expect($user->getPasswordResetToken()->getToken())->toBe($expectedConfirmationToken);
     }
 
     /**
@@ -101,17 +100,14 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationTokenWithTtl($username, $confirmationToken)
     {
-        $userManager = $this->getUserManager();
+        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
 
-        $user = $userManager->findUserByUsername($username);
+        $ttl = new DateInterval('P1D');
+        $ttl->invert = true;
 
-        $passwordRequestedAt = new \DateTime();
-        $passwordRequestedAt->sub(new DateInterval('P1D'));
+        $user->setPasswordResetToken($this->createToken($confirmationToken, $ttl));
 
-        $user->setConfirmationToken($confirmationToken);
-        $user->setPasswordRequestedAt($passwordRequestedAt);
-
-        $userManager->updateUser($user);
+        $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User')->flush();
     }
 
     /**
@@ -127,9 +123,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iShouldBeOnThePage($pageName)
     {
-        /** @var \SensioLabs\Behat\PageObjectExtension\PageObject\Page $page */
+        /** @var Page $page */
         $page = $this->getPage($pageName);
-        $page->isOpen();
+        expect($page->isOpen())->toBe(true);
     }
 
     /**
@@ -145,7 +141,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iShouldSeePasswordResetRequestFormMessage($message)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest $page */
+        /** @var PasswordResetRequest $page */
         $page = $this->getPage('Password Reset Request');
         expect($page->getMessage())->toBe($message);
     }
@@ -155,7 +151,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iTryOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->openWithoutVerification(['confirmationToken' => $confirmationToken]);
     }
@@ -165,17 +161,9 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->open(['confirmationToken' => $confirmationToken]);
-    }
-
-    /**
-     * @Then /^i should see (\d+) error$/
-     */
-    public function iShouldSeeHttpError($httpStatusCode)
-    {
-        expect($this->getMink()->getSession()->getStatusCode())->toBe(intval($httpStatusCode));
     }
 
     /**
@@ -183,7 +171,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->fillForm();
     }
@@ -193,49 +181,30 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword $page */
+        /** @var PasswordResetChangePassword $page */
         $page = $this->getPage('Password Reset Change Password');
         $page->fillFormWithInvalidData();
     }
 
     /**
-     * @Then /^I should see information about passwords mismatch$/
+     * @return UserRepository
      */
-    public function iShouldSeeInformationAboutPasswordsMismatch()
+    private function getUserRepository()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form $form */
-        $form = $this->getElement('Form');
-        expect($form->getFieldErrors('New password'))->toBe('This value is not valid.');
+        return $this->kernel->getContainer()->get('doctrine')->getRepository('FSiFixturesBundle:User');
     }
 
     /**
-     * @Then /^user "([^"]*)" should have changed password$/
+     * @param string $confirmationToken
+     * @param \DateInterval $ttl
+     * @return Token
      */
-    public function userShouldHaveChangedPassword($userEmail)
+    private function createToken($confirmationToken, $ttl)
     {
-        $user = $this->getUserManager()->findUserByEmail($userEmail);
-
-        expect($user->getPassword())->toBe($this->encodePassword($user, 'test'));
-    }
-
-    /**
-     * @param UserInterface $user
-     * @param $password
-     * @return string
-     */
-    private function encodePassword(UserInterface $user, $password)
-    {
-        /** @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder */
-        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
-
-        return $encoder->encodePassword($user, $password);
-    }
-
-    /**
-     * @return \FOS\UserBundle\Doctrine\UserManager
-     */
-    private function getUserManager()
-    {
-        return $this->kernel->getContainer()->get('fos_user.user_manager');
+        return new Token(
+            $confirmationToken,
+            new \DateTime(),
+            $ttl
+        );
     }
 }

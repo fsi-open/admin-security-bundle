@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="admin_security.repository.user.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository</parameter>
+    </parameters>
+
+    <services>
+        <!-- Repository -->
+        <service id="admin_security.repository.user" class="%admin_security.repository.user.class%">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+            <argument type="string">%admin_security.model.user%</argument>
+        </service>
+    </services>
+</container>

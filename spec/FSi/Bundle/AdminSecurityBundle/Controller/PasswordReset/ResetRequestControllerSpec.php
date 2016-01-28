@@ -2,19 +2,9 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Routing\RouterInterface;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
@@ -27,11 +17,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function let($templating, $formFactory, $router, $userRepository, $tokenGenerator, $mailer)
+    function let($templating, $formFactory, $router, $userRepository, $eventDispatcher, $flashMessages)
     {
         $this->beConstructedWith(
             $templating,
@@ -39,9 +29,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $formFactory,
             $router,
             $userRepository,
-            $tokenGenerator,
-            $mailer,
-            3600 * 12
+            $eventDispatcher,
+            $flashMessages
         );
     }
 
@@ -50,13 +39,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
      * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
      * @param \Symfony\Component\Form\FormInterface $form
      * @param \Symfony\Component\Form\FormInterface $form2
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface $tokenGenerator
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \Symfony\Component\HttpFoundation\Session\Session $session
-     * @param \Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface $flashBag
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
+     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
      * @param \Symfony\Component\Routing\RouterInterface $router
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
     function it_updates_confirmation_token_and_sends_mail(
         $request,
@@ -65,11 +52,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $form2,
         $userRepository,
         $user,
-        $tokenGenerator,
-        $mailer,
-        $session,
-        $flashBag,
-        $router
+        $eventDispatcher,
+        $router,
+        $flashMessages
     ) {
         $formFactory->create('admin_password_reset_request')->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
@@ -80,23 +65,20 @@ class ResetRequestControllerSpec extends ObjectBehavior
 
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
-        $user->isPasswordRequestNonExpired(3600 * 12)->willReturn(false);
+        $user->getPasswordResetToken()->willReturn(null);
+        $user->isAccountNonLocked()->willReturn(true);
 
-        $tokenGenerator->generateToken()->willReturn('token1234');
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+            Argument::allOf(
+                Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent'),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
 
-        $user->setConfirmationToken('token1234')->shouldBeCalled();
-        $user->setPasswordRequestedAt(Argument::type('\DateTime'))->shouldBeCalled();
+        $flashMessages->success('admin.password_reset.request.mail_sent', 'FSiAdminSecurity')->shouldBeCalled();
 
-        $userRepository->save($user)->shouldBeCalled();
-
-        $mailer->sendPasswordResetMail($user)->shouldBeCalled();
-
-        $request->getSession()->willReturn($session);
-        $session->getFlashBag()->willReturn($flashBag);
-
-        $flashBag->add('alert-success', 'admin.password_reset.request.mail_sent')->shouldBeCalled();
-
-        $router->generate('fsi_admin_security_password_reset_request')->willReturn('url');
+        $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
         $response = $this->requestAction($request);
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');

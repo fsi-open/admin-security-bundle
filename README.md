@@ -1,8 +1,7 @@
 # FSi Admin Security Bundle
 
 FSiAdminSecurityBundle provide missing security layer for [FSiAdminBundle](https://github.com/fsi-open/admin-bundle).
-You can use this bundle with almost any kind of user model as long as it implements
-``Symfony\Component\Security\Core\User\UserInterface``.
+It provides set of interfaces and base classes for building administrative users in your application.
 
 Build Status:  
 [![Build Status](https://travis-ci.org/fsi-open/admin-security-bundle.png?branch=master)](https://travis-ci.org/fsi-open/admin-security-bundle) - Master
@@ -16,12 +15,17 @@ Code quality:
 Documentation:
 
 - [Installation](Resources/doc/installation.md)
-- [Templating](Resources/doc/templating.md)
-- [Change Password Event](Resources/doc/change_password_event.md)
+- [Configuration](Resources/doc/configuration.md)
+- [Commands](Resources/doc/commands.md)
+- [Events](Resources/doc/events.md)
 - [Secured Admin Elements](Resources/doc/secured_admin_elements.md)
 
 # Features
 
 * Login page
+* Email activation
+* Enforcing user to change password 
+* Reset forgotten password
+* Console command creating new user
 * Logout link added to admin panel navigation bar
 * Admin change password page

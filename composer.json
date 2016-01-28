@@ -17,17 +17,20 @@
         "symfony/security-bundle": "~2.6",
         "symfony/validator": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
-        "doctrine/doctrine-bundle": "~1.5"
+        "doctrine/doctrine-bundle": "~1.5",
+        "fsi/datagrid-bundle": "~1.1@dev"
     },
     "require-dev": {
         "symfony/expression-language": "~2.4",
-        "friendsofsymfony/user-bundle": "1.3.*",
+        "symfony/monolog-bundle": "~2.6",
+        "friendsofsymfony/user-bundle": "~1.3",
         "phpspec/phpspec": "~2.2",
         "behat/behat": "~3.0",
         "behat/symfony2-extension": "~2.0",
         "behat/mink": "~1.6",
         "behat/mink-extension": "~2.0",
         "behat/mink-browserkit-driver": "~1.2",
+        "behat/mink-selenium2-driver": "~1.2",
         "sensiolabs/behat-page-object-extension": "~2.0@dev",
         "bossa/phpspec2-expect": "~1.0",
         "symfony/class-loader": "~2.3"

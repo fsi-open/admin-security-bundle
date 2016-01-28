@@ -6,5 +6,5 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
 
 class FlashMessage extends Element
 {
-    protected $selector = array('css' => '.flash');
+    protected $selector = array('css' => '.alert');
 }

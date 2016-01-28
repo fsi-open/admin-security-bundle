@@ -18,7 +18,7 @@ class AdminChangePassword extends Page
 
     public function verifyPage()
     {
-        if (!$this->has('css', 'form')) {
+        if (!$this->has('css', '#page-header:contains("Change password")')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin change password page", $this->path));
         }
         $this->verifyResponse();
