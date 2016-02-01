@@ -12,10 +12,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "fsi/admin-bundle" : "~1.1@dev",
-        "symfony/framework-bundle": "~2.3",
-        "symfony/security-bundle": "~2.6",
-        "symfony/validator": "~2.3",
+        "fsi/admin-bundle" : "~2.0@dev",
+        "symfony/framework-bundle": "~2.8",
+        "symfony/security-bundle": "~2.8",
+        "symfony/validator": "~2.8",
         "symfony/swiftmailer-bundle": "~2.3",
         "doctrine/doctrine-bundle": "~1.5",
         "fsi/datagrid-bundle": "~1.1@dev"
