@@ -9,25 +9,13 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Token;
 
-use Symfony\Component\Security\Core\Util\SecureRandomInterface;
-
 class TokenGenerator implements TokenGeneratorInterface
 {
-    /**
-     * @var SecureRandomInterface
-     */
-    private $secureRandom;
-
-    public function __construct(SecureRandomInterface $secureRandom)
-    {
-        $this->secureRandom = $secureRandom;
-    }
-
     /**
      * @return string
      */
     public function generateToken()
     {
-        return str_replace(['+', '/', '='], '', base64_encode($this->secureRandom->nextBytes(32)));
+        return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
     }
 }

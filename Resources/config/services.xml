@@ -108,7 +108,6 @@
 
         <!-- token generator -->
         <service id="admin_security.token_generator" class="%admin_security.token_generator.class%">
-            <argument type="service" id="security.secure_random" />
         </service>
     </services>
 
