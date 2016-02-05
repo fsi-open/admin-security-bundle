@@ -18,7 +18,7 @@
 
         <field name="enforcePasswordChange" column="enforce_password_change" type="boolean" />
 
-        <field name="salt" column="salt" type="string" />
+        <field name="salt" column="salt" type="string" nullable="true" />
 
         <field name="password" column="password" type="string" />
 
