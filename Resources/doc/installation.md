@@ -152,7 +152,7 @@ security:
 
 ### Bcrypt encoder
 
-If you want to use bcrypt encoder, you must clear the salt that is set in user constructor, like this:
+If you want to use bcrypt encoder, you must clear the salt that is set in user constructor. Symfony >= 2.8 ignores salt.
 ```
 class User extends FSi\Bundle\AdminSecurityBundle\Security\User\User
 {
