@@ -152,7 +152,7 @@ security:
 
 ### Bcrypt encoder
 
-If you want to use bcrypt encoder, you must clear salt that is set in user constructor, like this:
+If you want to use bcrypt encoder, you must clear the salt that is set in user constructor, like this:
 ```
 class User extends FSi\Bundle\AdminSecurityBundle\Security\User\User
 {
