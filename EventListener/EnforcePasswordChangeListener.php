@@ -17,6 +17,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnforcePasswordChangeListener implements EventSubscriberInterface
@@ -95,11 +96,16 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
+        $token = $this->tokenStorage->getToken();
+        if (!$token instanceof TokenInterface) {
+            return;
+        }
+
         if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             return;
         }
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $token->getUser();
         if (!($user instanceof EnforceablePasswordChangeInterface) ||
             !$user->isForcedToChangePassword()) {
             return;
