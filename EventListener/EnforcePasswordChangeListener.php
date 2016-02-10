@@ -97,7 +97,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         }
 
         $token = $this->tokenStorage->getToken();
-        if (!$token instanceof TokenInterface) {
+        if (!$token) {
             return;
         }
 
