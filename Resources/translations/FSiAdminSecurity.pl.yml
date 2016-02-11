@@ -26,7 +26,7 @@ admin:
         email: Email
         button:
           send: Wyślij mi instrukcje
-      mail_sent: Instrukcja zmiany hasła została wysłana pod podany adres email
+      mail_sent_if_correct: Jeśli podany email był prawidłowy, to powinieneś otrzymać na niego instrukcję zmiany hasła.
       mail_subject: Zmiana hasła
       mail:
         info: "Aby ustawić nowe hasło proszę otworzyć link:"

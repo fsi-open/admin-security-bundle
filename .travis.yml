@@ -37,7 +37,7 @@ before_script:
   - nohup php -S localhost:8080 -t features/fixtures/project/web > /tmp/server.log 2>&1 &
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
-  - java -jar bin/selenium.jar > /dev/null &
+  - java -jar bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
 
 script:
