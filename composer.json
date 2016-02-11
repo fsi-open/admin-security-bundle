@@ -45,7 +45,6 @@
             "FSi\\Bundle\\AdminSecurityBundle\\": ""
         }
     },
-    "target-dir" : "FSi/Bundle/AdminSecurityBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.1-dev"
