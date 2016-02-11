@@ -7,7 +7,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Activation extends Page
 {
-    protected $path = '/admin/activation/{activationToken}';
+    protected $path = '/admin/activation/activate/{activationToken}';
 
     public function verifyPage()
     {

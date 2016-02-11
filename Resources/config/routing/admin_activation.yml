@@ -1,5 +1,5 @@
 fsi_admin_activation:
-    path: /activation/{token}
+    path: /activation/activate/{token}
     defaults:
         _controller: admin_security.controller.activation:activateAction
 

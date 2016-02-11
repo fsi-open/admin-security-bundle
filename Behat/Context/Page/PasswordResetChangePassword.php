@@ -7,7 +7,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class PasswordResetChangePassword extends Page
 {
-    protected $path = '/admin/password-reset/{confirmationToken}';
+    protected $path = '/admin/password-reset/change-password/{confirmationToken}';
 
     public function verifyPage()
     {
