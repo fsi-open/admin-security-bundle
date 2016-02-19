@@ -1,23 +1,23 @@
-# UPGRADE from 1.0.* to ~1.1
+# UPGRADE from 1.0.* to ^2.0
 
-This document describes steps needed to upgrade admin-security-bundle from 1.0.* version to ~1.1. Some of them always
-require attention due to some BC breaks in 1.1 version, some of them often need some change and some are mentioned but
+This document describes steps needed to upgrade admin-security-bundle from 1.0.* version to ~2.0. Some of them always
+require attention due to some BC breaks in 2.0 version, some of them often need some change and some are mentioned but
 almost never should have been used in real use cases.
 
 ## Change your composer.json (always)
 
 ```yaml
 # ...
-    'fsi/admin-bundle': '~1.1'
+    'fsi/admin-bundle': '^2.0'
 # ...
 ```
 
-**Version 1.1 drops support for symfony lower than 2.6 so if you are still using symfony < 2.6 you will have
+**Version 2.0 drops support for symfony lower than 2.6 so if you are still using symfony < 2.6 you will have
 to upgrade it too.**
 
 ## Remove FOSUserBundle (often)
 
-The important difference between 1.0.* and ~1.1 is that the newer version does not require FOSUserBundle to persist
+The important difference between 1.0.* and ^2.0 is that the newer version does not require FOSUserBundle to persist
 users through Doctrine although it can cooperate on the same user entity class if it implements ``UserInterface`` from
 both bundles. So in most typical use case when your application have only administrative users you should
 **remove this line** from ``app/AppKernel.php``:
@@ -28,7 +28,7 @@ both bundles. So in most typical use case when your application have only admini
 
 ## Configure the bundle (always)
 
-Version 1.1 require some additional configuration. Please refer to the (installation section)[Resources/doc/installation.md]
+Version 2.0 require some additional configuration. Please refer to the (installation section)[Resources/doc/installation.md]
 for the details.
 
 ## Migrate user entities (always)
