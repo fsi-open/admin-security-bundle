@@ -55,6 +55,6 @@ class TokenFactory implements TokenFactoryInterface
      */
     private function generateToken()
     {
-        return str_replace(['+', '/', '='], '', base64_encode($this->secureRandom->nextBytes($this->length)));
+        return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
     }
 }
