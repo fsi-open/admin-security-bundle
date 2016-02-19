@@ -3,7 +3,7 @@ language: php
 cache:
   directories:
     - bin
-    - vendor
+    - $HOME/.composer/cache
 
 sudo: false
 
