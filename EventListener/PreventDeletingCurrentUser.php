@@ -12,6 +12,7 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Event\BatchEvents;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -31,10 +32,19 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
      */
     private $router;
 
-    public function __construct(TokenStorageInterface $tokenStorage, RouterInterface $router)
-    {
+    /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        RouterInterface $router,
+        FlashMessages $flashMessages
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
+        $this->flashMessages = $flashMessages;
     }
 
     /**
@@ -65,6 +75,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
 
             if ($user === $entity) {
                 $this->setRedirectResponse($event);
+                $this->flashMessages->error('admin.user_list.message.delete_current_user', 'FSiAdminSecurity');
 
                 return;
             }

@@ -209,6 +209,7 @@
         <service id="admin_security.listener.prevent_deleting_current_user" class="%admin_security.listener.prevent_deleting_current_user.class%">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="router"/>
+            <argument type="service" id="admin.messages.flash"/>
             <tag name="kernel.event_subscriber" />
         </service>
 

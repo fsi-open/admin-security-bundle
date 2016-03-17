@@ -63,6 +63,8 @@ admin:
     batch_action:
       delete: Delete
       password_reset: Reset password
+    message:
+      delete_current_user: Cannot delete your own user
   admin_user:
     email: Email address
     roles: User roles
