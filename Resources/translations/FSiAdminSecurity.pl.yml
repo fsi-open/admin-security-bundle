@@ -63,6 +63,8 @@ admin:
     batch_action:
       delete: Usuń
       password_reset: Przypomnij hasło
+    message:
+      delete_current_user: Nie można usunąć swojego użytkownika
   admin_user:
     email: Adres email
     roles: Role użytkownika

@@ -16,15 +16,16 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function let($tokenStorage, $router, $event, $userElement, $token, $request, $dataIndexer) {
+    function let($tokenStorage, $router, $event, $userElement, $token, $request, $dataIndexer, $flashMessages) {
         $event->getElement()->willReturn($userElement);
         $tokenStorage->getToken()->willReturn($token);
         $event->getRequest()->willReturn($request);
         $request->get('redirect_uri')->willReturn('list_url');
         $userElement->getDataIndexer()->willReturn($dataIndexer);
 
-        $this->beConstructedWith($tokenStorage, $router);
+        $this->beConstructedWith($tokenStorage, $router, $flashMessages);
     }
 
     function it_is_event_subscriber()
@@ -45,8 +46,9 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
      * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
      * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
+     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
      */
-    function it_should_prevent_deleting_current_user($event, $request, $token, $user, $dataIndexer)
+    function it_should_prevent_deleting_current_user($event, $request, $token, $user, $dataIndexer, $flashMessages)
     {
         $token->getUser()->willReturn($user);
         $request->get('indexes', array())->willReturn(array(1));
@@ -57,6 +59,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
             Argument::type('Symfony\Component\HttpFoundation\RedirectResponse'),
             Argument::which('getTargetUrl', 'list_url')
         ))->shouldBeCalled();
+        $flashMessages->error(Argument::cetera())->shouldBeCalled();
 
         $this->preventDeletingCurrentUser($event);
     }
