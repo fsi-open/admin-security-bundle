@@ -1,16 +1,28 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
-use FSi\Bundle\AdminSecurityBundle\Token\TokenGeneratorInterface;
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class ResetRequestController
 {
@@ -40,19 +52,14 @@ class ResetRequestController
     private $userRepository;
 
     /**
-     * @var TokenGeneratorInterface
+     * @var EventDispatcherInterface
      */
-    private $tokenGenerator;
+    private $eventDispatcher;
 
     /**
-     * @var MailerInterface
+     * @var FlashMessages
      */
-    private $mailer;
-
-    /**
-     * @var integer
-     */
-    private $tokeTtl;
+    private $flashMessages;
 
     public function __construct(
         EngineInterface $templating,
@@ -60,20 +67,22 @@ class ResetRequestController
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
-        TokenGeneratorInterface $tokenGenerator,
-        MailerInterface $mailer,
-        $tokeTtl
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $this->templating = $templating;
         $this->requestActionTemplate = $requestActionTemplate;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->userRepository = $userRepository;
-        $this->tokenGenerator = $tokenGenerator;
-        $this->mailer = $mailer;
-        $this->tokeTtl = $tokeTtl;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function requestAction(Request $request)
     {
         $form = $this->formFactory->create('admin_password_reset_request');
@@ -81,36 +90,25 @@ class ResetRequestController
 
         if ($form->isValid()) {
 
-            /** @var UserPasswordResetInterface $user */
-            $user = $this->userRepository->findUserByEmail($form->get('email')->getData());
-            if (null === $user) {
-                return $this->addFlashAndRedirect(
-                    $request,
-                    'alert-success',
-                    'admin.password_reset.request.mail_sent'
-                );
+            $user = $this->getUser($form);
+            if (!($user instanceof ResettablePasswordInterface)) {
+                return $this->addFlashAndRedirect('success', 'admin.password_reset.request.mail_sent');
             }
 
-            if ($user->isPasswordRequestNonExpired($this->tokeTtl)) {
-                return $this->addFlashAndRedirect(
-                    $request,
-                    'alert-warning',
-                    'admin.password_reset.request.already_requested'
-                );
+            if ($this->hasNonExpiredPasswordResetToken($user)) {
+                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.already_requested');
             }
 
-            $user->setConfirmationToken($this->tokenGenerator->generateToken());
-            $user->setPasswordRequestedAt(new \DateTime());
+            if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
+                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.account_locked');
+            }
 
-            $this->userRepository->save($user);
-
-            $this->mailer->sendPasswordResetMail($user);
-
-            return $this->addFlashAndRedirect(
-                $request,
-                'alert-success',
-                'admin.password_reset.request.mail_sent'
+            $this->eventDispatcher->dispatch(
+                AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+                new ResetPasswordRequestEvent($user)
             );
+
+            return $this->addFlashAndRedirect('success', 'admin.password_reset.request.mail_sent');
         }
 
         return $this->templating->renderResponse(
@@ -119,10 +117,33 @@ class ResetRequestController
         );
     }
 
-    private function addFlashAndRedirect(Request $request, $type, $message)
+    /**
+     * @param string $type
+     * @param string $message
+     * @return RedirectResponse
+     */
+    private function addFlashAndRedirect($type, $message)
     {
-        $request->getSession()->getFlashBag()->add($type, $message);
+        $this->flashMessages->{$type}($message, 'FSiAdminSecurity');
 
-        return new RedirectResponse($this->router->generate('fsi_admin_security_password_reset_request'));
+        return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return ResettablePasswordInterface|null
+     */
+    private function getUser(FormInterface $form)
+    {
+        return $this->userRepository->findUserByEmail($form->get('email')->getData());
+    }
+
+    /**
+     * @param ResettablePasswordInterface $user
+     * @return bool
+     */
+    private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user)
+    {
+        return $user->getPasswordResetToken() && $user->getPasswordResetToken()->isNonExpired();
     }
 }

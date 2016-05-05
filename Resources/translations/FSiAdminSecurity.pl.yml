@@ -22,10 +22,54 @@ admin:
   welcome: Witaj %username%
   password_reset:
     request:
+      form:
+        email: Email
+        button:
+          send: Wyślij mi instrukcje
       mail_sent: Instrukcja zmiany hasła została wysłana pod podany adres email
       mail_subject: Zmiana hasła
       mail:
         info: "Aby ustawić nowe hasło proszę otworzyć link:"
         requested_by: "%ip% - %user_agent%"
-      submit: Wyślij instrukcję zmiany hasła
       already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.
+      account_locked: Twoje konto jest zablokowane.
+    change_password:
+      form:
+        password: Nowe hasło
+        repeat_password: Powtórz nowe hasło
+        button:
+          change_password: Zmień hasło
+      message:
+        success: Twoje hasło zostało poprawnie zmienione
+  activation:
+    change_password_form:
+      button:
+        change_password: Aktywuj konto
+    mail:
+      subject: Aktywacja użytkownika
+      info: "Aby aktywować twoje konto proszę otworzyć link:"
+    message:
+      change_password: Proszę ustawić nowe hasło aby aktywować konto
+      change_password_success: Twoje hasło zostało poprawnie zmienione oraz twoje konto zostało aktywowane
+      success: Twoje konto zostało poprawnie aktywowane
+  user_list:
+    datagrid:
+      email: Email
+      enabled: Aktywny
+      last_login: Ostatnie logowanie
+      password_reset_token: Prośba o zresetowanie hasła
+      activation_token: Prośba o aktywację
+      actions: Akcje
+    batch_action:
+      delete: Usuń
+      password_reset: Przypomnij hasło
+    message:
+      delete_current_user: Nie można usunąć swojego użytkownika
+  admin_user:
+    email: Adres email
+    roles: Role użytkownika
+
+crud:
+  list:
+    batch:
+      empty_choice: Wybierz akcję

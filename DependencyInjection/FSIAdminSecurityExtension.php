@@ -11,13 +11,14 @@ namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * @author Norbert Orzechowicz <norbert@fsi.pl>
  */
-class FSIAdminSecurityExtension extends Extension
+class FSIAdminSecurityExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -27,12 +28,25 @@ class FSIAdminSecurityExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('admin_security.storage', $config['storage']);
+        $container->setParameter('admin_security.firewall_name', $config['firewall_name']);
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
         $this->setModelParameters($container, $config['model']);
+        $this->setActivationParameters($container, $config['activation']);
         $this->setPasswordResetParameters($container, $config['password_reset']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load(sprintf('%s.xml', $config['storage']));
+    }
+
+    public function prepend(ContainerBuilder $container)
+    {
+        $container->prependExtensionConfig('fsi_admin', array(
+            'templates' => array(
+                'datagrid_theme' => '@FSiAdminSecurity/Admin/datagrid.html.twig'
+            )
+        ));
     }
 
     /**
@@ -57,11 +71,21 @@ class FSIAdminSecurityExtension extends Extension
         $container->setParameter('admin_security.model.user', $model['user']);
     }
 
+    private function setActivationParameters(ContainerBuilder $container, $model)
+    {
+        $container->setParameter('admin_security.activation.token_ttl', $model['token_ttl']);
+        $container->setParameter('admin_security.activation.token_length', $model['token_length']);
+        $container->setParameter('admin_security.activation.mailer.template', $model['mailer']['template']);
+        $container->setParameter('admin_security.activation.mailer.from', $model['mailer']['from']);
+        $container->setParameter('admin_security.activation.mailer.reply_to', $model['mailer']['reply_to']);
+    }
+
     private function setPasswordResetParameters(ContainerBuilder $container, $model)
     {
         $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
+        $container->setParameter('admin_security.password_reset.token_length', $model['token_length']);
         $container->setParameter('admin_security.password_reset.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.password_reset.mailer.from', $model['mailer']['from']);
-        $container->setParameter('admin_security.password_reset.mailer.replay_to', $model['mailer']['replay_to']);
+        $container->setParameter('admin_security.password_reset.mailer.reply_to', $model['mailer']['reply_to']);
     }
 }

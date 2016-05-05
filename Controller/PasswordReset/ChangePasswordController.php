@@ -9,12 +9,17 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Model\UserPasswordResetInterface;
-use FSi\Bundle\AdminSecurityBundle\Model\UserRepositoryInterface;
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -44,33 +49,57 @@ class ChangePasswordController
      * @var FormFactoryInterface
      */
     private $formFactory;
-    private $tokenTtl;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var FlashMessages
+     */
+    private $flashMessages;
+
+    /**
+     * @param EngineInterface $templating
+     * @param string $changePasswordActionTemplate
+     * @param UserRepositoryInterface $userRepository
+     * @param RouterInterface $router
+     * @param FormFactoryInterface $formFactory
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param FlashMessages $flashMessages
+     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
-        $tokenTtl
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
-        $this->tokenTtl = $tokenTtl;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->flashMessages = $flashMessages;
     }
 
+    /**
+     * @param Request $request
+     * @param string $token
+     * @return RedirectResponse|Response
+     */
     public function changePasswordAction(Request $request, $token)
     {
-        /** @var UserPasswordResetInterface $user */
-        $user = $this->userRepository->findUserByConfirmationToken($token);
-        if (null === $user) {
+        $user = $this->userRepository->findUserByPasswordResetToken($token);
+        if (!($user instanceof ResettablePasswordInterface)) {
             throw new NotFoundHttpException();
         }
 
-        if (!$user->isPasswordRequestNonExpired($this->tokenTtl)) {
+        if (!$user->getPasswordResetToken()->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 
@@ -78,14 +107,14 @@ class ChangePasswordController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $user->setConfirmationToken(null);
-            $user->setPasswordRequestedAt(null);
-            $this->userRepository->save($user);
+            $user->removePasswordResetToken();
 
-            $request->getSession()->getFlashBag()->add(
-                'success',
-                'admin.change_password_message.success'
+            $this->eventDispatcher->dispatch(
+                AdminSecurityEvents::CHANGE_PASSWORD,
+                new ChangePasswordEvent($user)
             );
+
+            $this->flashMessages->success('admin.password_reset.change_password.message.success', 'FSiAdminSecurity');
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }

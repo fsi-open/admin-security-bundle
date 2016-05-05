@@ -2,14 +2,13 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class MailContext implements SnippetAcceptingContext, KernelAwareContext
+class MailContext implements KernelAwareContext
 {
     /**
      * @var KernelInterface
@@ -47,6 +46,7 @@ class MailContext implements SnippetAcceptingContext, KernelAwareContext
 
     /**
      * @Given I should receive email:
+     * @Then an email should be sent:
      */
     public function iShouldReceiveEmail(TableNode $table)
     {
@@ -65,7 +65,7 @@ class MailContext implements SnippetAcceptingContext, KernelAwareContext
 
         expect(key($email->getFrom()))->toBe($expected['from']);
         expect(key($email->getTo()))->toBe($expected['to']);
-        expect(key($email->getReplyTo()))->toBe($expected['replay_to']);
+        expect(key($email->getReplyTo()))->toBe($expected['reply_to']);
     }
 
     private function fetchEmail($subject)
