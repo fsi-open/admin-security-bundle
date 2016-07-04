@@ -90,7 +90,8 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (null === $this->tokenStorage->getToken()) {
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
             return;
         }
 
@@ -103,7 +104,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $token->getUser();
         if (!($user instanceof EnforceablePasswordChangeInterface) ||
             !$user->isForcedToChangePassword()) {
             return;
