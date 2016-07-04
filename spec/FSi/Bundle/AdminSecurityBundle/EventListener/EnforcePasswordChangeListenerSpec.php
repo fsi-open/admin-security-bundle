@@ -50,6 +50,19 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 
     /**
      * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
+     */
+    function it_does_nothing_if_there_is_no_token($event, $tokenStorage)
+    {
+        $tokenStorage->getToken()->willReturn(null);
+
+        $event->setResponse(Argument::any())->shouldNotBeCalled();
+
+        $this->onKernelRequest($event);
+    }
+
+    /**
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
      */

@@ -90,6 +90,10 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
+        if (null === $this->tokenStorage->getToken()) {
+            return;
+        }
+
         $firewallName = $this->firewallMapper->getFirewallName($event->getRequest());
         if (empty($firewallName) || ($firewallName !== $this->firewallName)) {
             return;
