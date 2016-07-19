@@ -5,7 +5,7 @@
 
     <form class="form-signin" role="form" action="{{ path("fsi_admin_security_user_check") }}" method="post">
         {% if error %}
-        <div class="alert alert-danger">{{ error.message|trans({}, 'FSiAdminSecurity') }}</div>
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
         <input type="text" name="_username" class="form-control" placeholder="{{ 'admin.login.email.placeholder'|trans({}, 'FSiAdminSecurity') }}" value="{{ last_username }}" required autofocus>
         <input type="password" name="_password" class="form-control" placeholder="{{ 'admin.login.password.placeholder'|trans({}, 'FSiAdminSecurity') }}" required>
