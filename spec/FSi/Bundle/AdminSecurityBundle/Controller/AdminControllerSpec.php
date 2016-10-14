@@ -25,7 +25,9 @@ class AdminControllerSpec extends ObjectBehavior
             $router,
             $eventDispatcher,
             $flashMessages,
-            'FSiAdminSecurityBundle:Admin:change_password.html.twig'
+            'FSiAdminSecurityBundle:Admin:change_password.html.twig',
+            'form_type',
+            ['validation_group']
         );
     }
 
@@ -46,7 +48,11 @@ class AdminControllerSpec extends ObjectBehavior
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
-        $formFactory->create('admin_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
@@ -75,7 +81,11 @@ class AdminControllerSpec extends ObjectBehavior
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
-        $formFactory->create('admin_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);
 

@@ -61,6 +61,11 @@ class ResetRequestController
      */
     private $flashMessages;
 
+    /**
+     * @var string
+     */
+    private $formType;
+
     public function __construct(
         EngineInterface $templating,
         $requestActionTemplate,
@@ -68,7 +73,8 @@ class ResetRequestController
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
-        FlashMessages $flashMessages
+        FlashMessages $flashMessages,
+        $formType
     ) {
         $this->templating = $templating;
         $this->requestActionTemplate = $requestActionTemplate;
@@ -77,6 +83,7 @@ class ResetRequestController
         $this->userRepository = $userRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->formType = $formType;
     }
 
     /**
@@ -85,7 +92,7 @@ class ResetRequestController
      */
     public function requestAction(Request $request)
     {
-        $form = $this->formFactory->create('admin_password_reset_request');
+        $form = $this->formFactory->create($this->formType);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

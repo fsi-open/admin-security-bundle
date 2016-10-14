@@ -30,7 +30,11 @@ class ActivationControllerSpec extends ObjectBehavior
         $user,
         $flashMessages
     ) {
-        $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->createView()->willReturn($formView);
 
         $this->beConstructedWith(
@@ -40,7 +44,9 @@ class ActivationControllerSpec extends ObjectBehavior
             $router,
             $formFactory,
             $eventDispatcher,
-            $flashMessages
+            $flashMessages,
+            'form_type',
+            array('validation_group')
         );
     }
 
@@ -201,7 +207,11 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
         $user->isForcedToChangePassword()->willReturn(true);
-        $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->isValid()->willReturn(false);
         $templating->renderResponse('change-password.html.twig', array('form' => $formView))->willReturn($response);
 
@@ -229,7 +239,11 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
         $user->isForcedToChangePassword()->willReturn(true);
-        $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->isValid()->willReturn(true);
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');
 

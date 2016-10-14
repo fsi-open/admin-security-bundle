@@ -61,6 +61,16 @@ class ChangePasswordController
     private $flashMessages;
 
     /**
+     * @var string
+     */
+    private $formType;
+
+    /**
+     * @var array
+     */
+    private $formValidationGroups;
+
+    /**
      * @param EngineInterface $templating
      * @param string $changePasswordActionTemplate
      * @param UserRepositoryInterface $userRepository
@@ -68,6 +78,8 @@ class ChangePasswordController
      * @param FormFactoryInterface $formFactory
      * @param EventDispatcherInterface $eventDispatcher
      * @param FlashMessages $flashMessages
+     * @param string $formType
+     * @param array $formValidationGroups
      */
     public function __construct(
         EngineInterface $templating,
@@ -76,7 +88,9 @@ class ChangePasswordController
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
-        FlashMessages $flashMessages
+        FlashMessages $flashMessages,
+        $formType,
+        array $formValidationGroups
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
@@ -85,6 +99,8 @@ class ChangePasswordController
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->formType = $formType;
+        $this->formValidationGroups = $formValidationGroups;
     }
 
     /**
@@ -103,7 +119,11 @@ class ChangePasswordController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->formFactory->create('admin_password_reset_change_password', $user);
+        $form = $this->formFactory->create(
+            $this->formType,
+            $user,
+            array('validation_groups' => $this->formValidationGroups)
+        );
         $form->handleRequest($request);
 
         if ($form->isValid()) {

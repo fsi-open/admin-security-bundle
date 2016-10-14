@@ -30,7 +30,9 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             $router,
             $formFactory,
             $eventDispatcher,
-            $flashMessages
+            $flashMessages,
+            'form_type',
+            array('validation_group')
         );
     }
 
@@ -52,7 +54,11 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $user->getPasswordResetToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
 
-        $formFactory->create('admin_password_reset_change_password', $user)->willReturn($form);
+        $formFactory->create(
+            'form_type',
+            $user,
+            array('validation_groups' => array('validation_group'))
+        )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);
 
