@@ -76,7 +76,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $flashMessages->success('admin.password_reset.request.mail_sent', 'FSiAdminSecurity')->shouldBeCalled();
+        $flashMessages->info('admin.password_reset.request.mail_sent_if_correct', 'FSiAdminSecurity')->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
