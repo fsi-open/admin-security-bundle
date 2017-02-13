@@ -63,6 +63,16 @@ class ActivationController
     private $flashMessages;
 
     /**
+     * @var string
+     */
+    private $changePasswordFormType;
+
+    /**
+     * @var array
+     */
+    private $changePasswordFormValidationGroups;
+
+    /**
      * @param EngineInterface $templating
      * @param string $changePasswordActionTemplate
      * @param UserRepositoryInterface $userRepository
@@ -70,6 +80,8 @@ class ActivationController
      * @param FormFactoryInterface $formFactory
      * @param EventDispatcherInterface $eventDispatcher
      * @param FlashMessages $flashMessages
+     * @param string $changePasswordFormType
+     * @param array $changePasswordFormValidationGroups
      */
     public function __construct(
         EngineInterface $templating,
@@ -78,7 +90,9 @@ class ActivationController
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
-        FlashMessages $flashMessages
+        FlashMessages $flashMessages,
+        $changePasswordFormType,
+        array $changePasswordFormValidationGroups
     ) {
         $this->templating = $templating;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
@@ -87,6 +101,8 @@ class ActivationController
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->changePasswordFormType = $changePasswordFormType;
+        $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
     /**
@@ -126,7 +142,11 @@ class ActivationController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->formFactory->create('admin_password_reset_change_password', $user);
+        $form = $this->formFactory->create(
+            $this->changePasswordFormType,
+            $user,
+            array('validation_groups' => $this->changePasswordFormValidationGroups)
+        );
         $form->handleRequest($request);
 
         if ($form->isValid()) {

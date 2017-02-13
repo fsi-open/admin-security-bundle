@@ -56,6 +56,8 @@
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="admin.messages.flash" />
+            <argument type="string">%admin_security.activation.change_password_form.type%</argument>
+            <argument type="string">%admin_security.activation.change_password_form.validation_groups%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.request" class="%admin_security.controller.password_reset.request.class%">
@@ -66,6 +68,7 @@
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="admin.messages.flash" />
+            <argument type="string">%admin_security.password_reset.request_form.type%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%">
@@ -76,6 +79,8 @@
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="admin.messages.flash" />
+            <argument type="string">%admin_security.password_reset.change_password_form.type%</argument>
+            <argument type="string">%admin_security.password_reset.change_password_form.validation_groups%</argument>
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%">
@@ -86,6 +91,8 @@
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="admin.messages.flash" />
             <argument type="string">%admin_security.templates.change_password%</argument>
+            <argument type="string">%admin_security.change_password.form.type%</argument>
+            <argument type="string">%admin_security.change_password.form.validation_groups%</argument>
         </service>
 
         <!-- Mailer -->

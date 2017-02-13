@@ -11,7 +11,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ChangePasswordType extends AbstractType
@@ -54,13 +53,5 @@ class ChangePasswordType extends AbstractType
                 'translation_domain' => 'FSiAdminSecurity'
             )
         ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefault('validation_groups', array('ChangePassword', 'Default'));
     }
 }

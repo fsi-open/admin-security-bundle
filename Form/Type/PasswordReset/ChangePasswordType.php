@@ -11,7 +11,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChangePasswordType extends AbstractType
 {
@@ -38,13 +37,5 @@ class ChangePasswordType extends AbstractType
     public function getName()
     {
         return 'admin_password_reset_change_password';
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefault('validation_groups', array('ResetPassword', 'Default'));
     }
 }

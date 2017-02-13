@@ -34,6 +34,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $this->setModelParameters($container, $config['model']);
         $this->setActivationParameters($container, $config['activation']);
         $this->setPasswordResetParameters($container, $config['password_reset']);
+        $this->setChangePasswordParameters($container, $config['change_password']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
@@ -78,6 +79,14 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $container->setParameter('admin_security.activation.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.activation.mailer.from', $model['mailer']['from']);
         $container->setParameter('admin_security.activation.mailer.reply_to', $model['mailer']['reply_to']);
+        $container->setParameter(
+            'admin_security.activation.change_password_form.type',
+            $model['change_password_form']['type']
+        );
+        $container->setParameter(
+            'admin_security.activation.change_password_form.validation_groups',
+            $model['change_password_form']['validation_groups']
+        );
     }
 
     private function setPasswordResetParameters(ContainerBuilder $container, $model)
@@ -87,5 +96,29 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $container->setParameter('admin_security.password_reset.mailer.template', $model['mailer']['template']);
         $container->setParameter('admin_security.password_reset.mailer.from', $model['mailer']['from']);
         $container->setParameter('admin_security.password_reset.mailer.reply_to', $model['mailer']['reply_to']);
+        $container->setParameter(
+            'admin_security.password_reset.request_form.type',
+            $model['request_form']['type']
+        );
+        $container->setParameter(
+            'admin_security.password_reset.change_password_form.type',
+            $model['change_password_form']['type']
+        );
+        $container->setParameter(
+            'admin_security.password_reset.change_password_form.validation_groups',
+            $model['change_password_form']['validation_groups']
+        );
+    }
+
+    private function setChangePasswordParameters(ContainerBuilder $container, $model)
+    {
+        $container->setParameter(
+            'admin_security.change_password.form.type',
+            $model['form']['type']
+        );
+        $container->setParameter(
+            'admin_security.change_password.form.validation_groups',
+            $model['form']['validation_groups']
+        );
     }
 }

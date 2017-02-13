@@ -30,7 +30,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $router,
             $userRepository,
             $eventDispatcher,
-            $flashMessages
+            $flashMessages,
+            'form_type'
         );
     }
 
@@ -56,7 +57,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $router,
         $flashMessages
     ) {
-        $formFactory->create('admin_password_reset_request')->willReturn($form);
+        $formFactory->create('form_type')->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);
 
