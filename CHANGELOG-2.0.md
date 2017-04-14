@@ -46,3 +46,9 @@ more information on customizing this action.
 Previously these were displayed as form errors, that used the `FSiAdminSecurity`
 translation domain. Now they are displayed through flash messages using the default
 `security` domain.
+
+# Implementing UserRepositoryInterface is now mandatory
+
+In order for the bundle to work properly, the repository for user class defined
+in the `admin_security_user` parameter needs to implement the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`,
+otherwise an exception will be thrown during container compilation.

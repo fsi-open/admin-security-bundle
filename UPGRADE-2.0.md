@@ -70,3 +70,11 @@ class SomeAdminElement extends CRUDElement implemends SecuredElementInterface
 
 Since the login form now uses the `security` domain instead of `FSiAdminSecurity`,
 you will have to move any custom login form error messages there.
+
+## Implement UserRepositoryInterface in user repository (always)
+
+To prevent an exception being thrown during container compilation, your user model
+class (defined in `admin_security_user` parameter) needs to have a repository
+implementing the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`.
+You will either need to create a new class and have it implement the interface
+or add it to your existing repository class.

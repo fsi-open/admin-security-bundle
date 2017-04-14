@@ -13,6 +13,8 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappi
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\FirewallMapCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
+use LogicException;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,20 +29,41 @@ class FSiAdminSecurityBundle extends Bundle
 
         $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');
 
-        $mappings = array(
+        $mappings = [
             $doctrineConfigDir . '/User' => 'FSi\Bundle\AdminSecurityBundle\Security\User',
             $doctrineConfigDir . '/Token' => 'FSi\Bundle\AdminSecurityBundle\Security\Token',
-        );
+        ];
 
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
 
         if ($container->hasExtension('fos_user')) {
-            $mappings = array(
+            $mappings = [
                 $doctrineConfigDir . '/FOS' => 'FSi\Bundle\AdminSecurityBundle\Security\FOS',
-            );
+            ];
 
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
         }
+    }
+
+    public function boot()
+    {
+        /** @var RegistryInterface $doctrine */
+        $doctrine = $this->container->get('doctrine');
+        $userClass = $this->container->getParameter('admin_security.model.user');
+        $userRepositoryClass = 'FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface';
+        $repositoryClass = $doctrine->getManagerForClass($userClass)
+            ->getClassMetadata($userClass)
+            ->customRepositoryClassName
+        ;
+        if (!is_subclass_of($repositoryClass, $userRepositoryClass)) {
+            throw new LogicException(sprintf(
+                'Repository for class "\%s" does not implement the "\%s" interface!',
+                    $userClass,
+                    $userRepositoryClass
+            ));
+        }
+
+        parent::boot();
     }
 
     /**
