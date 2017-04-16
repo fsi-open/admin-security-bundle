@@ -2,14 +2,12 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Event;
 
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use PhpSpec\ObjectBehavior;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
-     */
-    function let($user)
+    function let(ChangeablePasswordInterface $user)
     {
         $this->beConstructedWith($user);
     }
@@ -19,10 +17,7 @@ class ChangePasswordEventSpec extends ObjectBehavior
         $this->shouldHaveType('Symfony\Component\EventDispatcher\Event');
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
-     */
-    function it_returns_user($user)
+    function it_returns_user(ChangeablePasswordInterface $user)
     {
         $this->getUser()->shouldReturn($user);
     }

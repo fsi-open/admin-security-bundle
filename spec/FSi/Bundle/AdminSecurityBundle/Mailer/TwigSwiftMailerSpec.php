@@ -2,16 +2,13 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use FSi\Bundle\AdminSecurityBundle\Mailer\SwiftMessageFactoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class TwigSwiftMailerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Swift_Mailer $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\SwiftMessageFactoryInterface $messageFactory
-     */
-    function let($mailer, $messageFactory)
+    function let(\Swift_Mailer $mailer, SwiftMessageFactoryInterface $messageFactory)
     {
         $this->beConstructedWith(
             $mailer,
@@ -22,14 +19,12 @@ class TwigSwiftMailerSpec extends ObjectBehavior
         );
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface $receiver
-     * @param \Swift_Mailer $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\SwiftMessageFactoryInterface $messageFactory
-     * @param \Swift_Message $message
-     */
-    function it_sends_message_throught_swift_mailer($receiver, $mailer, $messageFactory, $message)
-    {
+    function it_sends_message_throught_swift_mailer(
+        EmailableInterface $receiver,
+        \Swift_Mailer $mailer,
+        SwiftMessageFactoryInterface $messageFactory,
+        \Swift_Message $message
+    ) {
         $receiver->getEmail()->willReturn('receiver@example.com');
 
         $messageFactory->createMessage(

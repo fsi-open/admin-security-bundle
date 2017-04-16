@@ -3,19 +3,25 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LogoutUserListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\HttpFoundation\Request $masterRequest
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     */
-    function let($requestStack, $tokenStorage, $masterRequest, $session)
-    {
+    function let(
+        RequestStack $requestStack,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        Request $masterRequest,
+        SessionInterface $session
+    ) {
+        $tokenStorage->getToken()->willReturn($token);
         $requestStack->getMasterRequest()->willReturn($masterRequest);
         $masterRequest->getSession()->willReturn($session);
 
@@ -29,16 +35,13 @@ class LogoutUserListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_logouts_the_user($tokenStorage, $token, $session, $event, $user)
-    {
-        $tokenStorage->getToken()->willReturn($token);
+    function it_logouts_the_user(
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        SessionInterface $session,
+        ChangePasswordEvent $event,
+        UserInterface $user
+    ) {
         $token->getUser()->willReturn($user);
         $event->getUser()->willReturn($user);
 
@@ -48,18 +51,14 @@ class LogoutUserListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    /**
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $currentUser
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $changedUser
-     */
     function it_does_not_logout_the_user_if_it_is_not_currently_logged(
-        $tokenStorage, $token, $session, $event, $currentUser, $changedUser
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        SessionInterface $session,
+        ChangePasswordEvent $event,
+        UserInterface $currentUser,
+        UserInterface $changedUser
     ) {
-        $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($currentUser);
         $event->getUser()->willReturn($changedUser);
 

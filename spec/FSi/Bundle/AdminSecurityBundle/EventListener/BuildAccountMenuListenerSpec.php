@@ -4,19 +4,20 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\MenuEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class BuildAccountMenuListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function let($translator, $tokenStorage, $token, $user)
-    {
+    function let(
+        TranslatorInterface $translator,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        UserInterface $user
+    ) {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
         $token->getUsername()->willReturn('some user');

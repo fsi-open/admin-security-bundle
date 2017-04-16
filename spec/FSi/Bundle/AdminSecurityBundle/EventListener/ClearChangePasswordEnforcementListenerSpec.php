@@ -2,6 +2,8 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -15,12 +17,10 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
-     */
-    function it_does_nothing_if_has_not_enforced_password_change($event, $user)
-    {
+    function it_does_nothing_if_has_not_enforced_password_change(
+        ChangePasswordEvent $event,
+        EnforceablePasswordChangeInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(false);
 
@@ -29,12 +29,10 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
-     */
-    function it_ceases_enforced_password_change($event, $user)
-    {
+    function it_ceases_enforced_password_change(
+        ChangePasswordEvent $event,
+        EnforceablePasswordChangeInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(true);
 

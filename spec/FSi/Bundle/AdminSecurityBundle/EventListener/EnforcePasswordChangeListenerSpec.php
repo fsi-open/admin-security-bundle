@@ -2,20 +2,26 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     */
-    function let($firewallMapper, $authorizationChecker, $tokenStorage, $router)
-    {
+    function let(
+        FirewallMapper $firewallMapper,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        RouterInterface $router
+    ) {
         $this->beConstructedWith(
             $firewallMapper,
             $authorizationChecker,
@@ -33,13 +39,11 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     */
-    function it_does_nothing_if_there_is_no_current_firewall($event, $request, $firewallMapper)
-    {
+    function it_does_nothing_if_there_is_no_current_firewall(
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper
+    ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn(null);
 
@@ -48,12 +52,10 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     */
-    function it_does_nothing_if_there_is_no_token($event, $tokenStorage)
-    {
+    function it_does_nothing_if_there_is_no_token(
+        GetResponseEvent $event,
+        TokenStorageInterface $tokenStorage
+    ) {
         $tokenStorage->getToken()->willReturn(null);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -61,13 +63,10 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     */
     function it_does_nothing_if_there_current_firewall_is_not_configured_in_this_listener(
-        $event, $request, $firewallMapper
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper
     ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn('user_firewall');
@@ -77,14 +76,11 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     */
     function it_does_nothing_when_user_is_not_logged_in(
-        $event, $request, $firewallMapper, $authorizationChecker
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper,
+        AuthorizationCheckerInterface $authorizationChecker
     ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn('firewall');
@@ -95,18 +91,14 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     */
     function it_does_nothing_when_user_has_not_enforce_password_change(
-        $event, $request, $firewallMapper, $authorizationChecker, $tokenStorage, $token, $user, $router
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        EnforceablePasswordChangeInterface $user
     ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn('firewall');
@@ -120,17 +112,14 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
-     */
     function it_stops_event_propagation_when_already_on_change_password_page(
-        $event, $request, $firewallMapper, $authorizationChecker, $tokenStorage, $token, $user
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        EnforceablePasswordChangeInterface $user
     ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn('firewall');
@@ -146,18 +135,15 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper $firewallMapper
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface $user
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     */
     function it_redirects_to_change_password(
-        $event, $request, $firewallMapper, $authorizationChecker, $tokenStorage, $token, $user, $router
+        GetResponseEvent $event,
+        Request $request,
+        FirewallMapper $firewallMapper,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        EnforceablePasswordChangeInterface $user,
+        RouterInterface $router
     ) {
         $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn('firewall');

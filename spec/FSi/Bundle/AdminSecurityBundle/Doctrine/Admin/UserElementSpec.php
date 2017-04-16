@@ -3,7 +3,6 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class UserElementSpec extends ObjectBehavior
 {

@@ -2,8 +2,9 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class SetEmailAsUsernameListenerSpec extends ObjectBehavior
 {
@@ -12,11 +13,7 @@ class SetEmailAsUsernameListenerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\EventListener\SetEmailAsUsernameListener');
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_should_set_email_as_username($event, $user)
+    function it_should_set_email_as_username(UserEvent $event, UserInterface $user)
     {
         $event->getUser()->willReturn($user);
 

@@ -3,17 +3,16 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Security\Firewall;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 
 class FirewallMapperSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher1
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher2
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher3
-     */
-    function let($matcher1, $matcher2, $matcher3)
-    {
+    function let(
+        RequestMatcherInterface $matcher1,
+        RequestMatcherInterface $matcher2,
+        RequestMatcherInterface $matcher3
+    ) {
         $this->beConstructedWith([
             'firewall1' => $matcher1,
             'firewall2' => $matcher2,
@@ -21,14 +20,12 @@ class FirewallMapperSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher1
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher2
-     * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $matcher3
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     */
-    function it_returns_firewall_name_for_first_matching_request($matcher1, $matcher2, $matcher3, $request)
-    {
+    function it_returns_firewall_name_for_first_matching_request(
+        RequestMatcherInterface $matcher1,
+        RequestMatcherInterface $matcher2,
+        RequestMatcherInterface $matcher3,
+        Request $request
+    ) {
         $matcher1->matches($request)->willReturn(false);
         $matcher2->matches($request)->willReturn(false);
         $matcher3->matches($request)->willReturn(true);

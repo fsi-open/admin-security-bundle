@@ -3,22 +3,30 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\BatchEvents;
+use FSi\Bundle\AdminBundle\Event\FormEvent;
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Component\DataIndexer\DataIndexerInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class PreventDeletingCurrentUserSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement $userElement
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
-    function let($tokenStorage, $router, $event, $userElement, $token, $request, $dataIndexer, $flashMessages) {
+    function let(
+        TokenStorageInterface $tokenStorage,
+        RouterInterface $router,
+        FormEvent $event,
+        UserElement $userElement,
+        TokenInterface $token,
+        Request $request,
+        DataIndexerInterface $dataIndexer,
+        FlashMessages $flashMessages
+    ) {
         $event->getElement()->willReturn($userElement);
         $tokenStorage->getToken()->willReturn($token);
         $event->getRequest()->willReturn($request);
@@ -40,16 +48,14 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
-    function it_should_prevent_deleting_current_user($event, $request, $token, $user, $dataIndexer, $flashMessages)
-    {
+    function it_should_prevent_deleting_current_user(
+        FormEvent $event,
+        TokenInterface $token,
+        Request $request,
+        DataIndexerInterface $dataIndexer,
+        FlashMessages $flashMessages,
+        UserInterface $user
+    ) {
         $token->getUser()->willReturn($user);
         $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
@@ -64,16 +70,14 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $this->preventDeletingCurrentUser($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $currentUser
-     * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
-     */
-    function it_should_allow_deleting_other_users($event, $request, $token, $user, $currentUser, $dataIndexer)
-    {
+    function it_should_allow_deleting_other_users(
+        FormEvent $event,
+        TokenInterface $token,
+        Request $request,
+        DataIndexerInterface $dataIndexer,
+        UserInterface $user,
+        UserInterface $currentUser
+    ) {
         $token->getUser()->willReturn($currentUser);
         $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
@@ -84,17 +88,15 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $this->preventDeletingCurrentUser($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Component\DataIndexer\DataIndexerInterface $dataIndexer
-     * @param \FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement $userElement
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     */
-    function it_should_redirect_to_element_when_there_is_no_redirect_uri($event, $request, $token, $user, $dataIndexer, $userElement, $router)
-    {
+    function it_should_redirect_to_element_when_there_is_no_redirect_uri(
+        RouterInterface $router,
+        FormEvent $event,
+        UserElement $userElement,
+        TokenInterface $token,
+        Request $request,
+        DataIndexerInterface $dataIndexer,
+        UserInterface $user
+    ) {
         $token->getUser()->willReturn($user);
         $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
