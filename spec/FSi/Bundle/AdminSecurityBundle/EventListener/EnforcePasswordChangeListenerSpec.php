@@ -28,9 +28,9 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 
     function it_subscribes_user_created_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             KernelEvents::REQUEST => 'onKernelRequest'
-        ));
+        ]);
     }
 
     /**

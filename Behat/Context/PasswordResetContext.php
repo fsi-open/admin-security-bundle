@@ -78,7 +78,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationToken($username, $confirmationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         $user->setPasswordResetToken($this->createToken($confirmationToken, new DateInterval('PT3600S')));
 
@@ -90,7 +90,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userShouldStillHaveConfirmationToken($username, $expectedConfirmationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         expect($user->getPasswordResetToken()->getToken())->toBe($expectedConfirmationToken);
     }
@@ -100,7 +100,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function userHasConfirmationTokenWithTtl($username, $confirmationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         $ttl = new DateInterval('P1D');
         $ttl->invert = true;

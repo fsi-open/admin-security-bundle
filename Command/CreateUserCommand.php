@@ -28,13 +28,13 @@ class CreateUserCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:create')
             ->setDescription('Create a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
                 new InputArgument('role', InputArgument::REQUIRED, 'Role'),
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
                 new InputOption('enforce-password-change', null, InputOption::VALUE_NONE, 'Enforce user to change password during next login'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:create</info> command creates a user:
 

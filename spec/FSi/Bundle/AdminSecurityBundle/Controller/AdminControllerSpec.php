@@ -51,15 +51,15 @@ class AdminControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
 
-        $templating->renderResponse('FSiAdminSecurityBundle:Admin:change_password.html.twig', array(
+        $templating->renderResponse('FSiAdminSecurityBundle:Admin:change_password.html.twig', [
             'form' => $formView
-        ))->shouldBeCalled()->willReturn($response);
+        ])->shouldBeCalled()->willReturn($response);
 
         $this->changePasswordAction($request)->shouldReturn($response);
     }
@@ -84,7 +84,7 @@ class AdminControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);

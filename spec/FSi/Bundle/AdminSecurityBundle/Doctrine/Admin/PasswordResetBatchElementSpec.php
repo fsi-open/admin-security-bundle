@@ -13,7 +13,7 @@ class PasswordResetBatchElementSpec extends ObjectBehavior
      */
     function let($eventDispatcher)
     {
-        $this->beConstructedWith(array(), 'FQCN\User\Model', $eventDispatcher);
+        $this->beConstructedWith([], 'FQCN\User\Model', $eventDispatcher);
     }
 
     function it_is_batch_element()

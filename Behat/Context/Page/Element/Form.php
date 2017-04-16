@@ -8,7 +8,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\ElementNotFoundExc
 
 class Form extends Element
 {
-    protected $selector = array('css' => 'form');
+    protected $selector = ['css' => 'form'];
 
     public function getField($locator)
     {

@@ -33,7 +33,7 @@ class UserElement extends CRUDElement
      */
     protected function initDataSource(DataSourceFactoryInterface $factory)
     {
-        return $factory->createDataSource('doctrine', array('entity' => $this->getClassName()))->setMaxResults(20);
+        return $factory->createDataSource('doctrine', ['entity' => $this->getClassName()])->setMaxResults(20);
     }
 
     /**

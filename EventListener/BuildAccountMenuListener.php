@@ -46,12 +46,12 @@ class BuildAccountMenuListener
 
         if ($this->canChangeUserPassword()) {
             $changePasswordItem = new RoutableItem('account.change-password', 'fsi_admin_change_password');
-            $changePasswordItem->setLabel($this->translator->trans('admin.change_password', array(), 'FSiAdminSecurity'));
+            $changePasswordItem->setLabel($this->translator->trans('admin.change_password', [], 'FSiAdminSecurity'));
             $rootItem->addChild($changePasswordItem);
         }
 
         $logoutItem = new RoutableItem('account.logout', 'fsi_admin_security_user_logout');
-        $logoutItem->setLabel($this->translator->trans('admin.logout', array(), 'FSiAdminSecurity'));
+        $logoutItem->setLabel($this->translator->trans('admin.logout', [], 'FSiAdminSecurity'));
         $rootItem->addChild($logoutItem);
 
         $event->getMenu()->addChild($rootItem);
@@ -69,16 +69,16 @@ class BuildAccountMenuListener
         $rootItem->setLabel(
             $this->translator->trans(
                 'admin.welcome',
-                array('%username%' => $this->tokenStorage->getToken()->getUsername()),
+                ['%username%' => $this->tokenStorage->getToken()->getUsername()],
                 'FSiAdminSecurity'
             )
         );
 
-        $rootItem->setOptions(array(
-            'attr' => array(
+        $rootItem->setOptions([
+            'attr' => [
                 'id' => 'account',
-            )
-        ));
+            ]
+        ]);
 
         return $rootItem;
     }

@@ -50,7 +50,7 @@ class CommandContext implements KernelAwareContext
     {
         $command = $this->application->find($name);
         $this->tester = new CommandTester($command);
-        $this->tester->execute(array('command' => $command->getName()));
+        $this->tester->execute(['command' => $command->getName()]);
     }
 
     /**
@@ -58,14 +58,14 @@ class CommandContext implements KernelAwareContext
      */
     public function iRunCommandWithParameters($command, TableNode $parameters)
     {
-        $params = array();
+        $params = [];
         foreach ($parameters->getHash() as $parameterRow) {
             $params[$parameterRow['parameter']] = $parameterRow['value'];
         }
 
         $command = $this->application->find($command);
         $this->tester = new CommandTester($command);
-        $this->tester->execute(array('command' => $command->getName()));
+        $this->tester->execute(['command' => $command->getName()]);
     }
 
     /**
@@ -76,14 +76,14 @@ class CommandContext implements KernelAwareContext
         $command = $this->application->find('fsi:user:create');
 
         $this->tester = new CommandTester($command);
-        $this->tester->execute(array(
+        $this->tester->execute([
             'command' => $command->getName(),
             'email' => $email,
             'password' => 'admin',
             'role' => 'ROLE_ADMIN',
             '--inactive' => true,
             '--enforce-password-change' => true
-        ));
+        ]);
     }
 
     /**
@@ -94,12 +94,12 @@ class CommandContext implements KernelAwareContext
         $command = $this->application->find('fsi:user:create');
 
         $this->tester = new CommandTester($command);
-        $this->tester->execute(array(
+        $this->tester->execute([
             'command' => $command->getName(),
             'email' => $email,
             'password' => 'admin',
             'role' => 'ROLE_ADMIN',
             '--inactive' => true
-        ));
+        ]);
     }
 }

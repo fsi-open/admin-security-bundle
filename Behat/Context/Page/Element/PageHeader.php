@@ -13,5 +13,5 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
 
 class PageHeader extends Element
 {
-    protected $selector = array('css' => '#page-header');
+    protected $selector = ['css' => '#page-header'];
 }

@@ -27,9 +27,9 @@ class ActivateUserCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:activate')
             ->setDescription('Activate a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:activate</info> command activates the user
 

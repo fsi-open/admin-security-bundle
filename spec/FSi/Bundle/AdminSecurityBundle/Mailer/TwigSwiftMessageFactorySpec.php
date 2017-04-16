@@ -28,20 +28,20 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
     function it_should_render_template($twig, $template, $requestStack)
     {
         $request = new Request(
-            array(),
-            array(),
-            array(),
-            array(),
-            array(),
-            array('HTTP_USER_AGENT' => 'user agent', 'REMOTE_ADDR' => '192.168.99.99')
+            [],
+            [],
+            [],
+            [],
+            [],
+            ['HTTP_USER_AGENT' => 'user agent', 'REMOTE_ADDR' => '192.168.99.99']
         );
 
         $requestStack->getMasterRequest()->willReturn($request);
 
-        $templateParameters = array(
+        $templateParameters = [
             'user' => 'user',
             'request' => $request
-        );
+        ];
 
         $twig->mergeGlobals($templateParameters)->willReturn($templateParameters);
         $twig->loadTemplate('mail-template.html.twig')->willReturn($template);
@@ -49,10 +49,10 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
         $template->renderBlock('subject', $templateParameters)->willReturn('subject string');
         $template->renderBlock('body_html', $templateParameters)->willReturn('body string');
 
-        $message = $this->createMessage('user@example.com', 'mail-template.html.twig', array('user' => 'user'));
+        $message = $this->createMessage('user@example.com', 'mail-template.html.twig', ['user' => 'user']);
         $message->shouldBeAnInstanceOf('\Swift_Message');
         $message->getSubject()->shouldReturn('subject string');
-        $message->getTo()->shouldReturn(array('user@example.com' => null));
+        $message->getTo()->shouldReturn(['user@example.com' => null]);
         $message->getBody()->shouldReturn('body string');
     }
 }

@@ -38,9 +38,9 @@ class SendPasswordResetMailListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
-        );
+        ];
     }
 
     /**

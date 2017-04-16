@@ -120,7 +120,7 @@ class ResetRequestController
 
         return $this->templating->renderResponse(
             $this->requestActionTemplate,
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         );
     }
 

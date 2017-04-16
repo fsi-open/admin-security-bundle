@@ -16,19 +16,19 @@ class ChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('plainPassword', 'repeated', array(
+        $builder->add('plainPassword', 'repeated', [
             'invalid_message' => 'admin_user.password.mismatch',
             'type' => 'password',
             'translation_domain' => 'FSiAdminSecurity',
-            'first_options' => array(
+            'first_options' => [
                 'label' => 'admin.password_reset.change_password.form.password',
                 'translation_domain' => 'FSiAdminSecurity',
-            ),
-            'second_options' => array(
+            ],
+            'second_options' => [
                 'label' => 'admin.password_reset.change_password.form.repeat_password',
                 'translation_domain' => 'FSiAdminSecurity'
-            )
-        ));
+            ]
+        ]);
     }
 
     /**

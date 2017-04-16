@@ -10,9 +10,9 @@ class DeactivateUserListenerSpec extends ObjectBehavior
 {
     function it_subscribes_deactivation_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::DEACTIVATION => 'onDeactivation'
-        ));
+        ]);
     }
 
     /**

@@ -27,10 +27,10 @@ class SecurityControllerSpec extends ObjectBehavior
         $authenticationUtils->getLastUsername()->willReturn('user');
         $templating->renderResponse(
                 'FSiAdminSecurityBundle:Security:login.html.twig',
-                array(
+                [
                     'error' => $error,
                     'last_username' => 'user'
-                )
+                ]
             )->willReturn($response);
 
         $this->loginAction()->shouldReturn($response);

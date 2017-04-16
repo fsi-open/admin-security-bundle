@@ -27,9 +27,9 @@ class DeactivateUserCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:deactivate')
             ->setDescription('Deactivate a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:deactivate</info> command deactivates the user
 

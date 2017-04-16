@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('fsi_admin_security');
 
-        $supportedStorages = array('orm');
+        $supportedStorages = ['orm'];
 
         $rootNode
             ->beforeNormalization()
@@ -102,7 +102,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('type')->defaultValue('admin_password_reset_change_password')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('ResetPassword', 'Default'))
+                                    ->defaultValue(['ResetPassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -139,7 +139,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('type')->defaultValue('admin_password_reset_change_password')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('ResetPassword', 'Default'))
+                                    ->defaultValue(['ResetPassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -160,7 +160,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('type')->defaultValue('admin_change_password')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('ChangePassword', 'Default'))
+                                    ->defaultValue(['ChangePassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()

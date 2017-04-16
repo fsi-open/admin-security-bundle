@@ -35,9 +35,9 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
     function it_should_subscribe_events()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser'
-        ));
+        ]);
     }
 
     /**
@@ -51,7 +51,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
     function it_should_prevent_deleting_current_user($event, $request, $token, $user, $dataIndexer, $flashMessages)
     {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', array())->willReturn(array(1));
+        $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
 
         $event->stopPropagation()->shouldBeCalled();
@@ -75,7 +75,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
     function it_should_allow_deleting_other_users($event, $request, $token, $user, $currentUser, $dataIndexer)
     {
         $token->getUser()->willReturn($currentUser);
-        $request->get('indexes', array())->willReturn(array(1));
+        $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
 
         $event->stopPropagation()->shouldNotBeCalled();
@@ -96,15 +96,15 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
     function it_should_redirect_to_element_when_there_is_no_redirect_uri($event, $request, $token, $user, $dataIndexer, $userElement, $router)
     {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', array())->willReturn(array(1));
+        $request->get('indexes', [])->willReturn([1]);
         $dataIndexer->getData(1)->willReturn($user);
 
         $request->get('redirect_uri')->willReturn(null);
 
         $event->getElement()->willReturn($userElement);
         $userElement->getRoute()->willReturn('route_name');
-        $userElement->getRouteParameters()->willReturn(array(1, 2, 3));
-        $router->generate('route_name', array(1, 2, 3))->willReturn('http://example.com/1,2,3');
+        $userElement->getRouteParameters()->willReturn([1, 2, 3]);
+        $router->generate('route_name', [1, 2, 3])->willReturn('http://example.com/1,2,3');
 
         $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::allOf(

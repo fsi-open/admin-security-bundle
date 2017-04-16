@@ -21,9 +21,9 @@ class SetEmailAsUsernameListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::USER_CREATED => 'setEmailAsUsername'
-        );
+        ];
     }
 
     /**

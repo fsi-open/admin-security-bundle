@@ -28,10 +28,10 @@ class PromoteUserCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:promote')
             ->setDescription('Promote a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('role', InputArgument::REQUIRED, 'The role'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:promote</info> command promotes the user
 

@@ -19,9 +19,9 @@ class SendPasswordResetMailListenerSpec extends ObjectBehavior
 
     function it_subscribes_user_created_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
-        ));
+        ]);
     }
 
     /**

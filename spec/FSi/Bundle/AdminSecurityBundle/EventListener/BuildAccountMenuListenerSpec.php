@@ -21,10 +21,10 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
         $token->getUser()->willReturn($user);
         $token->getUsername()->willReturn('some user');
 
-        $translator->trans('admin.welcome', array('%username%' => 'some user'), 'FSiAdminSecurity')
+        $translator->trans('admin.welcome', ['%username%' => 'some user'], 'FSiAdminSecurity')
             ->willReturn('Hello some user');
-        $translator->trans('admin.change_password', array(), 'FSiAdminSecurity')->willReturn('change password');
-        $translator->trans('admin.logout', array(), 'FSiAdminSecurity')->willReturn('logout');
+        $translator->trans('admin.change_password', [], 'FSiAdminSecurity')->willReturn('change password');
+        $translator->trans('admin.logout', [], 'FSiAdminSecurity')->willReturn('logout');
 
         $this->beConstructedWith($translator, $tokenStorage);
     }
@@ -38,7 +38,7 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
 
     public function getMatchers()
     {
-        return array(
+        return [
             'haveItem' => function(Item $menu, $itemName, $route = false) {
                 $items = $menu->getChildren();
                 foreach ($items as $item) {
@@ -68,6 +68,6 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
                 }
                 return false;
             }
-        );
+        ];
     }
 }
