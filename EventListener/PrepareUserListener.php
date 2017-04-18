@@ -41,11 +41,11 @@ class PrepareUserListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            FormEvents::FORM_DATA_PRE_SAVE => array(
+        return [
+            FormEvents::FORM_DATA_PRE_SAVE => [
                 'prepareAndDispatchUserCreated',
-            )
-        );
+            ]
+        ];
     }
 
     public function prepareAndDispatchUserCreated(FormEvent $event)

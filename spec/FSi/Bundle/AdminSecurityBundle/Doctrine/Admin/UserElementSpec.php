@@ -9,7 +9,7 @@ class UserElementSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array(), 'User\Model');
+        $this->beConstructedWith([], 'User\Model');
     }
 
     function it_has_id()

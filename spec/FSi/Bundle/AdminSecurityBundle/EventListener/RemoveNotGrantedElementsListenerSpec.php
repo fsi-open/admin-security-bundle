@@ -42,10 +42,10 @@ class RemoveNotGrantedElementsListenerSpec extends ObjectBehavior
     function it_remove_element_from_admin_manager_when_its_secured_from_user(
         $event, $adminManager, $authorizationChecker, $securedElement, $element
     ) {
-        $adminManager->getElements()->shouldBeCalled()->willReturn(array(
+        $adminManager->getElements()->shouldBeCalled()->willReturn([
             $securedElement,
             $element
-        ));
+        ]);
 
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
 

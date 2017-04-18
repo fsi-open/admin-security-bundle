@@ -14,11 +14,11 @@ class FirewallMapperSpec extends ObjectBehavior
      */
     function let($matcher1, $matcher2, $matcher3)
     {
-        $this->beConstructedWith(array(
+        $this->beConstructedWith([
             'firewall1' => $matcher1,
             'firewall2' => $matcher2,
             'firewall3' => $matcher3
-        ));
+        ]);
     }
 
     /**

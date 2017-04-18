@@ -33,7 +33,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->createView()->willReturn($formView);
 
@@ -46,7 +46,7 @@ class ActivationControllerSpec extends ObjectBehavior
             $eventDispatcher,
             $flashMessages,
             'form_type',
-            array('validation_group')
+            ['validation_group']
         );
     }
 
@@ -59,9 +59,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $userRepository->findUserByActivationToken('non-existing-token')->willReturn(null);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('activateAction', array('non-existing-token'));
+            ->during('activateAction', ['non-existing-token']);
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('changePasswordAction', array($request, 'non-existing-token'));
+            ->during('changePasswordAction', [$request, 'non-existing-token']);
     }
 
     /**
@@ -74,9 +74,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('activateAction', array('activation-token'));
+            ->during('activateAction', ['activation-token']);
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('changePasswordAction', array($request, 'activation-token'));
+            ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
     /**
@@ -90,9 +90,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(true);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('activateAction', array('activation-token'));
+            ->during('activateAction', ['activation-token']);
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('changePasswordAction', array($request, 'activation-token'));
+            ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
     /**
@@ -109,9 +109,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $token->isNonExpired()->willReturn(false);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('activateAction', array('activation-token'));
+            ->during('activateAction', ['activation-token']);
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('changePasswordAction', array($request, 'activation-token'));
+            ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
     /**
@@ -129,7 +129,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
         $user->isForcedToChangePassword()->willReturn(true);
-        $router->generate('fsi_admin_activation_change_password', array('token' => 'activation-token'))
+        $router->generate('fsi_admin_activation_change_password', ['token' => 'activation-token'])
             ->willReturn('change_password_url');
 
         $flashMessages->info('admin.activation.message.change_password', 'FSiAdminSecurity')->shouldBeCalled();
@@ -185,7 +185,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isForcedToChangePassword()->willReturn(false);
 
         $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
-            ->during('changePasswordAction', array($request, 'activation-token'));
+            ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
     /**
@@ -210,10 +210,10 @@ class ActivationControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->isValid()->willReturn(false);
-        $templating->renderResponse('change-password.html.twig', array('form' => $formView))->willReturn($response);
+        $templating->renderResponse('change-password.html.twig', ['form' => $formView])->willReturn($response);
 
         $form->handleRequest($request)->shouldBeCalled();
 
@@ -242,7 +242,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->isValid()->willReturn(true);
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');

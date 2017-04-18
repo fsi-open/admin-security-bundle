@@ -18,10 +18,10 @@ class EncodePasswordListenerSpec extends ObjectBehavior
 
     function it_subscribes_change_password_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated'
-        ));
+        ]);
     }
 
     /**

@@ -40,7 +40,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
@@ -49,7 +49,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
             AdminSecurityEvents::DEMOTE_USER => 'onDemoteUser',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
-        );
+        ];
     }
 
     /**

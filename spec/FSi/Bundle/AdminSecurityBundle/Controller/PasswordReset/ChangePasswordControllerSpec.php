@@ -32,7 +32,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             $eventDispatcher,
             $flashMessages,
             'form_type',
-            array('validation_group')
+            ['validation_group']
         );
     }
 
@@ -57,7 +57,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $formFactory->create(
             'form_type',
             $user,
-            array('validation_groups' => array('validation_group'))
+            ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->handleRequest($request)->shouldBeCalled();
         $form->isValid()->willReturn(true);

@@ -16,10 +16,10 @@ class RequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', array(
+        $builder->add('email', 'email', [
             'translation_domain' => 'FSiAdminSecurity',
             'label' => 'admin.password_reset.request.form.email'
-        ));
+        ]);
     }
 
     /**

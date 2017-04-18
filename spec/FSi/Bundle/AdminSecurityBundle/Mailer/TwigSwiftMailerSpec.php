@@ -35,7 +35,7 @@ class TwigSwiftMailerSpec extends ObjectBehavior
         $messageFactory->createMessage(
             'receiver@example.com',
             'mail-template.html.twig',
-            array('receiver' => $receiver)
+            ['receiver' => $receiver]
         )->willReturn($message);
 
         $message->setFrom('sender@example.com')->shouldBeCalled();

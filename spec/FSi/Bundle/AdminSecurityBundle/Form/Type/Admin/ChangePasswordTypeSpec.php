@@ -17,32 +17,32 @@ class ChangePasswordTypeSpec extends ObjectBehavior
      */
     function it_add_fields_during_build($formBuilder)
     {
-        $formBuilder->add('current_password', 'password', array(
+        $formBuilder->add('current_password', 'password', [
             'label' => 'admin.change_password_form.current_password',
             'mapped' => false,
             'required' => true,
             'translation_domain' => 'FSiAdminSecurity',
-            'constraints' => array(
-                new UserPassword(array('message' => 'admin_user.current_password.invalid'))
-            )
-        ))->shouldBeCalled()->willReturn($formBuilder);
+            'constraints' => [
+                new UserPassword(['message' => 'admin_user.current_password.invalid'])
+            ]
+        ])->shouldBeCalled()->willReturn($formBuilder);
 
-        $formBuilder->add('plainPassword', 'repeated', array(
+        $formBuilder->add('plainPassword', 'repeated', [
             'invalid_message' => 'admin_user.password.mismatch',
             'type' => 'password',
             'translation_domain' => 'FSiAdminSecurity',
-            'first_options' => array(
+            'first_options' => [
                 'label' => 'admin.change_password_form.password',
                 'required' => true,
                 'translation_domain' => 'FSiAdminSecurity',
-            ),
-            'second_options' => array(
+            ],
+            'second_options' => [
                 'label' => 'admin.change_password_form.repeat_password',
                 'required' => true,
                 'translation_domain' => 'FSiAdminSecurity'
-            )
-        ))->shouldBeCalled()->willReturn($formBuilder);
+            ]
+        ])->shouldBeCalled()->willReturn($formBuilder);
 
-        $this->buildForm($formBuilder, array());
+        $this->buildForm($formBuilder, []);
     }
 }

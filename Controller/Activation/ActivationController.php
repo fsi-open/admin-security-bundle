@@ -117,7 +117,7 @@ class ActivationController
             $this->flashMessages->info('admin.activation.message.change_password', 'FSiAdminSecurity');
 
             return new RedirectResponse(
-                $this->router->generate('fsi_admin_activation_change_password', array('token' => $token))
+                $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
             );
         } else {
             $this->eventDispatcher->dispatch(
@@ -145,7 +145,7 @@ class ActivationController
         $form = $this->formFactory->create(
             $this->changePasswordFormType,
             $user,
-            array('validation_groups' => $this->changePasswordFormValidationGroups)
+            ['validation_groups' => $this->changePasswordFormValidationGroups]
         );
         $form->handleRequest($request);
 
@@ -165,7 +165,7 @@ class ActivationController
 
         return $this->templating->renderResponse(
             $this->changePasswordActionTemplate,
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         );
     }
 

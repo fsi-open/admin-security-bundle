@@ -43,21 +43,21 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
 
     public function prepend(ContainerBuilder $container)
     {
-        $container->prependExtensionConfig('fsi_admin', array(
-            'templates' => array(
+        $container->prependExtensionConfig('fsi_admin', [
+            'templates' => [
                 'datagrid_theme' => '@FSiAdminSecurity/Admin/datagrid.html.twig'
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      * @param array $config
      */
-    protected function setTemplateParameters(ContainerBuilder $container, $prefix, $config = array())
+    protected function setTemplateParameters(ContainerBuilder $container, $prefix, $config = [])
     {
         foreach ($config as $key => $value) {
-            $parameterName = join('.', array($prefix, $key));
+            $parameterName = join('.', [$prefix, $key]);
             if (is_array($value)) {
                 $this->setTemplateParameters($container, $parameterName, $value);
                 continue;

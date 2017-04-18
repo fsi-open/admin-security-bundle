@@ -52,9 +52,9 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser',
-        );
+        ];
     }
 
     public function preventDeletingCurrentUser(FormEvent $event)
@@ -67,7 +67,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
 
         $user = $this->tokenStorage->getToken()->getUser();
         $request = $event->getRequest();
-        $indexes = $request->get('indexes', array());
+        $indexes = $request->get('indexes', []);
 
         foreach ($indexes as $index) {
             /** @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $entity */

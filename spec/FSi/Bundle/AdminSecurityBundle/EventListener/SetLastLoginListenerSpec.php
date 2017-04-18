@@ -10,9 +10,9 @@ class SetLastLoginListenerSpec extends ObjectBehavior
 {
     function it_subscribes_for_interactive_login_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
                 SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
-        ));
+        ]);
     }
 
     /**

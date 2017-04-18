@@ -10,9 +10,9 @@ class ActivateUserListenerSpec extends ObjectBehavior
 {
     function it_subscribes_activation_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::ACTIVATION => 'onActivation'
-        ));
+        ]);
     }
 
     /**

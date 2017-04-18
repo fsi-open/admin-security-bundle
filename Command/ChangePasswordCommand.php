@@ -27,10 +27,10 @@ class ChangePasswordCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:change-password')
             ->setDescription('Change password of a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:change-password</info> command changes user's password:
 

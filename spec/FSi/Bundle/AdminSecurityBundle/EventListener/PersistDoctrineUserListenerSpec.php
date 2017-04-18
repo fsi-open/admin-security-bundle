@@ -22,7 +22,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
 
     function it_subscribes_all_events()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
@@ -31,7 +31,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
             AdminSecurityEvents::DEMOTE_USER => 'onDemoteUser',
             SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
-        ));
+        ]);
     }
 
     /**

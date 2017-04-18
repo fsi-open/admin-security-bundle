@@ -134,7 +134,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
 
         $manager = $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User');
         $userRepository = $manager->getRepository('FSiFixturesBundle:User');
-        $user = $userRepository->findOneBy(array('username' => $nick));
+        $user = $userRepository->findOneBy(['username' => $nick]);
         $user->enforcePasswordChange(true);
         $manager->flush();
     }
@@ -200,7 +200,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
      */
     private function findUserByUsername($username)
     {
-        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(array('username' => $username));
+        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['username' => $username]);
     }
 
     /**
@@ -209,6 +209,6 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
      */
     private function findUserByEmail($userEmail)
     {
-        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(array('email' => $userEmail));
+        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['email' => $userEmail]);
     }
 }

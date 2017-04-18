@@ -76,7 +76,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function userHasActivationToken($username, $activationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         $user->setActivationToken($this->createToken($activationToken, new DateInterval('PT3600S')));
 
@@ -88,7 +88,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function userShouldStillHaveActivationToken($username, $expectedActivationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         expect($user->getActivationToken()->getToken())->toBe($expectedActivationToken);
     }
@@ -98,7 +98,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function userHasActivationTokenWithTtl($username, $activationToken)
     {
-        $user = $this->getUserRepository()->findOneBy(array('username' => $username));
+        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
         $ttl = new DateInterval('P1D');
         $ttl->invert = true;
@@ -134,7 +134,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
     public function iOpenActivationPageWithTokenReceivedByUserInTheEmail($userEmail)
     {
         /** @var UserInterface $user */
-        $user = $this->getUserRepository()->findOneBy(array('email' => $userEmail));
+        $user = $this->getUserRepository()->findOneBy(['email' => $userEmail]);
 
         /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
         $page = $this->getPage('Activation');

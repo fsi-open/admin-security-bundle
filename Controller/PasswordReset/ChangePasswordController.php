@@ -122,7 +122,7 @@ class ChangePasswordController
         $form = $this->formFactory->create(
             $this->formType,
             $user,
-            array('validation_groups' => $this->formValidationGroups)
+            ['validation_groups' => $this->formValidationGroups]
         );
         $form->handleRequest($request);
 
@@ -141,7 +141,7 @@ class ChangePasswordController
 
         return $this->templating->renderResponse(
             $this->changePasswordActionTemplate,
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         );
     }
 }

@@ -65,7 +65,7 @@ class TwigSwiftMailer implements MailerInterface
      */
     public function send(EmailableInterface $to)
     {
-        $message = $this->messageFactory->createMessage($to->getEmail(), $this->templateName, array('receiver' => $to));
+        $message = $this->messageFactory->createMessage($to->getEmail(), $this->templateName, ['receiver' => $to]);
         $message->setFrom($this->fromEmail);
         if (isset($this->replayToEmail)) {
             $message->setReplyTo($this->replayToEmail);

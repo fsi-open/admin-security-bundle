@@ -19,9 +19,9 @@ class SendActivationMailListenerSpec extends ObjectBehavior
 
     function it_subscribes_user_created_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::USER_CREATED => 'onUserCreated'
-        ));
+        ]);
     }
 
     /**

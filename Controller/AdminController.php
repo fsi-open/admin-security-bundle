@@ -112,7 +112,7 @@ class AdminController
         $form = $this->formFactory->create(
             $this->changePasswordFormType,
             $user,
-            array('validation_groups' => $this->changePasswordFormValidationGroups)
+            ['validation_groups' => $this->changePasswordFormValidationGroups]
         );
         $form->handleRequest($request);
 
@@ -130,7 +130,7 @@ class AdminController
 
         return $this->templating->renderResponse(
             $this->changePasswordActionTemplate,
-            array('form' => $form->createView())
+            ['form' => $form->createView()]
         );
     }
 }

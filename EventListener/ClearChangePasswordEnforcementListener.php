@@ -18,9 +18,9 @@ class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
-        );
+        ];
     }
 
     /**

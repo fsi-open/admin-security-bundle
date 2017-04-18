@@ -43,9 +43,9 @@ class SecurityController
 
     public function loginAction()
     {
-        return $this->templating->renderResponse($this->loginActionTemplate, array(
+        return $this->templating->renderResponse($this->loginActionTemplate, [
             'error' => $this->authenticationUtils->getLastAuthenticationError(),
             'last_username' => $this->authenticationUtils->getLastUsername()
-        ));
+        ]);
     }
 }

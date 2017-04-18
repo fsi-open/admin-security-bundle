@@ -28,10 +28,10 @@ class DemoteUserCommand extends ContainerAwareCommand
         $this
             ->setName('fsi:user:demote')
             ->setDescription('Demote a user.')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('role', InputArgument::REQUIRED, 'The role'),
-            ))
+            ])
             ->setHelp(<<<EOT
 The <info>fsi:user:demote</info> command demotes the user
 

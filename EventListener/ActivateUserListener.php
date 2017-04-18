@@ -20,9 +20,9 @@ class ActivateUserListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::ACTIVATION => 'onActivation'
-        );
+        ];
     }
 
     /**

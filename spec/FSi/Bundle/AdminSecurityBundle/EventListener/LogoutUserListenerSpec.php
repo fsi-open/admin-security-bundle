@@ -24,9 +24,9 @@ class LogoutUserListenerSpec extends ObjectBehavior
 
     function it_subscribes_to_change_password_event()
     {
-        $this->getSubscribedEvents()->shouldReturn(array(
+        $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
-        ));
+        ]);
     }
 
     /**

@@ -111,7 +111,7 @@ abstract class User implements UserInterface
         $this->locked = false;
         $this->enforcePasswordChange = false;
         $this->expired = false;
-        $this->roles = array();
+        $this->roles = [];
         $this->credentialsExpired = false;
     }
 
@@ -124,7 +124,7 @@ abstract class User implements UserInterface
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->password,
             $this->salt,
             $this->username,
@@ -133,7 +133,7 @@ abstract class User implements UserInterface
             $this->credentialsExpired,
             $this->enabled,
             $this->id
-        ));
+        ]);
     }
 
     /**

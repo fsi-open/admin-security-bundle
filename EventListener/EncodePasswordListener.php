@@ -32,10 +32,10 @@ class EncodePasswordListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated'
-        );
+        ];
     }
 
     /**
