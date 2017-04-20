@@ -65,3 +65,8 @@ class SomeAdminElement extends CRUDElement implemends SecuredElementInterface
 
 }
 ```
+
+## Change translation domain for custom login form errors (not often)
+
+Since the login form now uses the `security` domain instead of `FSiAdminSecurity`,
+you will have to move any custom login form error messages there.

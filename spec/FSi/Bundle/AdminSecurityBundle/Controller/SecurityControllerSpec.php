@@ -2,33 +2,53 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityControllerSpec extends ObjectBehavior
 {
-    function let(EngineInterface $templating, AuthenticationUtils $authenticationUtils)
-    {
-        $this->beConstructedWith($templating, $authenticationUtils, 'FSiAdminSecurityBundle:Security:login.html.twig');
+    function let(
+        EngineInterface $templating,
+        AuthenticationUtils $authenticationUtils,
+        FlashMessages $flashMessages
+    ) {
+        $this->beConstructedWith(
+            $templating,
+            $authenticationUtils,
+            $flashMessages,
+            'login_template'
+        );
     }
 
     function it_render_login_template_in_login_action(
         EngineInterface $templating,
         AuthenticationUtils $authenticationUtils,
+        FlashMessages $flashMessages,
+        AuthenticationException $exception,
         Response $response
     ) {
         $error = new \Exception('message');
         $authenticationUtils->getLastAuthenticationError()->willReturn($error);
+        $exception->getMessageKey()->willReturn('error');
+        $exception->getMessageData()->willReturn(['parameter' => 'value']);
+        $authenticationUtils->getLastAuthenticationError()->willReturn($exception);
         $authenticationUtils->getLastUsername()->willReturn('user');
+
+        $flashMessages->error(
+            Argument::type('string'),
+            Argument::type('string'),
+            Argument::type('array')
+        )->shouldBeCalled();
+
         $templating->renderResponse(
-                'FSiAdminSecurityBundle:Security:login.html.twig',
-                [
-                    'error' => $error,
-                    'last_username' => 'user'
-                ]
-            )->willReturn($response);
+            Argument::type('string'),
+            ['last_username' => 'user']
+        )->willReturn($response);
 
         $this->loginAction()->shouldReturn($response);
     }

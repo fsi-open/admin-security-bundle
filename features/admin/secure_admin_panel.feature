@@ -26,7 +26,10 @@ Feature: Secure admin panel
     Given I am on the "Login" page
     When I fill form with invalid admin login and password
     And I press "Login" button
-    Then I should see login form error message "Invalid username or password"
+    And I should see message:
+    """
+    Invalid credentials.
+    """
 
   Scenario: Logout from admin panel
     Given I'm logged in as admin
