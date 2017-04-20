@@ -12,7 +12,8 @@
     ],
     "require": {
         "php": ">=5.4",
-        "fsi/admin-bundle" : "^2.0@dev",
+        "fsi/admin-bundle" : "^2.1@dev",
+        "symfony/dependency-injection": "^2.7",
         "symfony/form": "^2.7",
         "symfony/framework-bundle": "^2.7",
         "symfony/security": "^2.6",
