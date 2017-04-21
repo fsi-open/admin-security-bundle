@@ -25,12 +25,18 @@ Feature: Activation of disabled user with enforced password change
 
   Scenario: Submit activation form with valid data
     Given i open activation page with token received by user "user@example.com" in the email
-    Then I should see message "Please setup a new password to activate your account"
+    Then I should see message:
+    """
+    Please setup a new password to activate your account
+    """
     When i fill in new password with confirmation
     And I press "Activate account" button
     And I should be redirected to "Login" page
     Then user "user@example.com" should have changed password
-    And I should see message "Your password has been successfully changed and your account has been activated"
+    And I should see message:
+    """
+    Your password has been successfully changed and your account has been activated
+    """
     And user "user@example.com" should be enabled
 
   Scenario: Submit activation form with invalid data

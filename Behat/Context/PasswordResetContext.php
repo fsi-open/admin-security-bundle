@@ -137,16 +137,6 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @Then /^I should see password reset request form message "([^"]*)"$/
-     */
-    public function iShouldSeePasswordResetRequestFormMessage($message)
-    {
-        /** @var PasswordResetRequest $page */
-        $page = $this->getPage('Password Reset Request');
-        expect($page->getMessage())->toBe($message);
-    }
-
-    /**
      * @When /^i try open password change page with token "([^"]*)"$/
      */
     public function iTryOpenPasswordChangePageWithToken($confirmationToken)

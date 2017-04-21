@@ -95,18 +95,19 @@ class ResetRequestController
         $form = $this->formFactory->create($this->formType);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-
             $user = $this->getUser($form);
+            $redirectResponse = $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+
             if (!($user instanceof ResettablePasswordInterface)) {
-                return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+                return $redirectResponse;
             }
 
             if ($this->hasNonExpiredPasswordResetToken($user)) {
-                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.already_requested');
+                return $redirectResponse;
             }
 
             if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
-                return $this->addFlashAndRedirect('warning', 'admin.password_reset.request.account_locked');
+                return $redirectResponse;
             }
 
             $this->eventDispatcher->dispatch(
@@ -114,7 +115,7 @@ class ResetRequestController
                 new ResetPasswordRequestEvent($user)
             );
 
-            return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+            return $redirectResponse;
         }
 
         return $this->templating->renderResponse(
