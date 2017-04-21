@@ -31,7 +31,8 @@ class ActivationControllerSpec extends ObjectBehavior
         FormView $formView,
         EventDispatcherInterface $eventDispatcher,
         UserInterface $user,
-        FlashMessages $flashMessages
+        FlashMessages $flashMessages,
+        Request $request
     ) {
         $formFactory->create(
             'form_type',
@@ -39,6 +40,8 @@ class ActivationControllerSpec extends ObjectBehavior
             ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->createView()->willReturn($formView);
+        $form->handleRequest($request)->willReturn($form);
+        $form->isSubmitted()->willReturn(true);
 
         $this->beConstructedWith(
             $templating,

@@ -26,8 +26,12 @@ class AdminControllerSpec extends ObjectBehavior
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
-        FlashMessages $flashMessages
+        FlashMessages $flashMessages,
+        FormInterface $form,
+        Request $request
     ) {
+        $form->handleRequest($request)->willReturn($form);
+        $form->isSubmitted()->willReturn(true);
         $this->beConstructedWith(
             $templating,
             $formFactory,

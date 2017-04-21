@@ -93,9 +93,8 @@ class ResetRequestController
     public function requestAction(Request $request)
     {
         $form = $this->formFactory->create($this->formType);
-        $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
 
             $user = $this->getUser($form);
             if (!($user instanceof ResettablePasswordInterface)) {
