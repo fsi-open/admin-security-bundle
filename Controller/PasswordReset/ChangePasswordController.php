@@ -124,9 +124,8 @@ class ChangePasswordController
             $user,
             ['validation_groups' => $this->formValidationGroups]
         );
-        $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $user->removePasswordResetToken();
 
             $this->eventDispatcher->dispatch(

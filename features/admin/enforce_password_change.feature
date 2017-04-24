@@ -17,4 +17,7 @@ Feature: Admin change password
     And I change my password
     Then user "redactor" should have changed password
     And I should be redirected to "Login" page
-    And I should see message "Your password has been successfully changed"
+    And I should see message:
+    """
+    Your password has been successfully changed
+    """

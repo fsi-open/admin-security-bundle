@@ -58,7 +58,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $flashMessages
     ) {
         $formFactory->create('form_type')->willReturn($form);
-        $form->handleRequest($request)->shouldBeCalled();
+        $form->handleRequest($request)->willReturn($form);
+        $form->isSubmitted()->willReturn(true);
         $form->isValid()->willReturn(true);
 
         $form->get('email')->willReturn($form2);

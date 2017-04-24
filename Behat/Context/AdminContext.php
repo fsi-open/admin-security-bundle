@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
@@ -112,11 +113,11 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
     }
 
     /**
-     * @Given /^I should see message "([^"]*)"$/
+     * @Given /^I should see message:$/
      */
-    public function iShouldSeeMessage($message)
+    public function iShouldSeeMessage(PyStringNode $message)
     {
-        expect($this->getElement('FlashMessage')->getText())->toBe($message);
+        expect($this->getElement('FlashMessage')->getText())->toBe($message->getRaw());
     }
 
     /**

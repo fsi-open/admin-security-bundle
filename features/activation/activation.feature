@@ -17,5 +17,8 @@ Feature: Activation of disabled user
   Scenario: Activate user
     When i open activation page with token received by user "user@example.com" in the email
     Then I should be redirected to "Login" page
-    And I should see message "Your account has been successfully activated"
+    And I should see message:
+    """
+    Your account has been successfully activated
+    """
     And user "user@example.com" should be enabled

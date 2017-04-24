@@ -12,7 +12,10 @@ Feature: Request URI for password change form
     Given I am on the "Password Reset Request" page
     When I fill form with non-existent email address
     And I press "Send me instructions" button
-    Then I should see password reset request form message "If the provided address was correct, you should receive instructions on resetting your password."
+    Then I should see message:
+    """
+    If Your account is active and the provided address is correct, You should receive instructions on resetting Your password.
+    """
     And no emails were sent
 
   @email
@@ -20,7 +23,10 @@ Feature: Request URI for password change form
     Given I am on the "Password Reset Request" page
     When I fill form with correct email address
     And I press "Send me instructions" button
-    Then I should see password reset request form message "If the provided address was correct, you should receive instructions on resetting your password."
+    Then I should see message:
+    """
+    If Your account is active and the provided address is correct, You should receive instructions on resetting Your password.
+    """
     And I should receive email:
       | subject  | Reset Password           |
       | from     | from-admin@fsi.pl        |
@@ -32,6 +38,9 @@ Feature: Request URI for password change form
     And I am on the "Password Reset Request" page
     When I fill form with correct email address
     And I press "Send me instructions" button
-    Then I should see message "You already requested password reset instructions. Check your email."
+    Then I should see message:
+    """
+    If Your account is active and the provided address is correct, You should receive instructions on resetting Your password.
+    """
     And I should be on the "Login" page
     And user "admin@fsi.pl" should still have confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"

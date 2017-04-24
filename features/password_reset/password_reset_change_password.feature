@@ -23,7 +23,10 @@ Feature:
     And I press "Change password" button
     And I should be redirected to "Login" page
     Then user "admin@fsi.pl" should have changed password
-    And I should see message "Your password has been successfully changed"
+    And I should see message:
+    """
+    Your password has been successfully changed
+    """
 
   Scenario: Submit change password form with invalid data
     When i open password change page with token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"

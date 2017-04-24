@@ -147,9 +147,8 @@ class ActivationController
             $user,
             ['validation_groups' => $this->changePasswordFormValidationGroups]
         );
-        $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->eventDispatcher->dispatch(
                 AdminSecurityEvents::ACTIVATION,
                 new ActivationEvent($user)

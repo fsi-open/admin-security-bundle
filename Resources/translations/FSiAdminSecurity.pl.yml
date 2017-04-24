@@ -26,13 +26,13 @@ admin:
         email: Email
         button:
           send: Wyślij mi instrukcje
-      mail_sent_if_correct: Jeśli podany email był prawidłowy, to powinieneś otrzymać na niego instrukcję zmiany hasła.
+      mail_sent_if_correct: >
+        Jeśli Twoje konto jest aktywne i podany email jest prawidłowy, to powinieneś
+        otrzymać na niego instrukcję zmiany hasła.
       mail_subject: Zmiana hasła
       mail:
         info: "Aby ustawić nowe hasło proszę otworzyć link:"
         requested_by: "%ip% - %user_agent%"
-      already_requested: Instrukcja zmiany hasła została już wysłana. Sprawdź pocztę.
-      account_locked: Twoje konto jest zablokowane.
     change_password:
       form:
         password: Nowe hasło

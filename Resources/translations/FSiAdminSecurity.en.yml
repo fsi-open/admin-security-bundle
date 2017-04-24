@@ -26,13 +26,13 @@ admin:
         email: Email
         button:
           send: Send me instructions
-      mail_sent_if_correct: If the provided address was correct, you should receive instructions on resetting your password.
+      mail_sent_if_correct: >
+        If Your account is active and the provided address is correct, You should
+        receive instructions on resetting Your password.
       mail_subject: Reset Password
       mail:
         info: "To reset your password - please visit:"
         requested_by: "%ip% - %user_agent%"
-      already_requested: You already requested password reset instructions. Check your email.
-      account_locked: User account is locked.
     change_password:
       form:
         password: New password

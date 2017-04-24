@@ -55,6 +55,8 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages
     ) {
+        $form->handleRequest($request)->willReturn($form);
+        $form->isSubmitted()->willReturn(true);
         $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);
         $user->getPasswordResetToken()->willReturn($token);
         $token->isNonExpired()->willReturn(true);
