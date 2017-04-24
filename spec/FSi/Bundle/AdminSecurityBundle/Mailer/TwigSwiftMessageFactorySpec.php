@@ -3,16 +3,12 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Mailer;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class TwigSwiftMessageFactorySpec extends ObjectBehavior
 {
-    /**
-     * @param \Twig_Environment $twig
-     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-     */
-    function let($twig, $requestStack)
+    function let(\Twig_Environment $twig, RequestStack $requestStack)
     {
         $this->beConstructedWith(
             $twig,
@@ -20,13 +16,11 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
         );
     }
 
-    /**
-     * @param \Twig_Environment $twig
-     * @param \Twig_Template $template
-     * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-     */
-    function it_should_render_template($twig, $template, $requestStack)
-    {
+    function it_should_render_template(
+        \Twig_Environment $twig,
+        \Twig_Template $template,
+        RequestStack $requestStack
+    ) {
         $request = new Request(
             [],
             [],

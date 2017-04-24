@@ -2,22 +2,32 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class AdminControllerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
-    function let($templating, $formFactory, $tokenStorage, $router, $eventDispatcher, $flashMessages)
-    {
+    function let(
+        EngineInterface $templating,
+        FormFactoryInterface $formFactory,
+        TokenStorageInterface $tokenStorage,
+        RouterInterface $router,
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
+    ) {
         $this->beConstructedWith(
             $templating,
             $formFactory,
@@ -31,19 +41,16 @@ class AdminControllerSpec extends ObjectBehavior
         );
     }
 
-    /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param \Symfony\Component\Form\FormView $formView
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\HttpFoundation\Response $response
-     */
     function it_render_template_with_change_password_form(
-        $templating, $formFactory, $tokenStorage, $token, $user, $form, $formView, $request, $response
+        EngineInterface $templating,
+        FormFactoryInterface $formFactory,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        ChangeablePasswordInterface $user,
+        FormInterface $form,
+        FormView $formView,
+        Request $request,
+        Response $response
     ) {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
@@ -64,19 +71,16 @@ class AdminControllerSpec extends ObjectBehavior
         $this->changePasswordAction($request)->shouldReturn($response);
     }
 
-    /**
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
-     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
     function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
-        $formFactory, $tokenStorage, $token, $user, $form, $request, $router, $eventDispatcher, $flashMessages
+        FormFactoryInterface $formFactory,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        ChangeablePasswordInterface $user,
+        FormInterface $form,
+        Request $request,
+        RouterInterface $router,
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);

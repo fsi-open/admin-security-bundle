@@ -3,17 +3,20 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+
 
 class SendPasswordResetMailListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     */
-    function let($mailer, $tokenFactory)
-    {
+    function let(
+        MailerInterface $mailer,
+        TokenFactoryInterface $tokenFactory
+    ) {
         $this->beConstructedWith($mailer, $tokenFactory);
     }
 
@@ -24,15 +27,13 @@ class SendPasswordResetMailListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface $user
-     */
-    function it_sends_email($mailer, $tokenFactory, $token, $event, $user)
-    {
+    function it_sends_email(
+        MailerInterface $mailer,
+        TokenFactoryInterface $tokenFactory,
+        TokenInterface $token,
+        ResetPasswordRequestEvent $event,
+        ResettablePasswordInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $tokenFactory->createToken()->willReturn($token);
 

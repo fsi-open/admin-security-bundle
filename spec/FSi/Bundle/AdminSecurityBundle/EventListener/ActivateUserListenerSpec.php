@@ -2,9 +2,10 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ActivateUserListenerSpec extends ObjectBehavior
 {
@@ -15,11 +16,7 @@ class ActivateUserListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
-     */
-    function it_activates_user($event, $user)
+    function it_activates_user(ActivationEvent $event, ActivableInterface $user)
     {
         $event->getUser()->willReturn($user);
 

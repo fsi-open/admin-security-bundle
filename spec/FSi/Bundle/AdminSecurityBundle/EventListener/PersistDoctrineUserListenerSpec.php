@@ -2,19 +2,23 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
 class PersistDoctrineUserListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function let($registry, $objectManager)
+    function let(Registry $registry, ObjectManager $objectManager)
     {
         $this->beConstructedWith($registry);
         $registry->getManagerForClass(Argument::any())->willReturn($objectManager);
@@ -34,14 +38,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_changing_password($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_changing_password(
+        ChangePasswordEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -50,14 +51,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_requesting_change_of_password($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_requesting_change_of_password(
+        ResetPasswordRequestEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -66,14 +64,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onResetPasswordRequest($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_activation($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_activation(
+        ActivationEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -82,14 +77,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onActivation($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_deactivation($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_deactivation(
+        ActivationEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -98,14 +90,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDeactivation($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_user_creation($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_user_creation(
+        UserEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -114,14 +103,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onUserCreated($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_promote_user($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_promote_user(
+        UserEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -130,14 +116,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onPromoteUser($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_demote_user($event, $objectManager)
-    {
-        $user = new User();
-
+    function it_flushes_om_after_demote_user(
+        UserEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -146,14 +129,12 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDemoteUser($event);
     }
 
-    /**
-     * @param \Symfony\Component\Security\Http\Event\InteractiveLoginEvent $event
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     */
-    function it_flushes_om_after_user_logged_in($event, $token, $objectManager)
-    {
-        $user = new User();
+    function it_flushes_om_after_user_logged_in(
+        InteractiveLoginEvent $event,
+        TokenInterface $token,
+        ObjectManager $objectManager,
+        User $user
+    ) {
         $token->getUser()->willReturn($user);
         $event->getAuthenticationToken()->willReturn($token);
 

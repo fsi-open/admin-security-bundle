@@ -3,15 +3,18 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class EncodePasswordListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
-     */
-    function let($encoderFactory)
+    function let(EncoderFactoryInterface $encoderFactory)
     {
         $this->beConstructedWith($encoderFactory);
     }
@@ -24,12 +27,10 @@ class EncodePasswordListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface $user
-     */
-    function it_does_nothing_if_plain_password_is_not_set($event, $user)
-    {
+    function it_does_nothing_if_plain_password_is_not_set(
+        ChangePasswordEvent $event,
+        ChangeablePasswordInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn(null);
 
@@ -38,14 +39,12 @@ class EncodePasswordListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    /**
-     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
-     * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_encodes_password_for_user($encoderFactory, $encoder, $event, $user)
-    {
+    function it_encodes_password_for_user(
+        EncoderFactoryInterface $encoderFactory,
+        PasswordEncoderInterface $encoder,
+        ChangePasswordEvent $event,
+        UserInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
         $encoderFactory->getEncoder($user)->willReturn($encoder);
@@ -58,14 +57,12 @@ class EncodePasswordListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    /**
-     * @param \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface $encoderFactory
-     * @param \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $encoder
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_encodes_password_for_new_user($encoderFactory, $encoder, $event, $user)
-    {
+    function it_encodes_password_for_new_user(
+        EncoderFactoryInterface $encoderFactory,
+        PasswordEncoderInterface $encoder,
+        UserEvent $event,
+        UserInterface $user
+    ) {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
         $encoderFactory->getEncoder($user)->willReturn($encoder);

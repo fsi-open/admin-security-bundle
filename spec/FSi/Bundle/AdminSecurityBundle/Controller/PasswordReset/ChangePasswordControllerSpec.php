@@ -2,9 +2,19 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
+use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 class ChangePasswordControllerSpec extends ObjectBehavior
 {
@@ -13,16 +23,14 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController');
     }
 
-    /**
-     * @param \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface $templating
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
-    function let($templating, $userRepository, $router, $formFactory, $eventDispatcher, $flashMessages)
-    {
+    function let(
+        EngineInterface $templating,
+        UserRepositoryInterface $userRepository,
+        RouterInterface $router,
+        FormFactoryInterface $formFactory,
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
+    ) {
         $this->beConstructedWith(
             $templating,
             'template-name',
@@ -36,19 +44,16 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         );
     }
 
-    /**
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface $userRepository
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
-     * @param \Symfony\Component\Form\FormFactoryInterface $formFactory
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param \Symfony\Component\Routing\RouterInterface $router
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     * @param \FSi\Bundle\AdminBundle\Message\FlashMessages $flashMessages
-     */
     function it_changes_password(
-        $request, $userRepository, $user, $token, $formFactory, $form, $router, $eventDispatcher, $flashMessages
+        Request $request,
+        UserRepositoryInterface $userRepository,
+        UserInterface $user,
+        TokenInterface $token,
+        FormFactoryInterface $formFactory,
+        FormInterface $form,
+        RouterInterface $router,
+        EventDispatcherInterface $eventDispatcher,
+        FlashMessages $flashMessages
     ) {
         $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);
         $user->getPasswordResetToken()->willReturn($token);

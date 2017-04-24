@@ -3,15 +3,14 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PasswordResetBatchElementSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     */
-    function let($eventDispatcher)
+    function let(EventDispatcherInterface $eventDispatcher)
     {
         $this->beConstructedWith([], 'FQCN\User\Model', $eventDispatcher);
     }
@@ -31,12 +30,10 @@ class PasswordResetBatchElementSpec extends ObjectBehavior
         $this->getId()->shouldReturn('admin_security_password_reset');
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface $user
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     */
-    function it_should_dispatch_password_reset_event($user, $eventDispatcher)
-    {
+    function it_should_dispatch_password_reset_event(
+        ResettablePasswordInterface $user,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $eventDispatcher->dispatch(AdminSecurityEvents::RESET_PASSWORD_REQUEST, Argument::allOf(
             Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent')
         ))->shouldBeCalled();

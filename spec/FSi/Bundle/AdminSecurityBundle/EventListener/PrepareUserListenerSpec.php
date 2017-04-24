@@ -2,17 +2,18 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminBundle\Event\FormEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class PrepareUserListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     * @param \Symfony\Component\Security\Core\Util\SecureRandomInterface $secureRandom
-     */
-    function let($eventDispatcher, $secureRandom)
+    function let(EventDispatcherInterface $eventDispatcher, SecureRandomInterface $secureRandom)
     {
         $this->beConstructedWith($eventDispatcher, $secureRandom);
     }
@@ -22,15 +23,13 @@ class PrepareUserListenerSpec extends ObjectBehavior
         $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
-     * @param \Symfony\Component\Security\Core\Util\SecureRandomInterface $secureRandom
-     */
-    function it_should_prepare_new_user_and_dispatch_user_created($event, $form, $user, $eventDispatcher, $secureRandom)
-    {
+    function it_should_prepare_new_user_and_dispatch_user_created(
+        FormEvent $event,
+        FormInterface $form,
+        UserInterface $user,
+        EventDispatcherInterface $eventDispatcher,
+        SecureRandomInterface $secureRandom
+    ) {
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 
@@ -51,13 +50,12 @@ class PrepareUserListenerSpec extends ObjectBehavior
         $this->prepareAndDispatchUserCreated($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminBundle\Event\FormEvent $event
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $user
-     */
-    function it_should_do_not_set_random_password_when_user_already_exists($event, $form, $user, $eventDispatcher)
-    {
+    function it_should_do_not_set_random_password_when_user_already_exists(
+        FormEvent $event,
+        FormInterface $form,
+        UserInterface $user,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 

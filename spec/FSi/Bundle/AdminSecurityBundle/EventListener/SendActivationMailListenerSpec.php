@@ -2,6 +2,11 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -12,8 +17,10 @@ class SendActivationMailListenerSpec extends ObjectBehavior
      * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
      * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
      */
-    function let($mailer, $tokenFactory)
-    {
+    function let(
+        MailerInterface $mailer,
+        TokenFactoryInterface $tokenFactory
+    ) {
         $this->beConstructedWith($mailer, $tokenFactory);
     }
 
@@ -24,15 +31,13 @@ class SendActivationMailListenerSpec extends ObjectBehavior
         ]);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface $token
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
-     */
-    function it_sends_email_if_user_is_not_enabled($mailer, $tokenFactory, $token, $event, $user)
-    {
+    function it_sends_email_if_user_is_not_enabled(
+        MailerInterface $mailer,
+        TokenFactoryInterface $tokenFactory,
+        TokenInterface $token,
+        UserEvent $event,
+        ActivableInterface $user
+    ) {
         $user->isEnabled()->willReturn(false);
         $event->getUser()->willReturn($user);
         $tokenFactory->createToken()->willReturn($token);
@@ -43,13 +48,11 @@ class SendActivationMailListenerSpec extends ObjectBehavior
         $this->onUserCreated($event);
     }
 
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Event\UserEvent $event
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface $user
-     */
-    function it_does_not_send_email_if_user_is_enabled($mailer, $event, $user)
-    {
+    function it_does_not_send_email_if_user_is_enabled(
+        MailerInterface $mailer,
+        UserEvent $event,
+        ActivableInterface $user
+    ) {
         $user->isEnabled()->willReturn(true);
         $event->getUser()->willReturn($user);
 
