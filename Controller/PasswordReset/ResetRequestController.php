@@ -102,6 +102,10 @@ class ResetRequestController
                 return $redirectResponse;
             }
 
+            if (!$user->isEnabled()) {
+                return $redirectResponse;
+            }
+
             if ($this->hasNonExpiredPasswordResetToken($user)) {
                 return $redirectResponse;
             }
