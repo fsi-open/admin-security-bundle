@@ -45,6 +45,7 @@
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%">
             <argument type="service" id="templating" />
             <argument type="service" id="security.authentication_utils" />
+            <argument type="service" id="admin.messages.flash" />
             <argument type="string">%admin_security.templates.login%</argument>
         </service>
 

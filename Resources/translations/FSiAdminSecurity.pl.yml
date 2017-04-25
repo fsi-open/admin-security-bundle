@@ -1,6 +1,3 @@
-# Security
-"Bad credentials.": Nieprawidłowa nazwa użytkownika lub hasło
-
 admin:
   login:
     email:

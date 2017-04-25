@@ -40,3 +40,9 @@ has been added. Just add a link pointing to the `fsi_admin_security_password_res
 path somewhere in a place reachable by anonymous users and you are good to go.
 Again, please refer to the [configuration](Resources/doc/configuration.md) for
 more information on customizing this action.
+
+# Login form errors displayed by flash messages
+
+Previously these were displayed as form errors, that used the `FSiAdminSecurity`
+translation domain. Now they are displayed through flash messages using the default
+`security` domain.
