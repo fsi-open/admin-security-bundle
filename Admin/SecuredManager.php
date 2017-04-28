@@ -128,7 +128,7 @@ class SecuredManager implements ManagerInterface
             return true;
         }
 
-        return  $element instanceof SecuredElementInterface
+        return $element instanceof SecuredElementInterface
             && !$element->isAllowed($this->authorizationChecker)
         ;
     }
