@@ -15,6 +15,9 @@ almost never should have been used in real use cases.
 **Version 2.0 drops support for symfony lower than 2.6 so if you are still using symfony < 2.6 you will have
 to upgrade it too.**
 
+**Also, a number of other dependencies had to be raised, so check `composer.json` to make sure
+your application meets the minimum requirements**
+
 ## Remove FOSUserBundle (often)
 
 The important difference between 1.0.* and ^2.0 is that the newer version does not require FOSUserBundle to persist
@@ -78,3 +81,31 @@ class (defined in `admin_security_user` parameter) needs to have a repository
 implementing the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`.
 You will either need to create a new class and have it implement the interface
 or add it to your existing repository class.
+
+If you are extending the `FSi\Bundle\AdminSecurityBundle\Security\User\User` class,
+an appropriate repository class is already used, so no additional steps are required
+of you.
+
+## Replace logic based around RemoveNotGrantedElementsListener (very rarely)
+
+As secured element access is now handled by the `admin_security.manager` service, the
+following have been removed:
+
+<table>
+    <tbody>
+        <tr>
+            <td>Class</td>
+            <td>FSi\Bundle\AdminSecurityBundle\EventListener\RemoveNotGrantedElementsListener</td>
+        </tr>
+        <tr>
+            <td>Service</td>
+            <td>admin_security.listener.remove_not_granted_elements</td>
+        </tr>
+        <tr>
+            <td>Parameter</td>
+            <td>admin_security.listener.remove_not_granted_elements.class</td>
+        </tr>
+    <tbody>
+</table>
+
+so if you have based any logic around these, you will need to adjust your application. 
