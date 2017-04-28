@@ -15,6 +15,8 @@ use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\SecuredElement;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SecuredManagerSpec extends ObjectBehavior
 {
@@ -23,6 +25,8 @@ class SecuredManagerSpec extends ObjectBehavior
 
     function let(
         AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
         ManagerInterface $manager,
         Element $insecureElement,
         SecuredElement $securedElement
@@ -33,8 +37,9 @@ class SecuredManagerSpec extends ObjectBehavior
         $manager->hasElement(self::SECURE_ID)->willReturn(true);
         $manager->getElement(self::INSECURE_ID)->willReturn($insecureElement);
         $manager->getElement(self::SECURE_ID)->willReturn($securedElement);
+        $tokenStorage->getToken()->willReturn($token);
 
-        $this->beConstructedWith($manager, $authorizationChecker);
+        $this->beConstructedWith($manager, $tokenStorage, $authorizationChecker);
     }
 
     function it_implements_manager_interface()
@@ -87,7 +92,7 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->hasElement(self::SECURE_ID)->shouldReturn(true);
     }
 
-    function it_returns_false_for_has_element_if_access_not_allowed(
+    function it_returns_false_for_has_element_if_access_restricted(
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
     ) {
@@ -97,7 +102,7 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->hasElement(self::SECURE_ID)->shouldReturn(false);
     }
 
-    function it_throws_exception_when_trying_to_get_a_disallowed_element(
+    function it_throws_exception_when_trying_to_get_a_restricted_element(
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
     ) {
@@ -123,9 +128,24 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->getElements()->shouldReturn([$insecureElement, $securedElement]);
     }
 
-    function it_accepts_visitors(ManagerInterface $manager, Visitor $visitor)
+    function it_returns_no_elements_when_not_behind_a_firewall(
+        ManagerInterface $manager,
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authorizationChecker,
+        Element $insecureElement,
+        SecuredElement $securedElement
+
+    ){
+        $manager->getElements()->willReturn([$insecureElement, $securedElement]);
+        $tokenStorage->getToken()->willReturn(null);
+        $securedElement->isAllowed($authorizationChecker)->shouldNotBeCalled();
+
+        $this->getElements()->shouldReturn([]);
+    }
+
+    function it_accepts_visitors(Visitor $visitor)
     {
-        $manager->accept($visitor)->shouldBeCalled();
+        $visitor->visitManager($this)->shouldBeCalled();
         $this->accept($visitor);
     }
 }
