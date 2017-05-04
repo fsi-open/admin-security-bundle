@@ -27,7 +27,6 @@
         <parameter key="admin_security.listener.enforce_password_change.change_password_route">fsi_admin_change_password</parameter>
         <parameter key="admin_security.listener.send_activation_mail.class">FSi\Bundle\AdminSecurityBundle\EventListener\SendActivationMailListener</parameter>
         <parameter key="admin_security.listener.send_password_reset_mail.class">FSi\Bundle\AdminSecurityBundle\EventListener\SendPasswordResetMailListener</parameter>
-        <parameter key="admin_security.listener.remove_not_granted_elements.class">FSi\Bundle\AdminSecurityBundle\EventListener\RemoveNotGrantedElementsListener</parameter>
         <parameter key="admin_security.listener.build_account_menu.class">FSi\Bundle\AdminSecurityBundle\EventListener\BuildAccountMenuListener</parameter>
         <parameter key="admin_security.listener.persist_doctrine_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PersistDoctrineUserListener</parameter>
         <parameter key="admin_security.listener.admin_user_element_pre_save.class">FSi\Bundle\AdminSecurityBundle\EventListener\PrepareUserListener</parameter>
@@ -38,6 +37,7 @@
         <parameter key="admin_security.admin.user.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement</parameter>
         <parameter key="admin_security.admin.password_reset.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\PasswordResetBatchElement</parameter>
         <parameter key="admin_security.form.type.user.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType</parameter>
+        <parameter key="admin_security.manager.class">FSi\Bundle\AdminSecurityBundle\Admin\SecuredManager</parameter>
     </parameters>
 
     <services>
@@ -191,12 +191,6 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <service id="admin_security.listener.remove_not_granted_elements" class="%admin_security.listener.remove_not_granted_elements.class%">
-            <argument type="service" id="admin.manager" />
-            <argument type="service" id="security.context" />
-            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="0"/>
-        </service>
-
         <service id="admin_security.listener.build_account_menu" class="%admin_security.listener.build_account_menu.class%">
             <argument type="service" id="translator" />
             <argument type="service" id="security.context" />
@@ -221,7 +215,7 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-        <!-- factories -->
+        <!-- Factories -->
         <service id="admin_security.token_factory.activation" class="%admin_security.token_factory.activation.class%">
             <argument type="service" id="security.secure_random" />
             <argument type="string">%admin_security.activation.token_ttl%</argument>
@@ -232,6 +226,13 @@
             <argument type="service" id="security.secure_random" />
             <argument type="string">%admin_security.password_reset.token_ttl%</argument>
             <argument type="string">%admin_security.password_reset.token_length%</argument>
+        </service>
+
+        <!-- Manager -->
+        <service id="admin_security.manager" class="%admin_security.manager.class%" decorates="admin.manager" public="false">
+            <argument type="service" id="admin_security.manager.inner" />
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="security.authorization_checker"/>
         </service>
 
         <!-- Security -->

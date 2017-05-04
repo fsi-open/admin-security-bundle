@@ -52,3 +52,19 @@ translation domain. Now they are displayed through flash messages using the defa
 In order for the bundle to work properly, the repository for user class defined
 in the `admin_security_user` parameter needs to implement the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`,
 otherwise an exception will be thrown during container compilation.
+
+## Introduced SecuredManager
+
+Instead of removing elements with restricted access from the `admin.manager` service,
+we have created a decorator for it that handles accessing them. This way we do not
+have to rely on the `FSi\Bundle\AdminSecurityBundle\EventListener\RemoveNotGrantedElementsListener`
+and no longer there will be calls to security checks on every kernel request. This
+will both increase performance and solve issues when there is no token present.
+The listener itself has been removed, so if you have placed any logic in an overwriting
+class, you will have to adjust it to the new service.
+
+For your convienience, we have added the `admin_security.manager.class` parameter,
+so should you need it, you can easily use your own secured manager. Just remember
+that it needs to implement the `FSi\Bundle\AdminBundle\Admin\ManagerInterface`.
+
+This change has also added explicit dependency on `symfony/dependency-injection` >= 2.7.
