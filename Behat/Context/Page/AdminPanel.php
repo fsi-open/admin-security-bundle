@@ -52,5 +52,10 @@ class AdminPanel extends Page
     {
         return $this->find('css', '#top-menu')->hasLink($element);
     }
+
+    public function hasAnyMenuElements()
+    {
+        return count($this->find('css', '#top-menu a')) !== 0;
+    }
 }
 
