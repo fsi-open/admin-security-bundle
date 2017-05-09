@@ -12,6 +12,11 @@ which gives you a basic management over users defined by class in the `fsi_admin
 configuration parameter. This element also has a batch action for resetting users'
 passwords.
 
+By default, when creating new users through this element their username will be
+overwritten by `FSi\Bundle\AdminSecurityBundle\EventListener\SetEmailAsUsernameListener`
+and will be change to the provided email. To change this behaviour, you will need
+to remove this listener or overwrite it's behaviour.
+
 # Introduced console commands for user actions
 
 Checkout the `Command` folder for available console user actions, currently there
@@ -47,11 +52,12 @@ Previously these were displayed as form errors, that used the `FSiAdminSecurity`
 translation domain. Now they are displayed through flash messages using the default
 `security` domain.
 
-# Implementing UserRepositoryInterface is now mandatory
+# Service `admin_security.repository.user` must implement UserRepositoryInterface
 
-In order for the bundle to work properly, the repository for user class defined
-in the `admin_security_user` parameter needs to implement the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`,
-otherwise an exception will be thrown during container compilation.
+If you want to overwrite the service `admin_security.repository.user`, you will
+need to have the used class to implement the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`,
+otherwise an exception will be thrown during container compilation. This is neccessary
+to assure all user related actions (activation, reset password etc.) will work properly.
 
 ## Introduced SecuredManager
 

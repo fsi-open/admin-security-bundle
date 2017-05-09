@@ -74,17 +74,12 @@ class SomeAdminElement extends CRUDElement implemends SecuredElementInterface
 Since the login form now uses the `security` domain instead of `FSiAdminSecurity`,
 you will have to move any custom login form error messages there.
 
-## Implement UserRepositoryInterface in user repository (always)
+## Implement UserRepositoryInterface for `admin_security.repository.user` service (not often)
 
-To prevent an exception being thrown during container compilation, your user model
-class (defined in `admin_security_user` parameter) needs to have a repository
-implementing the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`.
-You will either need to create a new class and have it implement the interface
-or add it to your existing repository class.
-
-If you are extending the `FSi\Bundle\AdminSecurityBundle\Security\User\User` class,
-an appropriate repository class is already used, so no additional steps are required
-of you.
+During user related actions (activation, password reset etc.) the service `admin_security.repository.user`
+is used to fetch users instances. If you have overwritten this service, you
+will need to have it's class implement the `FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface`,
+otherwise an exception will be thrown during compiler compilation.
 
 ## Replace logic based around RemoveNotGrantedElementsListener (very rarely)
 
