@@ -13,7 +13,7 @@ use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -148,7 +148,7 @@ class SecuredManager implements ManagerInterface
         }
 
         $user = $this->tokenStorage->getToken()->getUser();
-        if (!($user instanceof ResettablePasswordInterface)) {
+        if (!($user instanceof EnforceablePasswordChangeInterface)) {
             return false;
         }
 

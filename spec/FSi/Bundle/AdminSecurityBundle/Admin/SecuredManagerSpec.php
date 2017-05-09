@@ -12,7 +12,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Admin;
 use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\SecuredElement;
 use PhpSpec\ObjectBehavior;
@@ -139,7 +139,7 @@ class SecuredManagerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ){
+    ) {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $tokenStorage->getToken()->willReturn(null);
         $securedElement->isAllowed($authorizationChecker)->shouldNotBeCalled();
@@ -152,7 +152,7 @@ class SecuredManagerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ){
+    ) {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
@@ -166,8 +166,8 @@ class SecuredManagerSpec extends ObjectBehavior
         Element $insecureElement,
         SecuredElement $securedElement,
         TokenInterface $token,
-        ResettablePasswordInterface $user
-    ){
+        EnforceablePasswordChangeInterface $user
+    ) {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $user->isForcedToChangePassword()->willReturn(true);
         $token->getUser()->willReturn($user);
