@@ -16,7 +16,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class PrepareUserListener implements EventSubscriberInterface
 {
@@ -25,15 +24,9 @@ class PrepareUserListener implements EventSubscriberInterface
      */
     private $eventDispatcher;
 
-    /**
-     * @var SecureRandomInterface
-     */
-    private $secureRandom;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher, SecureRandomInterface $secureRandom)
+    public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->secureRandom = $secureRandom;
     }
 
     /**
@@ -63,7 +56,7 @@ class PrepareUserListener implements EventSubscriberInterface
 
         $entity->setEnabled(false);
         $entity->enforcePasswordChange(true);
-        $entity->setPlainPassword($this->secureRandom->nextBytes(32));
+        $entity->setPlainPassword(random_bytes(32));
 
         $this->eventDispatcher->dispatch(
             AdminSecurityEvents::USER_CREATED,

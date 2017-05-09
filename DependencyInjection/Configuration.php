@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
+use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -23,6 +24,18 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('fsi_admin_security');
 
         $supportedStorages = ['orm'];
+        $adminChangePasswordFormType = TypeSolver::getFormType(
+            'FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType',
+            'admin_change_password'
+        );
+        $resetRequestFormType = TypeSolver::getFormType(
+            'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType',
+            'admin_password_reset_request'
+        );
+        $changePasswordFormType = TypeSolver::getFormType(
+            'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType',
+            'admin_password_reset_change_password'
+        );
 
         $rootNode
             ->beforeNormalization()
@@ -76,13 +89,11 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->integerNode('token_ttl')
-                            ->cannotBeEmpty()
                             ->min(0)
                             ->defaultValue(43200) // 12h
                             ->max(172800) // 48h
                         ->end()
                         ->integerNode('token_length')
-                            ->cannotBeEmpty()
                             ->min(16)
                             ->defaultValue(32)
                             ->max(64)
@@ -99,7 +110,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('change_password_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue('admin_password_reset_change_password')->end()
+                                ->scalarNode('type')->defaultValue($changePasswordFormType)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ResetPassword', 'Default'])
@@ -113,13 +124,11 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->integerNode('token_ttl')
-                            ->cannotBeEmpty()
                             ->min(0)
                             ->defaultValue(43200) // 12h
                             ->max(172800) // 48h
                         ->end()
                         ->integerNode('token_length')
-                            ->cannotBeEmpty()
                             ->min(16)
                             ->defaultValue(32)
                             ->max(64)
@@ -136,7 +145,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('change_password_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue('admin_password_reset_change_password')->end()
+                                ->scalarNode('type')->defaultValue($changePasswordFormType)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ResetPassword', 'Default'])
@@ -146,7 +155,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('request_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue('admin_password_reset_request')->end()
+                                ->scalarNode('type')->defaultValue($resetRequestFormType)->end()
                             ->end()
                         ->end()
                     ->end()
@@ -157,7 +166,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue('admin_change_password')->end()
+                                ->scalarNode('type')->defaultValue($adminChangePasswordFormType)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ChangePassword', 'Default'])
@@ -169,19 +178,19 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('templates')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('login')->defaultValue('FSiAdminSecurityBundle:Security:login.html.twig')->end()
-                        ->scalarNode('change_password')->defaultValue('FSiAdminSecurityBundle:Admin:change_password.html.twig')->end()
+                        ->scalarNode('login')->defaultValue('@FSiAdminSecurity/Security/login.html.twig')->end()
+                        ->scalarNode('change_password')->defaultValue('@FSiAdminSecurity/Admin/change_password.html.twig')->end()
                         ->arrayNode('activation')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('change_password')->defaultValue('FSiAdminSecurityBundle:Activation:change_password.html.twig')->end()
+                                ->scalarNode('change_password')->defaultValue('@FSiAdminSecurity/Activation/change_password.html.twig')->end()
                             ->end()
                         ->end()
                         ->arrayNode('password_reset')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('request')->defaultValue('FSiAdminSecurityBundle:PasswordReset:request.html.twig')->end()
-                                ->scalarNode('change_password')->defaultValue('FSiAdminSecurityBundle:PasswordReset:change_password.html.twig')->end()
+                                ->scalarNode('request')->defaultValue('@FSiAdminSecurity/PasswordReset/request.html.twig')->end()
+                                ->scalarNode('change_password')->defaultValue('@FSiAdminSecurity/PasswordReset/change_password.html.twig')->end()
                             ->end()
                         ->end()
                     ->end()

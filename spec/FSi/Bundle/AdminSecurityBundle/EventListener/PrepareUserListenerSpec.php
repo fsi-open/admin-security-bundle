@@ -9,13 +9,12 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class PrepareUserListenerSpec extends ObjectBehavior
 {
-    function let(EventDispatcherInterface $eventDispatcher, SecureRandomInterface $secureRandom)
+    function let(EventDispatcherInterface $eventDispatcher)
     {
-        $this->beConstructedWith($eventDispatcher, $secureRandom);
+        $this->beConstructedWith($eventDispatcher);
     }
 
     function it_is_event_subscriber()
@@ -27,16 +26,14 @@ class PrepareUserListenerSpec extends ObjectBehavior
         FormEvent $event,
         FormInterface $form,
         UserInterface $user,
-        EventDispatcherInterface $eventDispatcher,
-        SecureRandomInterface $secureRandom
+        EventDispatcherInterface $eventDispatcher
     ) {
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 
         $user->getPassword()->willReturn(null);
 
-        $secureRandom->nextBytes(32)->willReturn('secure random bytes');
-        $user->setPlainPassword('secure random bytes')->shouldBeCalled();
+        $user->setPlainPassword(Argument::type('string'))->shouldBeCalled();
         $user->setEnabled(false)->shouldBeCalled();
         $user->enforcePasswordChange(true)->shouldBeCalled();
 

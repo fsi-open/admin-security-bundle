@@ -4,9 +4,9 @@
 
 Add to composer.json
 
-```
+```json
 "require": {
-    "fsi/admin-security-bundle": "~2.0@dev"
+    "fsi/admin-security-bundle": "^3.0@dev"
 }
 ```
 
@@ -33,7 +33,7 @@ public function registerBundles()
 
 ## 3. Configure routing
 
-```
+```yml
 # app/config/routing.yml
 
 admin:
@@ -115,7 +115,7 @@ fsi_admin_security:
 
 ## 6. Configure security.yml
 
-```
+```yml
 # app/config/security.yml
 
 security:
@@ -153,7 +153,8 @@ security:
 ### Bcrypt encoder
 
 If you want to use bcrypt encoder, you must clear the salt that is set in user constructor. Symfony >= 2.8 ignores salt.
-```
+
+```php
 class User extends FSi\Bundle\AdminSecurityBundle\Security\User\User
 {
     public function __construct()

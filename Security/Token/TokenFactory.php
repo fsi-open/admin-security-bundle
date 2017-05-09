@@ -11,15 +11,9 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
 use DateTime;
-use Symfony\Component\Security\Core\Util\SecureRandomInterface;
 
 class TokenFactory implements TokenFactoryInterface
 {
-    /**
-     * @var SecureRandomInterface
-     */
-    private $secureRandom;
-
     /**
      * @var DateInterval
      */
@@ -31,13 +25,11 @@ class TokenFactory implements TokenFactoryInterface
     private $length;
 
     /**
-     * @param SecureRandomInterface $secureRandom
      * @param integer $ttl
      * @param integer $length
      */
-    public function __construct(SecureRandomInterface $secureRandom, $ttl, $length = 32)
+    public function __construct($ttl, $length = 32)
     {
-        $this->secureRandom = $secureRandom;
         $this->ttl = new DateInterval(sprintf('PT%dS', $ttl));
         $this->length = $length;
     }

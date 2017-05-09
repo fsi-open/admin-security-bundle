@@ -6,9 +6,9 @@ use Behat\Mink\Mink;
 use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use DateTime;
 use DateInterval;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
@@ -189,12 +189,8 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      * @param \DateInterval $ttl
      * @return Token
      */
-    private function createToken($confirmationToken, $ttl)
+    private function createToken($confirmationToken, DateInterval $ttl)
     {
-        return new Token(
-            $confirmationToken,
-            new \DateTime(),
-            $ttl
-        );
+        return new Token($confirmationToken, new DateTime(), $ttl);
     }
 }

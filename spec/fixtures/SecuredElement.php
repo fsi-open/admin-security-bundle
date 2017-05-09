@@ -25,7 +25,7 @@ class SecuredElement extends AbstractElement implements SecuredElementInterface
     {
     }
 
-    public function setDefaultOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
     }
 }
