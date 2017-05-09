@@ -14,7 +14,6 @@ use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\FirewallMapCompi
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
 use LogicException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -47,19 +46,13 @@ class FSiAdminSecurityBundle extends Bundle
 
     public function boot()
     {
-        /** @var RegistryInterface $doctrine */
-        $doctrine = $this->container->get('doctrine');
-        $userClass = $this->container->getParameter('admin_security.model.user');
-        $userRepositoryClass = 'FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface';
-        $repositoryClass = $doctrine->getManagerForClass($userClass)
-            ->getClassMetadata($userClass)
-            ->customRepositoryClassName
-        ;
-        if (!is_subclass_of($repositoryClass, $userRepositoryClass)) {
+        $userRepository = $this->container->get('admin_security.repository.user');
+        $expectedRepositoryClass = '\FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface';
+        if (!($userRepository instanceof $expectedRepositoryClass)) {
             throw new LogicException(sprintf(
                 'Repository for class "\%s" does not implement the "\%s" interface!',
-                    $userClass,
-                    $userRepositoryClass
+                get_class($userRepository),
+                $expectedRepositoryClass
             ));
         }
 
