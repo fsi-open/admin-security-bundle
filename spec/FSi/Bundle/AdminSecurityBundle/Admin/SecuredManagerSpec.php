@@ -12,6 +12,8 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Admin;
 use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\SecuredElement;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -27,6 +29,7 @@ class SecuredManagerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
+        UserInterface $user,
         ManagerInterface $manager,
         Element $insecureElement,
         SecuredElement $securedElement
@@ -37,7 +40,9 @@ class SecuredManagerSpec extends ObjectBehavior
         $manager->hasElement(self::SECURE_ID)->willReturn(true);
         $manager->getElement(self::INSECURE_ID)->willReturn($insecureElement);
         $manager->getElement(self::SECURE_ID)->willReturn($securedElement);
+        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
 
         $this->beConstructedWith($manager, $tokenStorage, $authorizationChecker);
     }
@@ -134,10 +139,38 @@ class SecuredManagerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-
-    ){
+    ) {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $tokenStorage->getToken()->willReturn(null);
+        $securedElement->isAllowed($authorizationChecker)->shouldNotBeCalled();
+
+        $this->getElements()->shouldReturn([]);
+    }
+
+    function it_does_not_check_if_user_forced_to_change_password_when_not_fully_authenticated(
+        ManagerInterface $manager,
+        AuthorizationCheckerInterface $authorizationChecker,
+        Element $insecureElement,
+        SecuredElement $securedElement
+    ) {
+        $manager->getElements()->willReturn([$insecureElement, $securedElement]);
+        $securedElement->isAllowed($authorizationChecker)->willReturn(false);
+        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
+
+        $this->getElements()->shouldReturn([$insecureElement]);
+    }
+
+    function it_returns_no_elements_when_user_forced_to_change_password(
+        ManagerInterface $manager,
+        AuthorizationCheckerInterface $authorizationChecker,
+        Element $insecureElement,
+        SecuredElement $securedElement,
+        TokenInterface $token,
+        EnforceablePasswordChangeInterface $user
+    ) {
+        $manager->getElements()->willReturn([$insecureElement, $securedElement]);
+        $user->isForcedToChangePassword()->willReturn(true);
+        $token->getUser()->willReturn($user);
         $securedElement->isAllowed($authorizationChecker)->shouldNotBeCalled();
 
         $this->getElements()->shouldReturn([]);

@@ -191,4 +191,12 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
         expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementName))
             ->toBe(false);
     }
+
+    /**
+     * @Given /^I should not see any menu elements$/
+     */
+    public function iShouldNotSeeAnyElementsInMenu()
+    {
+        expect($this->getPage('Admin Panel')->hasAnyMenuElements())->toBe(false);
+    }
 }

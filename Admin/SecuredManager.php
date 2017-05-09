@@ -13,6 +13,7 @@ use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -128,8 +129,29 @@ class SecuredManager implements ManagerInterface
             return true;
         }
 
-        return $element instanceof SecuredElementInterface
+        if ($this->isUserForcedToChangePassword()) {
+            return true;
+        }
+
+        return  $element instanceof SecuredElementInterface
             && !$element->isAllowed($this->authorizationChecker)
         ;
+    }
+
+    /**
+     * @return boolean
+     */
+    private function isUserForcedToChangePassword()
+    {
+        if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return false;
+        }
+
+        $user = $this->tokenStorage->getToken()->getUser();
+        if (!($user instanceof EnforceablePasswordChangeInterface)) {
+            return false;
+        }
+
+        return $user->isForcedToChangePassword();
     }
 }
