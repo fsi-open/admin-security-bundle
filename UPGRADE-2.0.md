@@ -104,3 +104,31 @@ following have been removed:
 </table>
 
 so if you have based any logic around these, you will need to adjust your application. 
+
+# Adjust activation and change password routes (rarely)
+
+`fsi_admin_activation` and `fsi_admin_security_password_reset_change_password`
+routes have been slightly changed, so if you are overwriting them, you may need
+to change your paths. Below is a table comparing changes:
+
+<table>
+    <thead>
+        <tr>
+            <th>Route</th>
+            <th>Old path</th>
+            <th>New path</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>fsi_admin_activation</th>
+            <th>/admin/activation/{activationToken}</th>
+            <th>/admin/activation/activate/{activationToken}</th>
+        </tr>
+        <tr>
+            <th>fsi_admin_security_password_reset_change_password</th>
+            <th>/admin/password-reset/{confirmationToken}</th>
+            <th>/admin/password-reset/change-password/{confirmationToken}</th>
+        </tr>
+    </tbody>
+</table>

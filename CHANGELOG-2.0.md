@@ -74,3 +74,9 @@ so should you need it, you can easily use your own secured manager. Just remembe
 that it needs to implement the `FSi\Bundle\AdminBundle\Admin\ManagerInterface`.
 
 This change has also added explicit dependency on `symfony/dependency-injection` >= 2.7.
+
+# Changed activation and change password routes
+
+We have made these routes longer to prevent accidental matches of overwriting
+routes to actions they do not belong to (this is due to the fact that they are
+matched in the order they were defined).
