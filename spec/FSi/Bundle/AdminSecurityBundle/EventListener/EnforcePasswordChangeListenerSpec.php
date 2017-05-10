@@ -8,6 +8,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -16,12 +17,26 @@ use Symfony\Component\Routing\RouterInterface;
 
 class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 {
+    const CONFIGURED_FIREWALL = 'firewall';
+    const USER_FIREWALL = 'user_firewall';
+
     function let(
+        Request $request,
+        GetResponseEvent $event,
         FirewallMapper $firewallMapper,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
+        TokenInterface $token,
+        EnforceablePasswordChangeInterface $user,
         RouterInterface $router
     ) {
+        $event->getRequest()->willReturn($request);
+        $event->getRequestType()->willReturn(HttpKernelInterface::MASTER_REQUEST);
+        $firewallMapper->getFirewallName($request)->willReturn(self::CONFIGURED_FIREWALL);
+        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn($user);
+
         $this->beConstructedWith(
             $firewallMapper,
             $authorizationChecker,
@@ -39,15 +54,31 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         ]);
     }
 
+    function it_does_nothing_if_not_master_request(
+        GetResponseEvent $event,
+        Request $request,
+        TokenStorageInterface $tokenStorage,
+        FirewallMapper $firewallMapper
+    ) {
+        $event->getRequestType()->willReturn(HttpKernelInterface::SUB_REQUEST);
+
+        $tokenStorage->getToken()->shouldNotBeCalled();
+        $firewallMapper->getFirewallName($request)->shouldNotBeCalled();
+        $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
+
+        $this->onKernelRequest($event);
+    }
+
     function it_does_nothing_if_there_is_no_current_firewall(
         GetResponseEvent $event,
         Request $request,
         FirewallMapper $firewallMapper
     ) {
-        $event->getRequest()->willReturn($request);
         $firewallMapper->getFirewallName($request)->willReturn(null);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
@@ -59,6 +90,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $tokenStorage->getToken()->willReturn(null);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
@@ -68,46 +100,34 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         Request $request,
         FirewallMapper $firewallMapper
     ) {
-        $event->getRequest()->willReturn($request);
-        $firewallMapper->getFirewallName($request)->willReturn('user_firewall');
+        $firewallMapper->getFirewallName($request)->willReturn(self::USER_FIREWALL);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
 
     function it_does_nothing_when_user_is_not_logged_in(
         GetResponseEvent $event,
-        Request $request,
-        FirewallMapper $firewallMapper,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
-        $event->getRequest()->willReturn($request);
-        $firewallMapper->getFirewallName($request)->willReturn('firewall');
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
 
     function it_does_nothing_when_user_has_not_enforce_password_change(
         GetResponseEvent $event,
-        Request $request,
-        FirewallMapper $firewallMapper,
-        AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
         EnforceablePasswordChangeInterface $user
     ) {
-        $event->getRequest()->willReturn($request);
-        $firewallMapper->getFirewallName($request)->willReturn('firewall');
-        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
-        $tokenStorage->getToken()->willReturn($token);
-        $token->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
@@ -115,17 +135,8 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     function it_stops_event_propagation_when_already_on_change_password_page(
         GetResponseEvent $event,
         Request $request,
-        FirewallMapper $firewallMapper,
-        AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
         EnforceablePasswordChangeInterface $user
     ) {
-        $event->getRequest()->willReturn($request);
-        $firewallMapper->getFirewallName($request)->willReturn('firewall');
-        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
-        $tokenStorage->getToken()->willReturn($token);
-        $token->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('change_password');
 
@@ -138,18 +149,9 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     function it_redirects_to_change_password(
         GetResponseEvent $event,
         Request $request,
-        FirewallMapper $firewallMapper,
-        AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
-        EnforceablePasswordChangeInterface $user,
-        RouterInterface $router
+        RouterInterface $router,
+        EnforceablePasswordChangeInterface $user
     ) {
-        $event->getRequest()->willReturn($request);
-        $firewallMapper->getFirewallName($request)->willReturn('firewall');
-        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
-        $tokenStorage->getToken()->willReturn($token);
-        $token->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('something_secure');
         $router->generate('change_password')->willReturn('change_password_url');
@@ -158,6 +160,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
             Argument::type('\Symfony\Component\HttpFoundation\RedirectResponse'),
             Argument::which('getTargetUrl', 'change_password_url')
         ))->shouldBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
