@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset;
 
+use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -16,7 +17,8 @@ class RequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', [
+        $emailType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\EmailType', 'email');
+        $builder->add('email', $emailType, [
             'translation_domain' => 'FSiAdminSecurity',
             'label' => 'admin.password_reset.request.form.email'
         ]);

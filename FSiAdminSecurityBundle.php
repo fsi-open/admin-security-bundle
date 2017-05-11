@@ -35,14 +35,6 @@ class FSiAdminSecurityBundle extends Bundle
         ];
 
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
-
-        if ($container->hasExtension('fos_user')) {
-            $mappings = [
-                $doctrineConfigDir . '/FOS' => 'FSi\Bundle\AdminSecurityBundle\Security\FOS',
-            ];
-
-            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
-        }
     }
 
     public function boot()

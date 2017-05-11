@@ -9,10 +9,10 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
+use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UserType extends AbstractType
 {
@@ -35,40 +35,37 @@ class UserType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'admin_user';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', [
-            'label' => 'admin.admin_user.email',
-            'translation_domain' => 'FSiAdminSecurity',
-        ]);
+        $emailType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\EmailType', 'email');
+        $builder->add('email', $emailType, ['label' => 'admin.admin_user.email']);
 
-        $builder->add('roles', 'choice', [
+        $choiceType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\ChoiceType', 'choice');
+        $builder->add('roles', $choiceType, [
             'label' => 'admin.admin_user.roles',
-            'translation_domain' => 'FSiAdminSecurity',
             'choices' => $this->getRoleList(),
             'expanded' => true,
             'multiple' => true,
         ]);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => $this->dataClass
+            'data_class' => $this->dataClass,
+            'translation_domain' => 'FSiAdminSecurity'
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
     {
-        $resolver->setDefault('data_class', $this->dataClass);
+        return 'admin_user';
     }
 
     /**
@@ -80,6 +77,10 @@ class UserType extends AbstractType
 
         foreach ($this->roles as $role => $child) {
             $roleList[$role] = sprintf('%s [ %s ]', $role, join(', ', $child));
+        }
+
+        if (TypeSolver::isChoicesAsValuesOptionTrueByDefault()) {
+            $roleList = array_flip($roleList);
         }
 
         return $roleList;

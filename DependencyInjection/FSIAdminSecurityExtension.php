@@ -9,6 +9,7 @@
 
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
+use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -39,6 +40,9 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         $loader->load(sprintf('%s.xml', $config['storage']));
+        $loader->load(
+            TypeSolver::isSymfony3FormNamingConvention() ? 'forms-symfony-3.xml' : 'forms-symfony-2.xml'
+        );
     }
 
     public function prepend(ContainerBuilder $container)

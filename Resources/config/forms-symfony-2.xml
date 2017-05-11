@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="admin_security.form.type.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType</parameter>
+        <parameter key="admin_security.form.type.password_reset.request.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType</parameter>
+        <parameter key="admin_security.form.type.password_reset.change_password.class">FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType</parameter>
+        <parameter key="admin_security.form.type.user.class">FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="admin_security.form.change_password.type" class="%admin_security.form.type.change_password.class%">
+            <tag name="form.type" alias="admin_change_password" />
+        </service>
+
+        <service id="admin_security.form.type.password_reset.request" class="%admin_security.form.type.password_reset.request.class%">
+            <tag name="form.type" alias="admin_password_reset_request" />
+        </service>
+
+        <service id="admin_security.form.type.password_reset.change_password" class="%admin_security.form.type.password_reset.change_password.class%">
+            <tag name="form.type" alias="admin_password_reset_change_password" />
+        </service>
+
+        <service id="admin_security.form.type.user" class="%admin_security.form.type.user.class%">
+            <tag name="form.type" alias="admin_user" />
+            <argument type="string">%admin_security.model.user%</argument>
+            <argument>%security.role_hierarchy.roles%</argument>
+        </service>
+
+    </services>
+
+</container>

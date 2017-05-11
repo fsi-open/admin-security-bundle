@@ -81,7 +81,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iMNotLoggedIn()
     {
-        expect($this->kernel->getContainer()->get('security.context')->getToken())->toBe(null);
+        expect($this->kernel->getContainer()->get('security.token_storage')->getToken())->toBe(null);
     }
 
     /**
@@ -153,7 +153,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iShouldBeLoggedOff()
     {
-        expect($this->kernel->getContainer()->get('security.context')->getToken())->toBe(null);
+        expect($this->kernel->getContainer()->get('security.token_storage')->getToken())->toBe(null);
     }
 
     /**
