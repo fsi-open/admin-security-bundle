@@ -2,23 +2,24 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\Template;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig_Environment;
 
 class TwigSwiftMessageFactorySpec extends ObjectBehavior
 {
-    function let(\Twig_Environment $twig, RequestStack $requestStack)
+    const TEMPLATE = 'mail-template.html.twig';
+
+    function let(Twig_Environment $twig, RequestStack $requestStack)
     {
-        $this->beConstructedWith(
-            $twig,
-            $requestStack
-        );
+        $this->beConstructedWith($twig, $requestStack);
     }
 
     function it_should_render_template(
-        \Twig_Environment $twig,
-        \Twig_Template $template,
+        Twig_Environment $twig,
+        Template $template,
         RequestStack $requestStack
     ) {
         $request = new Request(
@@ -32,10 +33,7 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
 
         $requestStack->getMasterRequest()->willReturn($request);
 
-        $templateParameters = [
-            'user' => 'user',
-            'request' => $request
-        ];
+        $templateParameters = ['user' => 'user', 'request' => $request];
 
         $twig->mergeGlobals($templateParameters)->willReturn($templateParameters);
         $twig->loadTemplate('mail-template.html.twig')->willReturn($template);

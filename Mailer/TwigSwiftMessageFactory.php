@@ -24,10 +24,8 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
      */
     private $requestStack;
 
-    public function __construct(
-        Twig_Environment $twig,
-        RequestStack $requestStack
-    ) {
+    public function __construct(Twig_Environment $twig, RequestStack $requestStack)
+    {
         $this->twig = $twig;
         $this->requestStack = $requestStack;
     }

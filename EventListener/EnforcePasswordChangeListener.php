@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Http\FirewallMapInterface;
 
 class EnforcePasswordChangeListener implements EventSubscriberInterface
 {
@@ -30,7 +31,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
     private $firewallMapper;
 
     /**
-     * @var FirewallMap
+     * @var FirewallMapInterface
      */
     private $firewallMap;
 
@@ -69,7 +70,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
      */
     public function __construct(
         FirewallMapper $firewallMapper,
-        FirewallMap $firewallMap,
+        FirewallMapInterface $firewallMap,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
