@@ -4,3 +4,4 @@ composer.lock
 composer.phar
 autoload.php
 features/fixtures/project/web/bundles/
+*.sqlite

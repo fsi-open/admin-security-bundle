@@ -7,6 +7,8 @@ use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Activation;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
@@ -29,6 +31,24 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      * @var KernelInterface
      */
     private $kernel;
+
+    /**
+     * @var Activation
+     */
+    private $activationPage;
+
+    /**
+     * @var ActivationChangePassword
+     */
+    private $activationChangePasswordPage;
+
+    public function __construct(
+        Activation $activationPage,
+        ActivationChangePassword $activationChangePasswordPage
+    ) {
+        $this->activationPage = $activationPage;
+        $this->activationChangePasswordPage = $activationChangePasswordPage;
+    }
 
     /**
      * {@inheritdoc}
@@ -113,9 +133,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function iTryOpenActivationPageWithToken($activationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
-        $page = $this->getPage('ActivationChangePassword');
-        $page->openWithoutVerification(['activationToken' => $activationToken]);
+        $this->activationChangePasswordPage->openWithoutVerification(['activationToken' => $activationToken]);
     }
 
     /**
@@ -123,9 +141,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function iOpenActivationPageWithToken($activationToken)
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
-        $page = $this->getPage('Activation');
-        $page->openWithoutVerification(['activationToken' => $activationToken]);
+        $this->activationPage->openWithoutVerification(['activationToken' => $activationToken]);
     }
 
     /**
@@ -135,10 +151,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
     {
         /** @var UserInterface $user */
         $user = $this->getUserRepository()->findOneBy(['email' => $userEmail]);
-
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
-        $page = $this->getPage('Activation');
-        $page->openWithoutVerification(['activationToken' => $user->getActivationToken()->getToken()]);
+        $this->activationPage->openWithoutVerification(['activationToken' => $user->getActivationToken()->getToken()]);
     }
 
     /**
@@ -146,9 +159,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function iFillInNewPasswordWithConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
-        $page = $this->getPage('Activation Change Password');
-        $page->fillForm();
+        $this->activationChangePasswordPage->fillForm();
     }
 
     /**
@@ -156,9 +167,7 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
-        /** @var \FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword $page */
-        $page = $this->getPage('Activation Change Password');
-        $page->fillFormWithInvalidData();
+        $this->activationChangePasswordPage->fillFormWithInvalidData();
     }
 
     /**
@@ -176,10 +185,6 @@ class ActivationContext extends PageObjectContext implements KernelAwareContext,
      */
     private function createToken($token, $ttl)
     {
-        return new Token(
-            $token,
-            new \DateTime(),
-            $ttl
-        );
+        return new Token($token, new \DateTime(), $ttl);
     }
 }

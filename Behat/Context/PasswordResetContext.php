@@ -6,9 +6,10 @@ use Behat\Mink\Mink;
 use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
-use DateTime;
 use DateInterval;
+use DateTime;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
@@ -31,6 +32,24 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      * @var KernelInterface
      */
     private $kernel;
+
+    /**
+     * @var PasswordResetRequest
+     */
+    private $passwordResetRequestPage;
+
+    /**
+     * @var PasswordResetChangePassword
+     */
+    private $passwordResetChangePage;
+
+    public function __construct(
+        PasswordResetRequest $passwordResetRequestPage,
+        PasswordResetChangePassword $passwordResetChangePage
+    ) {
+        $this->passwordResetRequestPage = $passwordResetRequestPage;
+        $this->passwordResetChangePage = $passwordResetChangePage;
+    }
 
     /**
      * {@inheritdoc}
@@ -115,7 +134,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillFormWithNonExistentEmailAddress()
     {
-        $this->getPage('Password Reset Request')->fillField('Email', 'nonexistent@fsi.pl');
+        $this->passwordResetRequestPage->fillField('Email', 'nonexistent@fsi.pl');
     }
 
     /**
@@ -133,7 +152,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillFormWithCorrectEmailAddress()
     {
-        $this->getPage('Password Reset Request')->fillField('Email', 'admin@fsi.pl');
+        $this->passwordResetRequestPage->fillField('Email', 'admin@fsi.pl');
     }
 
     /**
@@ -141,9 +160,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iTryOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var PasswordResetChangePassword $page */
-        $page = $this->getPage('Password Reset Change Password');
-        $page->openWithoutVerification(['confirmationToken' => $confirmationToken]);
+        $this->passwordResetChangePage->openWithoutVerification(['confirmationToken' => $confirmationToken]);
     }
 
     /**
@@ -151,9 +168,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iOpenPasswordChangePageWithToken($confirmationToken)
     {
-        /** @var PasswordResetChangePassword $page */
-        $page = $this->getPage('Password Reset Change Password');
-        $page->open(['confirmationToken' => $confirmationToken]);
+        $this->passwordResetChangePage->open(['confirmationToken' => $confirmationToken]);
     }
 
     /**
@@ -161,9 +176,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithConfirmation()
     {
-        /** @var PasswordResetChangePassword $page */
-        $page = $this->getPage('Password Reset Change Password');
-        $page->fillForm();
+        $this->passwordResetChangePage->fillForm();
     }
 
     /**
@@ -171,9 +184,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
-        /** @var PasswordResetChangePassword $page */
-        $page = $this->getPage('Password Reset Change Password');
-        $page->fillFormWithInvalidData();
+        $this->passwordResetChangePage->fillFormWithInvalidData();
     }
 
     /**

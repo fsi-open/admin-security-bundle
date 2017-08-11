@@ -140,6 +140,7 @@
 
         <service id="admin_security.listener.enforce_password_change" class="%admin_security.listener.enforce_password_change.class%">
             <argument type="service" id="admin_security.firewall_mapper"/>
+            <argument type="service" id="security.firewall.map"/>
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="router"/>

@@ -4,16 +4,19 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallConfig;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\LegacyFirewallMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 {
@@ -24,6 +27,9 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         Request $request,
         GetResponseEvent $event,
         FirewallMapper $firewallMapper,
+        FirewallMap $firewallMap,
+        LegacyFirewallMap $legacyFirewallMap,
+        FirewallConfig $firewallConfig,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
@@ -32,13 +38,20 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     ) {
         $event->getRequest()->willReturn($request);
         $event->getRequestType()->willReturn(HttpKernelInterface::MASTER_REQUEST);
-        $firewallMapper->getFirewallName($request)->willReturn(self::CONFIGURED_FIREWALL);
+        if (method_exists('Symfony\Bundle\SecurityBundle\Security\FirewallMap', 'getFirewallConfig')) {
+            $firewallMap->getFirewallConfig($request)->willReturn($firewallConfig);
+            $firewallConfig->getName()->willReturn(self::CONFIGURED_FIREWALL);
+        } else {
+            $firewallMap = $legacyFirewallMap;
+            $firewallMapper->getFirewallName($request)->willReturn(self::CONFIGURED_FIREWALL);
+        }
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
         $this->beConstructedWith(
             $firewallMapper,
+            $firewallMap,
             $authorizationChecker,
             $tokenStorage,
             $router,

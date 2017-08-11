@@ -24,10 +24,8 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
      */
     private $requestStack;
 
-    public function __construct(
-        Twig_Environment $twig,
-        RequestStack $requestStack
-    ) {
+    public function __construct(Twig_Environment $twig, RequestStack $requestStack)
+    {
         $this->twig = $twig;
         $this->requestStack = $requestStack;
     }
@@ -52,9 +50,8 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
         $template = $this->twig->loadTemplate($template);
         $subject = $template->renderBlock('subject', $templateContext);
         $htmlBody = $template->renderBlock('body_html', $templateContext);
-        $message = \Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setTo($email);
+        $message = new \Swift_Message($subject);
+        $message->setTo($email);
 
         if (!empty($htmlBody)) {
             $message->setBody($htmlBody, 'text/html');

@@ -10,6 +10,16 @@ use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 class AdminUserManagementContext extends PageObjectContext
 {
     /**
+     * @var UserList
+     */
+    private $userListPage;
+
+    public function __construct(UserList $userListPage)
+    {
+        $this->userListPage = $userListPage;
+    }
+
+    /**
      * @Then I should see following table:
      */
     public function iShouldSeeTable(TableNode $table)
@@ -22,7 +32,6 @@ class AdminUserManagementContext extends PageObjectContext
 
             foreach ($row as $key => $value) {
                 $cell = $datagrid->getCellByColumnName($key, $rowIndex + 1);
-
                 expect($cell->getText())->toBe($value);
             }
         }
@@ -33,9 +42,7 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iShouldHaveFollowingListBatchActions(TableNode $table)
     {
-        $page = $this->getUserListPage();
-
-        expect(array_values($page->getBatchActions()))->toBe(array_keys($table->getRowsHash()));
+        expect(array_values($this->userListPage->getBatchActions()))->toBe(array_keys($table->getRowsHash()));
     }
 
     /**
@@ -43,13 +50,12 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iDeleteSecondUserOnTheList()
     {
-        $page = $this->getUserListPage();
-        $page->getBatchActionsElement()->selectOption('Delete');
+        $this->userListPage->getBatchActionsElement()->selectOption('Delete');
 
         $datagrid = $this->getDatagrid();
         $datagrid->checkCellCheckbox(2);
 
-        $page->pressButton('Ok');
+        $this->userListPage->pressButton('Ok');
     }
 
     /**
@@ -57,13 +63,12 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iResetPasswordForTheSecondUserOnTheList()
     {
-        $page = $this->getUserListPage();
-        $page->getBatchActionsElement()->selectOption('Reset password');
+        $this->userListPage->getBatchActionsElement()->selectOption('Reset password');
 
         $datagrid = $this->getDatagrid();
         $datagrid->checkCellCheckbox(2);
 
-        $page->pressButton('Ok');
+        $this->userListPage->pressButton('Ok');
     }
 
     /**
@@ -71,8 +76,7 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iPressLink($name)
     {
-        $page = $this->getUserListPage();
-        $page->clickLink($name);
+        $this->userListPage->clickLink($name);
     }
 
     /**
@@ -80,17 +84,8 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iFillFormWithValidUserData()
     {
-        $page = $this->getUserListPage();
-        $page->fillField('Email', 'new-user@fsi.pl');
-        $page->checkField('ROLE_ADMIN');
-    }
-
-    /**
-     * @return UserList
-     */
-    private function getUserListPage()
-    {
-        return $this->getPage('UserList');
+        $this->userListPage->fillField('Email', 'new-user@fsi.pl');
+        $this->userListPage->checkField('ROLE_ADMIN');
     }
 
     /**
