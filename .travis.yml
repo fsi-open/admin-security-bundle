@@ -41,7 +41,7 @@ before_script:
 
 script:
   - bin/phpspec run -f pretty
-  - bin/behat --no-snippets --format=progress --profile=travis -v
+  - bin/behat --no-snippets --profile=travis -vvv
 
 after_failure:
   - cat /tmp/FSiAdminSecurityBundle/logs/test.log
