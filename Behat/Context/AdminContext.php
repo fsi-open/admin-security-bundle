@@ -14,9 +14,17 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Exception;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminPanel;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Login;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
+use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
+use InvalidArgumentException;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-use Symfony\Component\HttpKernel\KernelInterface;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class AdminContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
@@ -34,6 +42,40 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      * @var KernelInterface
      */
     private $kernel;
+
+    /**
+     * @var LoginPage
+     */
+    private $loginPage;
+
+    /**
+     * @var AdminPanel
+     */
+    private $adminPanelPage;
+
+    /**
+     * @var PasswordResetRequest
+     */
+    private $passwordResetRequestPage;
+
+    /**
+     * @var UserList
+     */
+    private $userListPage;
+
+    public function __construct(
+        Login $loginPage,
+        AdminPanel $adminPanelPage,
+        AdminChangePassword $changePasswordPage,
+        PasswordResetRequest $passwordResetRequestPage,
+        UserList $userListPage
+    ) {
+        $this->loginPage = $loginPage;
+        $this->adminPanelPage = $adminPanelPage;
+        $this->changePasswordPage = $changePasswordPage;
+        $this->passwordResetRequestPage = $passwordResetRequestPage;
+        $this->userListPage = $userListPage;
+    }
 
     /**
      * {@inheritdoc}
@@ -81,7 +123,10 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iMNotLoggedIn()
     {
-        expect($this->kernel->getContainer()->get('security.token_storage')->getToken())->toBe(null);
+        $token = $this->kernel->getContainer()->get('security.token_storage')->getToken();
+        if (!is_null($token)) {
+            throw new Exception('User is logged in, though he is not suppose to be!');
+        }
     }
 
     /**
@@ -100,7 +145,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
         try {
             $this->iOpenPage($pageName);
         } catch (UnexpectedPageException $e) {
-            // probably it is redirect
+            // it probably is a redirect
         }
     }
 
@@ -125,7 +170,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iShouldSeeDropdownButtonInNavigationBar($buttonText)
     {
-        expect($this->getPage('Admin panel')->hasLink($buttonText))->toBe(true);
+        expect($this->adminPanelPage->hasLink($buttonText))->toBe(true);
     }
 
     /**
@@ -133,7 +178,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function dropdownButtonShouldHaveFollowingLinks($button, TableNode $dropdownLinks)
     {
-        $links = $this->getPage('Admin panel')->getDropdownOptions($button);
+        $links = $this->adminPanelPage->getDropdownOptions($button);
 
         foreach ($dropdownLinks->getHash() as $link) {
             expect($links)->toContain($link['Link']);
@@ -145,7 +190,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iClickLinkFromDropdownButton($link, $dropdown)
     {
-        $this->getPage('Admin panel')->getDropdown($dropdown)->clickLink($link);
+        $this->adminPanelPage->getDropdown($dropdown)->clickLink($link);
     }
 
     /**
@@ -178,8 +223,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
     public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu)
     {
         foreach($menu->getHash() as $elementData) {
-            expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementData['Element']))
-                ->toBe(true);
+            expect($this->adminPanelPage->hasElementInTopMenu($elementData['Element']))->toBe(true);
         }
     }
 
@@ -188,8 +232,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iShouldNotSeePositionInMenu($elementName)
     {
-        expect($this->getPage('Admin Panel')->hasElementInTopMenu($elementName))
-            ->toBe(false);
+        expect($this->adminPanelPage->hasElementInTopMenu($elementName))->toBe(false);
     }
 
     /**
@@ -197,6 +240,31 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      */
     public function iShouldNotSeeAnyElementsInMenu()
     {
-        expect($this->getPage('Admin Panel')->hasAnyMenuElements())->toBe(false);
+        expect($this->adminPanelPage->hasAnyMenuElements())->toBe(false);
+    }
+
+    /**
+     * @param string $name
+     * @return Page
+     */
+    public function getPage($name)
+    {
+        switch ($name) {
+            case 'Login':
+                return $this->loginPage;
+            case 'Admin panel':
+                return $this->adminPanelPage;
+            case 'Admin change password':
+                return $this->changePasswordPage;
+            case 'User list':
+                return $this->userListPage;
+            case 'Password reset request':
+                return $this->passwordResetRequestPage;
+            default:
+                throw new InvalidArgumentException(sprintf(
+                    'Could not cast "%s" to a page object',
+                    $name
+                ));
+        }
     }
 }

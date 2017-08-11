@@ -9,7 +9,7 @@ Feature: Request URI for password change form
 
   @email
   Scenario: Request reset link with invalid email address
-    Given I am on the "Password Reset Request" page
+    Given I am on the "Password reset request" page
     When I fill form with non-existent email address
     And I press "Send me instructions" button
     Then I should see message:
@@ -20,7 +20,7 @@ Feature: Request URI for password change form
 
   @email
   Scenario: Request reset link with valid email address
-    Given I am on the "Password Reset Request" page
+    Given I am on the "Password reset request" page
     When I fill form with correct email address
     And I press "Send me instructions" button
     Then I should see message:
@@ -35,7 +35,7 @@ Feature: Request URI for password change form
 
   Scenario: Second request for reset password link
     Given user "admin@fsi.pl" has confirmation token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
-    And I am on the "Password Reset Request" page
+    And I am on the "Password reset request" page
     When I fill form with correct email address
     And I press "Send me instructions" button
     Then I should see message:
