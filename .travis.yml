@@ -8,27 +8,21 @@ cache:
 
 sudo: false
 
+addons:
+    firefox: "47.0.1"
+
 matrix:
   include:
-    - php: 5.4
+    - php: 7.1
       env:
         - COMPOSER_FLAGS='--prefer-lowest'
-    - php: 5.5
-    - php: 5.6
-      env:
-        - SYMFONY_VERSION=2.7.*
-    - php: 5.6
-      env:
-        - SYMFONY_VERSION=2.8.*
-    - php: 5.6
-    - php: 7.0
     - php: 7.1
 
 before_install:
   - phpenv config-rm xdebug.ini
   - composer self-update
   - if [[ $SYMFONY_VERSION ]]; then composer require symfony/symfony:${SYMFONY_VERSION} -n --no-update; fi;
-  - "[ ! -f bin/selenium.jar ] && wget -O bin/selenium.jar http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar || true"
+  - wget --no-clobber -O bin/selenium.jar http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar || true
   - composer update $COMPOSER_FLAGS
 
 before_script:
@@ -37,7 +31,7 @@ before_script:
   - export DISPLAY=:99.0
   - java -jar bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
-  - php features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web
+  - features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web
 
 script:
   - bin/phpspec run -f pretty

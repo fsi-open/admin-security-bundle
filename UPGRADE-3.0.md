@@ -35,3 +35,7 @@ The following services and parameters are not registered if you are using Symfon
 so depending on any of these services or parameters is no longer valid. If you wish
 to overwrite any classes defined in bundle's [configuration](configuration.md),
 that is where you will need to change the values.
+
+## Upgrade to PHP 7.1 or higher
+
+In order to use this bundle, you will need PHP 7.1 or higher.
