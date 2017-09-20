@@ -25,27 +25,27 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class AdminController
 {
     /**
-     * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface
+     * @var TokenStorageInterface
      */
     private $tokenStorage;
 
     /**
-     * @var \Symfony\Component\Routing\RouterInterface
+     * @var RouterInterface
      */
     private $router;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Templating\EngineInterface
+     * @var EngineInterface
      */
     private $templating;
 
     /**
-     * @var \Symfony\Component\Form\FormFactoryInterface
+     * @var FormFactoryInterface
      */
     private $formFactory;
 
@@ -69,17 +69,6 @@ class AdminController
      */
     private $changePasswordFormValidationGroups;
 
-    /**
-     * @param EngineInterface $templating
-     * @param FormFactoryInterface $formFactory
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param FlashMessages $flashMessages
-     * @param string $changePasswordActionTemplate
-     * @param string $changePasswordFormType
-     * @param array $changePasswordFormValidationGroups
-     */
     public function __construct(
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
@@ -87,8 +76,8 @@ class AdminController
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $changePasswordActionTemplate,
-        $changePasswordFormType,
+        string $changePasswordActionTemplate,
+        string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
         $this->templating = $templating;
@@ -122,7 +111,11 @@ class AdminController
                 new ChangePasswordEvent($user)
             );
 
-            $this->flashMessages->success('admin.change_password_message.success', 'FSiAdminSecurity');
+            $this->flashMessages->success(
+                'admin.change_password_message.success',
+                [],
+                'FSiAdminSecurity'
+            );
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }

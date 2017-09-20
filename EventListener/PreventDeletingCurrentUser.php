@@ -75,7 +75,11 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
 
             if ($user === $entity) {
                 $this->setRedirectResponse($event);
-                $this->flashMessages->error('admin.user_list.message.delete_current_user', 'FSiAdminSecurity');
+                $this->flashMessages->error(
+                    'admin.user_list.message.delete_current_user',
+                    [],
+                    'FSiAdminSecurity'
+                );
 
                 return;
             }

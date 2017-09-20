@@ -19,6 +19,7 @@ use PhpSpec\ObjectBehavior;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecuredManagerSpec extends ObjectBehavior
 {
@@ -43,6 +44,7 @@ class SecuredManagerSpec extends ObjectBehavior
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
+        $user->isForcedToChangePassword()->willReturn(false);
 
         $this->beConstructedWith($manager, $tokenStorage, $authorizationChecker);
     }
@@ -113,9 +115,7 @@ class SecuredManagerSpec extends ObjectBehavior
     ) {
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
 
-        $this->shouldThrow(
-            '\Symfony\Component\Security\Core\Exception\AccessDeniedException'
-        )->during('getElement', [self::SECURE_ID]);
+        $this->shouldThrow(AccessDeniedException::class)->during('getElement', [self::SECURE_ID]);
     }
 
     function it_returns_only_allowed_elements(

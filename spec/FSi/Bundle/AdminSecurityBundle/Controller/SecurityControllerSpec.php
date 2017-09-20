@@ -41,8 +41,8 @@ class SecurityControllerSpec extends ObjectBehavior
 
         $flashMessages->error(
             Argument::type('string'),
-            Argument::type('string'),
-            Argument::type('array')
+            Argument::type('array'),
+            Argument::type('string')
         )->shouldBeCalled();
 
         $templating->renderResponse(

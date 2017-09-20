@@ -10,12 +10,12 @@
 namespace FSi\Bundle\AdminSecurityBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
-use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminBundle\Admin\Manager\Visitor;
+use FSi\Bundle\AdminBundle\Admin\ManagerInterface;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecuredManager implements ManagerInterface
@@ -48,15 +48,15 @@ class SecuredManager implements ManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function addElement(Element $element)
+    public function addElement(Element $element): void
     {
-        return $this->manager->addElement($element);
+        $this->manager->addElement($element);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasElement($id)
+    public function hasElement(string $id): bool
     {
         if (!$this->manager->hasElement($id)) {
             return false;
@@ -72,14 +72,17 @@ class SecuredManager implements ManagerInterface
 
     /**
      * @param string $id
-     * @return \FSi\Bundle\AdminBundle\Admin\Element|null
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @return Element
+     * @throws RuntimeException
+     * @throws AccessDeniedException
      */
-    public function getElement($id)
+    public function getElement(string $id): Element
     {
         $element = $this->manager->getElement($id);
         if (!$element) {
-            return null;
+            throw new RuntimeException(
+                sprintf('Element with id "%s" does not exist', $id)
+            );
         }
 
         if ($this->isAccessToElementRestricted($element)) {
@@ -95,7 +98,7 @@ class SecuredManager implements ManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function removeElement($id)
+    public function removeElement(string $id): void
     {
         $this->manager->removeElement($id);
     }
@@ -103,7 +106,7 @@ class SecuredManager implements ManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getElements()
+    public function getElements(): array
     {
         return array_filter((array) $this->manager->getElements(), function (Element $element) {
             return !$this->isAccessToElementRestricted($element);
@@ -113,7 +116,7 @@ class SecuredManager implements ManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function accept(Visitor $visitor)
+    public function accept(Visitor $visitor): void
     {
         $visitor->visitManager($this);
     }
@@ -122,7 +125,7 @@ class SecuredManager implements ManagerInterface
      * @param Element $element
      * @return boolean
      */
-    private function isAccessToElementRestricted(Element $element)
+    private function isAccessToElementRestricted(Element $element): bool
     {
         if (!$this->tokenStorage->getToken()) {
             // The request is not behind a firewall, so all elements are restricted
@@ -141,7 +144,7 @@ class SecuredManager implements ManagerInterface
     /**
      * @return boolean
      */
-    private function isUserForcedToChangePassword()
+    private function isUserForcedToChangePassword(): bool
     {
         if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             return false;

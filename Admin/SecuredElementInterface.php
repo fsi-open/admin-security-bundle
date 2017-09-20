@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 interface SecuredElementInterface
 {
     /**
-     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     * @param AuthorizationCheckerInterface $authorizationChecker
      * @return bool
      */
     public function isAllowed(AuthorizationCheckerInterface $authorizationChecker);

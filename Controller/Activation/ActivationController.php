@@ -21,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -72,17 +71,6 @@ class ActivationController
      */
     private $changePasswordFormValidationGroups;
 
-    /**
-     * @param EngineInterface $templating
-     * @param string $changePasswordActionTemplate
-     * @param UserRepositoryInterface $userRepository
-     * @param RouterInterface $router
-     * @param FormFactoryInterface $formFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param FlashMessages $flashMessages
-     * @param string $changePasswordFormType
-     * @param array $changePasswordFormValidationGroups
-     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
@@ -91,7 +79,7 @@ class ActivationController
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $changePasswordFormType,
+        string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
         $this->templating = $templating;
@@ -105,16 +93,16 @@ class ActivationController
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
-    /**
-     * @param string $token
-     * @return RedirectResponse
-     */
     public function activateAction($token)
     {
         $user = $this->tryFindUserByActivationToken($token);
 
         if ($this->isUserEnforcedToChangePassword($user)) {
-            $this->flashMessages->info('admin.activation.message.change_password', 'FSiAdminSecurity');
+            $this->flashMessages->info(
+                'admin.activation.message.change_password',
+                [],
+                'FSiAdminSecurity'
+            );
 
             return new RedirectResponse(
                 $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
@@ -129,11 +117,6 @@ class ActivationController
         }
     }
 
-    /**
-     * @param Request $request
-     * @param string $token
-     * @return RedirectResponse|Response
-     */
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->tryFindUserByActivationToken($token);
@@ -198,7 +181,7 @@ class ActivationController
      */
     private function addFlashAndRedirect($type, $message)
     {
-        $this->flashMessages->{$type}($message, 'FSiAdminSecurity');
+        $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }

@@ -9,15 +9,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SecuredElement extends AbstractElement implements SecuredElementInterface
 {
-    public function getId()
+    public function getId(): string
     {
     }
 
-    public function getName()
+    public function getName(): string
     {
     }
 
-    public function getRoute()
+    public function getRoute(): string
     {
     }
 
@@ -25,7 +25,7 @@ class SecuredElement extends AbstractElement implements SecuredElementInterface
     {
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 }

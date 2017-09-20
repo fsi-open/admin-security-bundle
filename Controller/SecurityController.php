@@ -35,17 +35,11 @@ class SecurityController
      */
     private $loginActionTemplate;
 
-    /**
-     * @param EngineInterface $templating
-     * @param AuthenticationUtils $authenticationUtils
-     * @param FlashMessages $flashMessages
-     * @param string $loginActionTemplate
-     */
     public function __construct(
         EngineInterface $templating,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
-        $loginActionTemplate
+        string $loginActionTemplate
     ) {
         $this->templating = $templating;
         $this->authenticationUtils = $authenticationUtils;
@@ -59,8 +53,8 @@ class SecurityController
         if ($error) {
             $this->flashMessages->error(
                 $error->getMessageKey(),
-                'security',
-                $error->getMessageData()
+                $error->getMessageData(),
+                'security'
             );
         }
 
