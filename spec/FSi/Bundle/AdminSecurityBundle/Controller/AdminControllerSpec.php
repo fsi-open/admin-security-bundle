@@ -106,7 +106,11 @@ class AdminControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $flashMessages->success('admin.change_password_message.success', 'FSiAdminSecurity')->shouldBeCalled();
+        $flashMessages->success(
+            'admin.change_password_message.success',
+            [],
+            'FSiAdminSecurity'
+        )->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 

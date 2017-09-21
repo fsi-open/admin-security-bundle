@@ -11,9 +11,10 @@ framework:
     form:            true
     csrf_protection: true
     validation:      { enable_annotations: true }
-    templating:      { engines: ['twig'] }
+    templating:      { engines: ["twig"] }
     profiler:        { only_exceptions: false }
     test:            ~
+    assets:          ~
     session:
         storage_id:     session.storage.filesystem
 
@@ -22,34 +23,34 @@ doctrine:
         driver:   pdo_sqlite
         user:     admin
         charset:  UTF8
-        path: %kernel.root_dir%/data.sqlite
+        path: "%kernel.root_dir%/data.sqlite"
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
 
 fsi_admin_security:
     storage: orm
     firewall_name: admin_panel
     mailer:
-        reply_to: do-not-reply@example.com
+        reply_to: "do-not-reply@example.com"
     model:
         user: FSi\FixturesBundle\Entity\User
     activation:
         mailer:
-            from: activation@fsi.pl
+            from: "activation@fsi.pl"
     password_reset:
         mailer:
-            from: from-admin@fsi.pl
+            from: "from-admin@fsi.pl"
     templates:
         activation:
-            change_password: ::activation.html.twig
+            change_password: "activation.html.twig"
         password_reset:
-            request: ::request.html.twig
-            change_password: ::change_password.html.twig
+            request: "request.html.twig"
+            change_password: "change_password.html.twig"
 
 twig:
     form_themes:
-        - '::form_theme.html.twig'
+        - "form_theme.html.twig"
 
 swiftmailer:
     spool:

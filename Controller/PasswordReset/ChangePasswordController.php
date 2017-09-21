@@ -70,17 +70,6 @@ class ChangePasswordController
      */
     private $formValidationGroups;
 
-    /**
-     * @param EngineInterface $templating
-     * @param string $changePasswordActionTemplate
-     * @param UserRepositoryInterface $userRepository
-     * @param RouterInterface $router
-     * @param FormFactoryInterface $formFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param FlashMessages $flashMessages
-     * @param string $formType
-     * @param array $formValidationGroups
-     */
     public function __construct(
         EngineInterface $templating,
         $changePasswordActionTemplate,
@@ -103,11 +92,6 @@ class ChangePasswordController
         $this->formValidationGroups = $formValidationGroups;
     }
 
-    /**
-     * @param Request $request
-     * @param string $token
-     * @return RedirectResponse|Response
-     */
     public function changePasswordAction(Request $request, $token)
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
@@ -133,7 +117,11 @@ class ChangePasswordController
                 new ChangePasswordEvent($user)
             );
 
-            $this->flashMessages->success('admin.password_reset.change_password.message.success', 'FSiAdminSecurity');
+            $this->flashMessages->success(
+                'admin.password_reset.change_password.message.success',
+                [],
+                'FSiAdminSecurity'
+            );
 
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }

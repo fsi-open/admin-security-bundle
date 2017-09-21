@@ -78,8 +78,11 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             )
         )->shouldBeCalled();
 
-        $flashMessages->success('admin.password_reset.change_password.message.success', 'FSiAdminSecurity')
-            ->shouldBeCalled();
+        $flashMessages->success(
+            'admin.password_reset.change_password.message.success',
+            [],
+            'FSiAdminSecurity'
+        )->shouldBeCalled();
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 

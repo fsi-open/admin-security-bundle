@@ -30,7 +30,7 @@ class PasswordResetBatchElement extends BatchElement
     /**
      * @param ResettablePasswordInterface $object
      */
-    public function apply($object)
+    public function apply($object): void
     {
         $this->eventDispatcher->dispatch(
             AdminSecurityEvents::RESET_PASSWORD_REQUEST,
@@ -41,7 +41,7 @@ class PasswordResetBatchElement extends BatchElement
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function getId(): string
     {
         return 'admin_security_password_reset';
     }
@@ -49,7 +49,7 @@ class PasswordResetBatchElement extends BatchElement
     /**
      * {@inheritdoc}
      */
-    public function getClassName()
+    public function getClassName(): string
     {
         return $this->userModel;
     }

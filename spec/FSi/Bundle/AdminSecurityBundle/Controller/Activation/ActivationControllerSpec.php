@@ -127,7 +127,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_activation_change_password', ['token' => 'activation-token'])
             ->willReturn('change_password_url');
 
-        $flashMessages->info('admin.activation.message.change_password', 'FSiAdminSecurity')->shouldBeCalled();
+        $flashMessages->info('admin.activation.message.change_password', [], 'FSiAdminSecurity')->shouldBeCalled();
 
         $response = $this->activateAction('activation-token');
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
@@ -154,7 +154,7 @@ class ActivationControllerSpec extends ObjectBehavior
             Argument::which('getUser', $user->getWrappedObject())
         ))->shouldBeCalled();
 
-        $flashMessages->success('admin.activation.message.success', 'FSiAdminSecurity')->shouldBeCalled();
+        $flashMessages->success('admin.activation.message.success', [], 'FSiAdminSecurity')->shouldBeCalled();
 
         $response = $this->activateAction('activation-token');
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
@@ -240,7 +240,11 @@ class ActivationControllerSpec extends ObjectBehavior
             Argument::which('getUser', $user->getWrappedObject())
         ))->shouldBeCalled();
 
-        $flashMessages->success('admin.activation.message.change_password_success', 'FSiAdminSecurity')->shouldBeCalled();
+        $flashMessages->success(
+            'admin.activation.message.change_password_success',
+            [],
+            'FSiAdminSecurity'
+        )->shouldBeCalled();
 
         $response = $this->changePasswordAction($request, 'activation-token');
         $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');

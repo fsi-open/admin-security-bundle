@@ -86,17 +86,16 @@ class ResetRequestController
         $this->formType = $formType;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function requestAction(Request $request)
     {
         $form = $this->formFactory->create($this->formType);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $user = $this->getUser($form);
-            $redirectResponse = $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+            $redirectResponse = $this->addFlashAndRedirect(
+                'info',
+                'admin.password_reset.request.mail_sent_if_correct'
+            );
 
             if (!($user instanceof ResettablePasswordInterface)) {
                 return $redirectResponse;
@@ -135,7 +134,7 @@ class ResetRequestController
      */
     private function addFlashAndRedirect($type, $message)
     {
-        $this->flashMessages->{$type}($message, 'FSiAdminSecurity');
+        $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }

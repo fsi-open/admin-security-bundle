@@ -14,9 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * @author Norbert Orzechowicz <norbert@fsi.pl>
- */
 class FSiFixturesExtension extends Extension
 {
     /**

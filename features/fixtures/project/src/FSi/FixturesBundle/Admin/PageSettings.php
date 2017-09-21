@@ -11,9 +11,15 @@ namespace FSi\FixturesBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
+use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
+use FSi\Component\DataGrid\DataGridInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
+use FSi\Component\DataSource\DataSourceInterface;
+use FSi\FixturesBundle\Entity\PageSettings as PageSettingsEntity;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PageSettings extends CRUDElement implements SecuredElementInterface
@@ -23,33 +29,32 @@ class PageSettings extends CRUDElement implements SecuredElementInterface
         return $authorizationChecker->isGranted('ROLE_ADMIN');
     }
 
-    public function getClassName()
+    public function getClassName(): string
     {
-        return 'FSiFixturesBundle:PageSettings';
+        return PageSettingsEntity::class;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return 'page_settings';
     }
 
-    public function getName()
+    protected function initDataGrid(DataGridFactoryInterface $factory): DataGridInterface
     {
-        return 'Page settings';
+        return $factory->createDataGrid($this->getId());
     }
 
-    protected function initDataGrid(DataGridFactoryInterface $factory)
+    protected function initDataSource(DataSourceFactoryInterface $factory): DataSourceInterface
     {
-        return null;
+        return $factory->createDataSource(
+            'doctrine-orm',
+            ['entity' => $this->getClassName()],
+            $this->getId()
+        );
     }
 
-    protected function initDataSource(DataSourceFactoryInterface $factory)
+    protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
     {
-        return null;
-    }
-
-    protected function initForm(FormFactoryInterface $factory, $data = null)
-    {
-        return null;
+        return $factory->create(TypeSolver::getFormType(FormType::class, 'form'), $data);
     }
 }
