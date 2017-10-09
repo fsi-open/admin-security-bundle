@@ -10,6 +10,7 @@ use FSi\Component\DataSource\DataSourceFactoryInterface;
 use FSi\Component\DataSource\DataSourceInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType;
 
 class UserElement extends CRUDElement
 {
@@ -37,7 +38,7 @@ class UserElement extends CRUDElement
      */
     protected function initDataSource(DataSourceFactoryInterface $factory): DataSourceInterface
     {
-        return $factory->createDataSource('doctrine', ['entity' => $this->getClassName()])->setMaxResults(20);
+        return $factory->createDataSource('doctrine-orm', ['entity' => $this->getClassName()])->setMaxResults(20);
     }
 
     /**
@@ -45,7 +46,7 @@ class UserElement extends CRUDElement
      */
     protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
     {
-        $formType = TypeSolver::getFormType('FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType', 'admin_user');
+        $formType = TypeSolver::getFormType(UserType::class, 'admin_user');
         return $factory->create($formType, $data);
     }
 
