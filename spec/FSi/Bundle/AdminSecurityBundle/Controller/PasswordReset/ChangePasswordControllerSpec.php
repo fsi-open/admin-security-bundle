@@ -2,9 +2,11 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
+use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
@@ -13,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -20,7 +23,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController');
+        $this->shouldHaveType(ChangePasswordController::class);
     }
 
     function let(
@@ -73,7 +76,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $eventDispatcher->dispatch(
             AdminSecurityEvents::CHANGE_PASSWORD,
             Argument::allOf(
-                Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent'),
+                Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
             )
         )->shouldBeCalled();
@@ -87,7 +90,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
         $response = $this->changePasswordAction($request, 'token12345');
-        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('url');
     }
 }

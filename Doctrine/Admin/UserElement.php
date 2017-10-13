@@ -10,7 +10,6 @@ use FSi\Component\DataSource\DataSourceFactoryInterface;
 use FSi\Component\DataSource\DataSourceInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType;
 
 class UserElement extends CRUDElement
 {
@@ -19,35 +18,16 @@ class UserElement extends CRUDElement
      */
     private $userModel;
 
-    public function __construct($options, $userModel)
+    /**
+     * @var string
+     */
+    private $formClass;
+
+    public function __construct(array $options, string $userModel, string $formClass)
     {
         parent::__construct($options);
         $this->userModel = $userModel;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initDataGrid(DataGridFactoryInterface $factory): DataGridInterface
-    {
-        return $factory->createDataGrid('admin_security_user');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initDataSource(DataSourceFactoryInterface $factory): DataSourceInterface
-    {
-        return $factory->createDataSource('doctrine-orm', ['entity' => $this->getClassName()])->setMaxResults(20);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
-    {
-        $formType = TypeSolver::getFormType(UserType::class, 'admin_user');
-        return $factory->create($formType, $data);
+        $this->formClass = $formClass;
     }
 
     /**
@@ -64,5 +44,34 @@ class UserElement extends CRUDElement
     public function getClassName(): string
     {
         return $this->userModel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initDataGrid(DataGridFactoryInterface $factory): DataGridInterface
+    {
+        return $factory->createDataGrid('admin_security_user');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initDataSource(DataSourceFactoryInterface $factory): DataSourceInterface
+    {
+        return $factory->createDataSource(
+            'doctrine-orm',
+            ['entity' => $this->getClassName()],
+            $this->getId()
+        )->setMaxResults(20);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
+    {
+        $formType = TypeSolver::getFormType($this->formClass, 'admin_user');
+        return $factory->create($formType, $data);
     }
 }

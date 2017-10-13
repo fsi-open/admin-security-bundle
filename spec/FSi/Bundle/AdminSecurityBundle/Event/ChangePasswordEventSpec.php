@@ -4,6 +4,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\EventDispatcher\Event;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {
@@ -14,7 +15,7 @@ class ChangePasswordEventSpec extends ObjectBehavior
 
     function it_is_event()
     {
-        $this->shouldHaveType('Symfony\Component\EventDispatcher\Event');
+        $this->shouldHaveType(Event::class);
     }
 
     function it_returns_user(ChangeablePasswordInterface $user)

@@ -6,6 +6,7 @@ use FSi\Bundle\AdminSecurityBundle\spec\fixtures\Template;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Swift_Message;
 use Twig_Environment;
 
 class TwigSwiftMessageFactorySpec extends ObjectBehavior
@@ -42,7 +43,7 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
         $template->renderBlock('body_html', $templateParameters)->willReturn('body string');
 
         $message = $this->createMessage('user@example.com', 'mail-template.html.twig', ['user' => 'user']);
-        $message->shouldBeAnInstanceOf('\Swift_Message');
+        $message->shouldBeAnInstanceOf(Swift_Message::class);
         $message->getSubject()->shouldReturn('subject string');
         $message->getTo()->shouldReturn(['user@example.com' => null]);
         $message->getBody()->shouldReturn('body string');

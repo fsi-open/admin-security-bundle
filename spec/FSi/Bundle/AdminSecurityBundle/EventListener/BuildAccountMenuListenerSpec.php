@@ -33,8 +33,16 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
     function it_builds_account_menu()
     {
         $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItem('account', false);
-        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild('account', 'account.change-password', 'fsi_admin_change_password');
-        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild('account', 'account.logout', 'fsi_admin_security_user_logout');
+        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild(
+            'account',
+            'account.change-password',
+            'fsi_admin_change_password'
+        );
+        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild(
+            'account',
+            'account.logout',
+            'fsi_admin_security_user_logout'
+        );
     }
 
     public function getMatchers()

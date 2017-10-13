@@ -5,10 +5,12 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallConfig;
-use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap as FixuresFirewallMap;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\LegacyFirewallMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -27,7 +29,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         Request $request,
         GetResponseEvent $event,
         FirewallMapper $firewallMapper,
-        FirewallMap $firewallMap,
+        FixuresFirewallMap $firewallMap,
         LegacyFirewallMap $legacyFirewallMap,
         FirewallConfig $firewallConfig,
         AuthorizationCheckerInterface $authorizationChecker,
@@ -38,7 +40,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     ) {
         $event->getRequest()->willReturn($request);
         $event->getRequestType()->willReturn(HttpKernelInterface::MASTER_REQUEST);
-        if (method_exists('Symfony\Bundle\SecurityBundle\Security\FirewallMap', 'getFirewallConfig')) {
+        if (method_exists(FirewallMap::class, 'getFirewallConfig')) {
             $firewallMap->getFirewallConfig($request)->willReturn($firewallConfig);
             $firewallConfig->getName()->willReturn(self::CONFIGURED_FIREWALL);
         } else {
@@ -170,7 +172,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $router->generate('change_password')->willReturn('change_password_url');
 
         $event->setResponse(Argument::allOf(
-            Argument::type('\Symfony\Component\HttpFoundation\RedirectResponse'),
+            Argument::type(RedirectResponse::class),
             Argument::which('getTargetUrl', 'change_password_url')
         ))->shouldBeCalled();
         $event->stopPropagation()->shouldNotBeCalled();

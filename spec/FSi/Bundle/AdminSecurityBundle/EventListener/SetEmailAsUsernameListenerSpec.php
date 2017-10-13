@@ -3,6 +3,7 @@
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\EventListener\SetEmailAsUsernameListener;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
 
@@ -10,7 +11,7 @@ class SetEmailAsUsernameListenerSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSi\Bundle\AdminSecurityBundle\EventListener\SetEmailAsUsernameListener');
+        $this->shouldHaveType(SetEmailAsUsernameListener::class);
     }
 
     function it_should_set_email_as_username(UserEvent $event, UserInterface $user)

@@ -219,6 +219,7 @@
         <service id="admin_security.admin.user" class="%admin_security.admin.user.class%">
             <argument type="collection"/>
             <argument type="string">%admin_security.model.user%</argument>
+            <argument type="string">%admin_security.form.type.user.class%</argument>
             <tag name="admin.element"/>
         </service>
 

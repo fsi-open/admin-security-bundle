@@ -4,6 +4,9 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
@@ -11,12 +14,12 @@ class ChangePasswordTypeSpec extends ObjectBehavior
 {
     function it_is_form_type()
     {
-        $this->shouldHaveType('Symfony\Component\Form\AbstractType');
+        $this->shouldHaveType(AbstractType::class);
     }
 
     function it_add_fields_during_build(FormBuilderInterface $formBuilder)
     {
-        $passwordType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\PasswordType', 'password');
+        $passwordType = TypeSolver::getFormType(PasswordType::class, 'password');
         $formBuilder->add('current_password', $passwordType, [
             'label' => 'admin.change_password_form.current_password',
             'mapped' => false,
@@ -26,7 +29,7 @@ class ChangePasswordTypeSpec extends ObjectBehavior
             ]
         ])->shouldBeCalled()->willReturn($formBuilder);
 
-        $repeatedType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\RepeatedType', 'repeated');
+        $repeatedType = TypeSolver::getFormType(RepeatedType::class, 'repeated');
         $formBuilder->add('plainPassword', $repeatedType, [
             'invalid_message' => 'admin_user.password.mismatch',
             'type' => $passwordType,

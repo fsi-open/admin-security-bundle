@@ -15,8 +15,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
@@ -62,9 +64,9 @@ class ActivationControllerSpec extends ObjectBehavior
     ) {
         $userRepository->findUserByActivationToken('non-existing-token')->willReturn(null);
 
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('activateAction', ['non-existing-token']);
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('changePasswordAction', [$request, 'non-existing-token']);
     }
 
@@ -75,9 +77,9 @@ class ActivationControllerSpec extends ObjectBehavior
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -89,9 +91,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(true);
 
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -106,9 +108,9 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->getActivationToken()->willReturn($token);
         $token->isNonExpired()->willReturn(false);
 
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -130,7 +132,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $flashMessages->info('admin.activation.message.change_password', [], 'FSiAdminSecurity')->shouldBeCalled();
 
         $response = $this->activateAction('activation-token');
-        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('change_password_url');
     }
 
@@ -157,7 +159,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $flashMessages->success('admin.activation.message.success', [], 'FSiAdminSecurity')->shouldBeCalled();
 
         $response = $this->activateAction('activation-token');
-        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('login_url');
     }
 
@@ -173,7 +175,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $token->isNonExpired()->willReturn(true);
         $user->isForcedToChangePassword()->willReturn(false);
 
-        $this->shouldThrow('Symfony\Component\HttpKernel\Exception\NotFoundHttpException')
+        $this->shouldThrow(NotFoundHttpException::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -247,7 +249,7 @@ class ActivationControllerSpec extends ObjectBehavior
         )->shouldBeCalled();
 
         $response = $this->changePasswordAction($request, 'activation-token');
-        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('login_url');
     }
 }
