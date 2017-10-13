@@ -39,3 +39,7 @@ that is where you will need to change the values.
 ## Upgrade to PHP 7.1 or higher
 
 In order to use this bundle, you will need PHP 7.1 or higher.
+
+## Pass form class name to users element's constructor if extending it
+
+It is required to properly override the form used by the element (for Symfony 3+).
