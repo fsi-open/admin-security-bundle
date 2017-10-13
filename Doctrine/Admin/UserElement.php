@@ -33,6 +33,22 @@ class UserElement extends CRUDElement
     /**
      * {@inheritdoc}
      */
+    public function getId(): string
+    {
+        return 'admin_security_user';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClassName(): string
+    {
+        return $this->userModel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function initDataGrid(DataGridFactoryInterface $factory): DataGridInterface
     {
         return $factory->createDataGrid('admin_security_user');
@@ -57,21 +73,5 @@ class UserElement extends CRUDElement
     {
         $formType = TypeSolver::getFormType($this->formClass, 'admin_user');
         return $factory->create($formType, $data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId(): string
-    {
-        return 'admin_security_user';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClassName(): string
-    {
-        return $this->userModel;
     }
 }
