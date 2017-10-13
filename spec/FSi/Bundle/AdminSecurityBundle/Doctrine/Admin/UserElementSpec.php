@@ -2,13 +2,15 @@
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
+use FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 
 class UserElementSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith([], 'User\Model');
+        $this->beConstructedWith([], User::class, UserType::class);
     }
 
     function it_has_id()
@@ -18,6 +20,6 @@ class UserElementSpec extends ObjectBehavior
 
     function it_return_correct_class_name()
     {
-        $this->getClassName()->shouldReturn('User\Model');
+        $this->getClassName()->shouldReturn(User::class);
     }
 }

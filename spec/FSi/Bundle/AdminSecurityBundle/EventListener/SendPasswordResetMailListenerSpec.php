@@ -10,7 +10,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use PhpSpec\ObjectBehavior;
 
-
 class SendPasswordResetMailListenerSpec extends ObjectBehavior
 {
     function let(

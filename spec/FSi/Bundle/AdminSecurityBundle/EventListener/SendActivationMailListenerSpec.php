@@ -13,10 +13,6 @@ use Prophecy\Argument;
 
 class SendActivationMailListenerSpec extends ObjectBehavior
 {
-    /**
-     * @param \FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface $mailer
-     * @param \FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface $tokenFactory
-     */
     function let(
         MailerInterface $mailer,
         TokenFactoryInterface $tokenFactory

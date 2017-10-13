@@ -10,10 +10,12 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Component\DataIndexer\DataIndexerInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class PreventDeletingCurrentUserSpec extends ObjectBehavior
 {
@@ -38,7 +40,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
     function it_is_event_subscriber()
     {
-        $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+        $this->shouldHaveType(EventSubscriberInterface::class);
     }
 
     function it_should_subscribe_events()
@@ -62,7 +64,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
         $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::allOf(
-            Argument::type('Symfony\Component\HttpFoundation\RedirectResponse'),
+            Argument::type(RedirectResponse::class),
             Argument::which('getTargetUrl', 'list_url')
         ))->shouldBeCalled();
         $flashMessages->error(Argument::cetera())->shouldBeCalled();
@@ -110,7 +112,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
         $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::allOf(
-            Argument::type('Symfony\Component\HttpFoundation\RedirectResponse'),
+            Argument::type(RedirectResponse::class),
             Argument::which('getTargetUrl', 'http://example.com/1,2,3')
         ))->shouldBeCalled();
 

@@ -5,6 +5,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -12,6 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
@@ -39,7 +41,7 @@ class AdminControllerSpec extends ObjectBehavior
             $router,
             $eventDispatcher,
             $flashMessages,
-            'FSiAdminSecurityBundle:Admin:change_password.html.twig',
+            '@FSiAdminSecurity/Admin/change_password.html.twig',
             'form_type',
             ['validation_group']
         );
@@ -68,7 +70,7 @@ class AdminControllerSpec extends ObjectBehavior
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
 
-        $templating->renderResponse('FSiAdminSecurityBundle:Admin:change_password.html.twig', [
+        $templating->renderResponse('@FSiAdminSecurity/Admin/change_password.html.twig', [
             'form' => $formView
         ])->shouldBeCalled()->willReturn($response);
 
@@ -101,7 +103,7 @@ class AdminControllerSpec extends ObjectBehavior
         $eventDispatcher->dispatch(
             AdminSecurityEvents::CHANGE_PASSWORD,
             Argument::allOf(
-                Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent'),
+                Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
             )
         )->shouldBeCalled();
@@ -115,7 +117,7 @@ class AdminControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 
         $response = $this->changePasswordAction($request);
-        $response->shouldHaveType('Symfony\Component\HttpFoundation\RedirectResponse');
+        $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('/admin/login');
     }
 }
