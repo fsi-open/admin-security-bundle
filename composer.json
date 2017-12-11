@@ -32,6 +32,7 @@
         "symfony/monolog-bridge": "^2.4|^3.0",
         "symfony/monolog-bundle": "^2.6|^3.0",
         "symfony/routing": "^2.7|^3.0",
+        "symfony/var-dumper": "^2.7|^3.0",
         "phpspec/phpspec": "^3.0",
         "phpspec/prophecy": "^1.7.2",
         "behat/behat": "^3.3",
