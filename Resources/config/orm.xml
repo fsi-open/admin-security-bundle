@@ -10,7 +10,7 @@
 
     <services>
         <!-- Repository -->
-        <service id="admin_security.repository.user" class="%admin_security.repository.user.class%">
+        <service id="admin_security.repository.user" class="%admin_security.repository.user.class%" public="true">
             <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
             <argument type="string">%admin_security.model.user%</argument>
         </service>
