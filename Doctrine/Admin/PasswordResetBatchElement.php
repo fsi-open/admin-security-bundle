@@ -29,7 +29,7 @@ class PasswordResetBatchElement extends BatchElement
      */
     private $eventDispatcher;
 
-    public function __construct($options, $userModel, EventDispatcherInterface $eventDispatcher)
+    public function __construct(array $options, string $userModel, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($options);
 
