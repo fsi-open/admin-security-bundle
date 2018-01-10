@@ -238,7 +238,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
         expect($this->adminPanelPage->hasAnyMenuElements())->toBe(false);
     }
 
-    public function getPage(string $name): Page
+    public function getPage($name): Page
     {
         switch ($name) {
             case 'Login':

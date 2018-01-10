@@ -108,7 +108,7 @@ abstract class User implements UserInterface
 
     public function __construct()
     {
-        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->salt = base_convert(sha1(uniqid((string) mt_rand(), true)), 16, 36);
         $this->enabled = false;
         $this->locked = false;
         $this->enforcePasswordChange = false;

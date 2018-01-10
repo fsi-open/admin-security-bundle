@@ -79,10 +79,10 @@ class MailContext implements KernelAwareContext
         $files = $this->getSpoolFiles();
         foreach ($files as $file) {
             /** @var \Swift_Message $message */
-            $message = unserialize(file_get_contents($file));
+            $message = unserialize(file_get_contents((string) $file));
 
             if ($subject === $message->getSubject()) {
-                unlink($file);
+                unlink((string) $file);
 
                 return $message;
             }
