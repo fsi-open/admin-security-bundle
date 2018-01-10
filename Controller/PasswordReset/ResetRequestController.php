@@ -137,7 +137,7 @@ class ResetRequestController
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 
-    private function getUser(FormInterface $form): UserInterface
+    private function getUser(FormInterface $form): ?UserInterface
     {
         return $this->userRepository->findUserByEmail($form->get('email')->getData());
     }
