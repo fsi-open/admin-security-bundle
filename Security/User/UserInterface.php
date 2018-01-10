@@ -11,8 +11,12 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
-interface UserInterface extends AdvancedUserInterface, ResettablePasswordInterface, EnforceablePasswordChangeInterface,
-    ActivableInterface, \Serializable
+interface UserInterface extends
+    AdvancedUserInterface,
+    ResettablePasswordInterface,
+    EnforceablePasswordChangeInterface,
+    ActivableInterface,
+    \Serializable
 {
     /**
      * Sets the username.

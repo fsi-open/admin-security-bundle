@@ -88,7 +88,7 @@ class BuildAccountMenuListener
      */
     private function hasUserLoggedIn()
     {
-        return $this->tokenStorage->getToken();
+        return $this->tokenStorage->getToken() !== null;
     }
 
     /**
