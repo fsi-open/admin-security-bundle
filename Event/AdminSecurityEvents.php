@@ -7,15 +7,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 class AdminSecurityEvents
 {
-    const CHANGE_PASSWORD = 'admin.security.change_password';
-    const RESET_PASSWORD_REQUEST = 'admin.security.reset_password_request';
-    const ACTIVATION = 'admin.security.activation';
-    const DEACTIVATION = 'admin.security.deactivation';
-    const USER_CREATED = 'admin.security.user_created';
-    const PROMOTE_USER = 'admin.security.promote_user';
-    const DEMOTE_USER = 'admin.security.demote_user';
+    public const CHANGE_PASSWORD = 'admin.security.change_password';
+    public const RESET_PASSWORD_REQUEST = 'admin.security.reset_password_request';
+    public const ACTIVATION = 'admin.security.activation';
+    public const DEACTIVATION = 'admin.security.deactivation';
+    public const USER_CREATED = 'admin.security.user_created';
+    public const PROMOTE_USER = 'admin.security.promote_user';
+    public const DEMOTE_USER = 'admin.security.demote_user';
 }

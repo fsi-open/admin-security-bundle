@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
@@ -14,15 +16,9 @@ use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
 interface ResettablePasswordInterface extends ChangeablePasswordInterface, EmailableInterface
 {
-    /**
-     * @return TokenInterface
-     */
-    public function getPasswordResetToken();
+    public function getPasswordResetToken(): ?TokenInterface;
 
-    /**
-     * @param TokenInterface $token
-     */
-    public function setPasswordResetToken(TokenInterface $token);
+    public function setPasswordResetToken(TokenInterface $token): void;
 
-    public function removePasswordResetToken();
+    public function removePasswordResetToken(): void;
 }

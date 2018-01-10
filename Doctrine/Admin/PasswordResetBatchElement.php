@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
@@ -23,6 +32,7 @@ class PasswordResetBatchElement extends BatchElement
     public function __construct($options, $userModel, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($options);
+
         $this->userModel = $userModel;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -38,17 +48,11 @@ class PasswordResetBatchElement extends BatchElement
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getId(): string
     {
         return 'admin_security_password_reset';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getClassName(): string
     {
         return $this->userModel;

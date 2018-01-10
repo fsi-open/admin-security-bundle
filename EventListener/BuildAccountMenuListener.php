@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\MenuEvent;
@@ -28,15 +30,13 @@ class BuildAccountMenuListener
      */
     private $tokenStorage;
 
-    public function __construct(
-        TranslatorInterface $translator,
-        TokenStorageInterface $tokenStorage
-    ) {
+    public function __construct(TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
+    {
         $this->translator = $translator;
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function createAccountMenu(MenuEvent $event)
+    public function createAccountMenu(MenuEvent $event): Item
     {
         if (!$this->hasUserLoggedIn()) {
             return null;
@@ -59,10 +59,7 @@ class BuildAccountMenuListener
         return $event->getMenu();
     }
 
-    /**
-     * @return Item
-     */
-    private function createRootItem()
+    private function createRootItem(): Item
     {
         $rootItem = new Item('account');
 
@@ -83,18 +80,12 @@ class BuildAccountMenuListener
         return $rootItem;
     }
 
-    /**
-     * @return bool
-     */
-    private function hasUserLoggedIn()
+    private function hasUserLoggedIn(): bool
     {
         return $this->tokenStorage->getToken() !== null;
     }
 
-    /**
-     * @return bool
-     */
-    private function canChangeUserPassword()
+    private function canChangeUserPassword(): bool
     {
         return $this->tokenStorage->getToken()->getUser() instanceof ChangeablePasswordInterface;
     }

@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -27,26 +29,20 @@ class SendPasswordResetMailListener implements EventSubscriberInterface
      */
     private $tokenFactory;
 
-    function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
+    public function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
     {
         $this->mailer = $mailer;
         $this->tokenFactory = $tokenFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
         ];
     }
 
-    /**
-     * @param ResetPasswordRequestEvent $event
-     */
-    public function onResetPasswordRequest(ResetPasswordRequestEvent $event)
+    public function onResetPasswordRequest(ResetPasswordRequestEvent $event): void
     {
         $user = $event->getUser();
         $user->setPasswordResetToken($this->tokenFactory->createToken());

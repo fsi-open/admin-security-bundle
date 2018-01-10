@@ -7,49 +7,19 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 interface ChangeablePasswordInterface
 {
-    /**
-     * Gets the plain password.
-     *
-     * @return string
-     */
-    public function getPlainPassword();
+    public function getPlainPassword(): ?string;
 
-    /**
-     * Sets the hashed password.
-     *
-     * @param string $password
-     *
-     * @return self
-     */
-    public function setPassword($password);
+    public function setPassword(string $password): void;
 
-    /**
-     * Sets the plain password.
-     *
-     * @param string $password
-     *
-     * @return self
-     */
-    public function setPlainPassword($password);
+    public function setPlainPassword(string $password): void;
 
-    /**
-     * Returns the salt that was originally used to encode the password.
-     *
-     * This can return null if the password was not encoded using a salt.
-     *
-     * @return string|null The salt
-     */
     public function getSalt();
 
-    /**
-     * Removes sensitive data from the user.
-     *
-     * This is important if, at any given point, sensitive information like
-     * the plain-text password is stored on this object.
-     */
     public function eraseCredentials();
 }

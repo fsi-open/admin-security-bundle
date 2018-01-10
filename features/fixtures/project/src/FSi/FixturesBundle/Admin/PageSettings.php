@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\FixturesBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
@@ -24,7 +26,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PageSettings extends CRUDElement implements SecuredElementInterface
 {
-    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker): bool
     {
         return $authorizationChecker->isGranted('ROLE_ADMIN');
     }

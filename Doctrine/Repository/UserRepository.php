@@ -7,33 +7,29 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByActivationToken($activationToken)
+    public function findUserByActivationToken(string $activationToken): ?ActivableInterface
     {
         return $this->findOneBy(['activationToken.token' => $activationToken]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByPasswordResetToken($confirmationToken)
+    public function findUserByPasswordResetToken(string $confirmationToken): ?ResettablePasswordInterface
     {
         return $this->findOneBy(['passwordResetToken.token' => $confirmationToken]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByEmail($email)
+    public function findUserByEmail(string $email): ?SymfonyUserInterface
     {
         return $this->findOneBy(['email' => $email]);
     }

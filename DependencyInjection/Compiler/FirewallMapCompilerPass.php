@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -14,9 +16,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FirewallMapCompilerPass implements CompilerPassInterface
 {
-    const FIREWALL_MAPPER_SERVICE = 'admin_security.firewall_mapper';
+    private const FIREWALL_MAPPER_SERVICE = 'admin_security.firewall_mapper';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (false === $container->hasAlias(self::FIREWALL_MAPPER_SERVICE) &&
             false === $container->hasDefinition(self::FIREWALL_MAPPER_SERVICE)) {

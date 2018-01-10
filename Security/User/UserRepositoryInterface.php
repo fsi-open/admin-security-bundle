@@ -7,25 +7,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
+
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 interface UserRepositoryInterface
 {
-    /**
-     * @param string $confirmationToken
-     * @return ResettablePasswordInterface|null
-     */
-    public function findUserByPasswordResetToken($confirmationToken);
+    public function findUserByPasswordResetToken(string $confirmationToken): ?ResettablePasswordInterface;
 
-    /**
-     * @param string $activationToken
-     * @return ActivableInterface|null
-     */
-    public function findUserByActivationToken($activationToken);
+    public function findUserByActivationToken(string $activationToken): ?ActivableInterface;
 
-    /**
-     * @param string $email
-     * @return UserInterface|null
-     */
-    public function findUserByEmail($email);
+    public function findUserByEmail(string $email): ?SymfonyUserInterface;
 }

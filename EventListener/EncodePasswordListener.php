@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -30,7 +32,7 @@ class EncodePasswordListener implements EventSubscriberInterface
         $this->encoderFactory = $encoderFactory;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
@@ -38,10 +40,7 @@ class EncodePasswordListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ChangePasswordEvent $event
-     */
-    public function onChangePassword(ChangePasswordEvent $event)
+    public function onChangePassword(ChangePasswordEvent $event): void
     {
         $this->updateUserPassword($event->getUser());
     }
@@ -57,23 +56,17 @@ class EncodePasswordListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param ChangeablePasswordInterface $user
-     */
-    protected function updateUserPassword(ChangeablePasswordInterface $user)
+    protected function updateUserPassword(ChangeablePasswordInterface $user): void
     {
-        if (0 !== strlen($password = $user->getPlainPassword())) {
+        $password = $user->getPlainPassword();
+        if (null !== $password) {
             $encoder = $this->getEncoder($user);
             $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
             $user->eraseCredentials();
         }
     }
 
-    /**
-     * @param UserInterface $user
-     * @return PasswordEncoderInterface
-     */
-    protected function getEncoder(UserInterface $user)
+    protected function getEncoder(UserInterface $user): PasswordEncoderInterface
     {
         return $this->encoderFactory->getEncoder($user);
     }

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element;
 
 use Behat\Mink\Element\NodeElement;
@@ -25,21 +34,14 @@ class Datagrid extends Element
         return $row;
     }
 
-    /**
-     * @return int
-     */
-    public function getRowCount()
+    public function getRowCount(): int
     {
         $records = $this->findAll('css', 'tbody > tr');
 
         return count($records);
     }
 
-    /**
-     * @param int $rowNum
-     * @param int $columnNum
-     */
-    public function checkCellCheckbox($rowNum, $columnNum = 1)
+    public function checkCellCheckbox(int $rowNum, int $columnNum = 1): void
     {
         $row = $this->getRow($rowNum);
         $cell = $row->find('xpath', '//td['. $columnNum .']');
@@ -56,12 +58,7 @@ class Datagrid extends Element
         $checkbox->check();
     }
 
-    /**
-     * @param string $columnName
-     * @param int $rowNum
-     * @return NodeElement|null
-     */
-    public function getCellByColumnName($columnName, $rowNum)
+    public function getCellByColumnName(string $columnName, int $rowNum): ?NodeElement
     {
         $row = $this->getRow($rowNum);
         $pos = $this->getColumnPosition($columnName);
@@ -69,11 +66,7 @@ class Datagrid extends Element
         return $row->find('xpath', '//td['. $pos .']');
     }
 
-    /**
-     * @param string $columnHeader
-     * @return int
-     */
-    private function getColumnPosition($columnHeader, $throwIfNotFound = true)
+    private function getColumnPosition(string $columnHeader, bool $throwIfNotFound = true): ?int
     {
         $columns = $this->findAll('xpath', "//thead/tr/th");
 

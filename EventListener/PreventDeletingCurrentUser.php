@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
@@ -47,17 +49,14 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         $this->flashMessages = $flashMessages;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser',
         ];
     }
 
-    public function preventDeletingCurrentUser(FormEvent $event)
+    public function preventDeletingCurrentUser(FormEvent $event): void
     {
         $element = $event->getElement();
 
@@ -86,14 +85,14 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         }
     }
 
-    private function setRedirectResponse(FormEvent $event)
+    private function setRedirectResponse(FormEvent $event): void
     {
         $event->stopPropagation();
         $redirectUrl = $this->getRedirectUrl($event->getElement(), $event->getRequest());
         $event->setResponse(new RedirectResponse($redirectUrl));
     }
 
-    private function getRedirectUrl(Element $element, Request $request)
+    private function getRedirectUrl(Element $element, Request $request): string
     {
         $redirectUrl = $request->get('redirect_uri');
 

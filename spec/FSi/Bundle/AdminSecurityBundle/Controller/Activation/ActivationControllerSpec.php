@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -70,16 +79,16 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'non-existing-token']);
     }
 
-    function it_throws_http_not_found_when_user_is_not_supported(
+    function it_throws_type_error_when_user_is_not_supported(
         UserRepositoryInterface $userRepository,
         Request $request,
         SymfonyUserInterface $symfonyUser
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
-        $this->shouldThrow(NotFoundHttpException::class)
+        $this->shouldThrow(\TypeError::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow(NotFoundHttpException::class)
+        $this->shouldThrow(\TypeError::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 

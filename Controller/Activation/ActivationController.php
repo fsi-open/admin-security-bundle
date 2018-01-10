@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -21,6 +23,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -93,7 +96,7 @@ class ActivationController
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
-    public function activateAction($token)
+    public function activateAction(string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
 
@@ -117,7 +120,7 @@ class ActivationController
         }
     }
 
-    public function changePasswordAction(Request $request, $token)
+    public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
 
@@ -151,15 +154,11 @@ class ActivationController
         );
     }
 
-    /**
-     * @param $token
-     * @return ActivableInterface|null
-     */
-    private function tryFindUserByActivationToken($token)
+    private function tryFindUserByActivationToken(string $token): ActivableInterface
     {
         $user = $this->userRepository->findUserByActivationToken($token);
 
-        if (!($user instanceof ActivableInterface)) {
+        if (null === $user) {
             throw new NotFoundHttpException();
         }
 
@@ -174,23 +173,14 @@ class ActivationController
         return $user;
     }
 
-    /**
-     * @param string $type
-     * @param string $message
-     * @return RedirectResponse
-     */
-    private function addFlashAndRedirect($type, $message)
+    private function addFlashAndRedirect(string $type,string $message): RedirectResponse
     {
         $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 
-    /**
-     * @param $user
-     * @return bool
-     */
-    private function isUserEnforcedToChangePassword($user)
+    private function isUserEnforcedToChangePassword(ActivableInterface $user): bool
     {
         return ($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword();
     }

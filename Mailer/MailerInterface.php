@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
 interface MailerInterface
@@ -15,5 +17,5 @@ interface MailerInterface
      * @param EmailableInterface $to
      * @return int
      */
-    public function send(EmailableInterface $to);
+    public function send(EmailableInterface $to): int;
 }

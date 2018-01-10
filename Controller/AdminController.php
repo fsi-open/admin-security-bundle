@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -18,6 +20,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -91,7 +94,7 @@ class AdminController
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
-    public function changePasswordAction(Request $request)
+    public function changePasswordAction(Request $request): Response
     {
         $user = $this->tokenStorage->getToken()->getUser();
         if (!($user instanceof ChangeablePasswordInterface)) {

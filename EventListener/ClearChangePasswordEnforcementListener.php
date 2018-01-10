@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -16,17 +18,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
         ];
     }
 
-    /**
-     * @param ChangePasswordEvent $event
-     */
-    public function onChangePassword(ChangePasswordEvent $event)
+    public function onChangePassword(ChangePasswordEvent $event): void
     {
         $user = $event->getUser();
 

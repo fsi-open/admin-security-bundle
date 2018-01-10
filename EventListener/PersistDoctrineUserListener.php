@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -23,22 +25,16 @@ use Symfony\Component\Security\Http\SecurityEvents;
 class PersistDoctrineUserListener implements EventSubscriberInterface
 {
     /**
-     * @var \Doctrine\Bundle\DoctrineBundle\Registry
+     * @var Registry
      */
     private $registry;
 
-    /**
-     * @param Registry $registry
-     */
-    function __construct(Registry $registry)
+    public function __construct(Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
@@ -52,66 +48,42 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param ActivationEvent $event
-     */
-    public function onActivation(ActivationEvent $event)
+    public function onActivation(ActivationEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param ActivationEvent $event
-     */
-    public function onDeactivation(ActivationEvent $event)
+    public function onDeactivation(ActivationEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param ChangePasswordEvent $event
-     */
-    public function onChangePassword(ChangePasswordEvent $event)
+    public function onChangePassword(ChangePasswordEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param ResetPasswordRequestEvent $event
-     */
-    public function onResetPasswordRequest(ResetPasswordRequestEvent $event)
+    public function onResetPasswordRequest(ResetPasswordRequestEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public function onUserCreated(UserEvent $event)
+    public function onUserCreated(UserEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public function onPromoteUser(UserEvent $event)
+    public function onPromoteUser(UserEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public function onDemoteUser(UserEvent $event)
+    public function onDemoteUser(UserEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
 
-    /**
-     * @param InteractiveLoginEvent $event
-     */
-    public function onInteractiveLogin(InteractiveLoginEvent $event)
+    public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $this->flushUserObjectManager($event->getAuthenticationToken()->getUser());
     }
@@ -119,7 +91,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
     /**
      * @param object $user
      */
-    private function flushUserObjectManager($user)
+    private function flushUserObjectManager($user): void
     {
         $objectManager = $this->registry->getManagerForClass(get_class($user));
 

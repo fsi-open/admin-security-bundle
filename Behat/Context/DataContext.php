@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -38,34 +40,22 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
      */
     private $kernel;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMink(Mink $mink)
+    public function setMink(Mink $mink): void
     {
         $this->mink = $mink;
     }
 
-    /**
-     * @return Mink
-     */
-    public function getMink()
+    public function getMink(): Mink
     {
         return $this->mink;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMinkParameters(array $parameters)
+    public function setMinkParameters(array $parameters): void
     {
         $this->minkParameters = $parameters;
     }
@@ -194,20 +184,12 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
         return $this->kernel->getContainer()->get('doctrine');
     }
 
-    /**
-     * @param $username
-     * @return User
-     */
-    private function findUserByUsername($username)
+    private function findUserByUsername(string $username): User
     {
         return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['username' => $username]);
     }
 
-    /**
-     * @param $userEmail
-     * @return User
-     */
-    private function findUserByEmail($userEmail)
+    private function findUserByEmail(string $userEmail): User
     {
         return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['email' => $userEmail]);
     }

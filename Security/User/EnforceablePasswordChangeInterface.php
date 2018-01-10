@@ -7,17 +7,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 interface EnforceablePasswordChangeInterface extends ChangeablePasswordInterface
 {
-    /**
-     * @return bool
-     */
-    public function isForcedToChangePassword();
+    public function isForcedToChangePassword(): bool;
 
-    /**
-     * @param bool $enforce
-     */
-    public function enforcePasswordChange($enforce);
+    public function enforcePasswordChange(bool $enforce): void;
 }

@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -28,32 +30,26 @@ class SendActivationMailListener implements EventSubscriberInterface
      */
     private $tokenFactory;
 
-    function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
+    public function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
     {
         $this->mailer = $mailer;
         $this->tokenFactory = $tokenFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::USER_CREATED => 'onUserCreated'
         ];
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public function onUserCreated(UserEvent $event)
+    public function onUserCreated(UserEvent $event): void
     {
         $user = $event->getUser();
 
         if (($user instanceof ActivableInterface) && !$user->isEnabled()) {
             $user->setActivationToken($this->tokenFactory->createToken());
-            $this->mailer->send($event->getUser());
+            $this->mailer->send($user);
         }
     }
 }
