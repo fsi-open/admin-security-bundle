@@ -94,7 +94,7 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
         $user->setEnabled(true);
 
         if (0 !== strlen($password = $user->getPlainPassword())) {
-            $encoder = $this->kernel->getContainer()->get('security.encoder_factory')->getEncoder($user);
+            $encoder = $this->kernel->getContainer()->get('test.security.encoder_factory')->getEncoder($user);
             $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
             $user->eraseCredentials();
         }

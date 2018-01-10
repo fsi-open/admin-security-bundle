@@ -10,5 +10,6 @@
         <service id="fsi_fixtures_bundle.admin.page_settings" class="FSi\FixturesBundle\Admin\PageSettings">
             <tag name="admin.element"/>
         </service>
+        <service id="test.security.encoder_factory" alias="security.encoder_factory" public="true" />
     </services>
 </container>

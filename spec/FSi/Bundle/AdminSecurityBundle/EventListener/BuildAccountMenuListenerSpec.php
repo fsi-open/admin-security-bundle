@@ -45,7 +45,7 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
         );
     }
 
-    public function getMatchers()
+    public function getMatchers(): array
     {
         return [
             'haveItem' => function(Item $menu, $itemName, $route = false) {
