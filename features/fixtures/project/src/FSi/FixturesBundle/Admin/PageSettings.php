@@ -26,7 +26,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PageSettings extends CRUDElement implements SecuredElementInterface
 {
-    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker)
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker): bool
     {
         return $authorizationChecker->isGranted('ROLE_ADMIN');
     }
