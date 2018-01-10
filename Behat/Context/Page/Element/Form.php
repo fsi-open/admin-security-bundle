@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element;
 
 use Behat\Mink\Element\NodeElement;
@@ -10,7 +19,7 @@ class Form extends Element
 {
     protected $selector = ['css' => 'form'];
 
-    public function getField($locator)
+    public function getField(string $locator): ?NodeElement
     {
         $field = $this->findField($locator);
 
@@ -21,7 +30,7 @@ class Form extends Element
         return $field;
     }
 
-    public function getFieldErrors($fieldLocator)
+    public function getFieldErrors(string $fieldLocator): string
     {
         $errorSelector = sprintf(
             'span.error[data-for="%s"]',

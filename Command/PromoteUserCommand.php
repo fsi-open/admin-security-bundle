@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -20,10 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PromoteUserCommand extends ContainerAwareCommand
 {
-    /**
-     * @see Command
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('fsi:user:promote')
@@ -41,10 +40,7 @@ EOT
             );
     }
 
-    /**
-     * @see Command
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $email = $input->getArgument('email');
         $role = $input->getArgument('role');
@@ -66,10 +62,7 @@ EOT
         $output->writeln(sprintf('User <comment>%s</comment> has been promoted', $email));
     }
 
-    /**
-     * @see Command
-     */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (!$input->getArgument('email')) {
             $email = $this->getHelper('dialog')->askAndValidate(

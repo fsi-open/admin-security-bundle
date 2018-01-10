@@ -7,12 +7,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 interface TokenFactoryInterface
 {
-    /**
-     * @return TokenInterface
-     */
-    public function createToken();
+    public function createToken(): TokenInterface;
 }

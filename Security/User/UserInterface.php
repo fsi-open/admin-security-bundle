@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -18,64 +20,17 @@ interface UserInterface extends
     ActivableInterface,
     \Serializable
 {
-    /**
-     * Sets the username.
-     *
-     * @param string $username
-     *
-     * @return self
-     */
-    public function setUsername($username);
+    public function setUsername(string $username): void;
 
-    /**
-     * Sets the email.
-     *
-     * @param string $email
-     *
-     * @return self
-     */
-    public function setEmail($email);
+    public function setEmail(string $email): void;
 
-    /**
-     * Sets the locking status of the user.
-     *
-     * @param boolean $boolean
-     *
-     * @return self
-     */
-    public function setLocked($boolean);
+    public function setLocked(bool $boolean): void;
 
-    /**
-     * Sets the last login time
-     *
-     * @param \DateTime $time
-     *
-     * @return self
-     */
-    public function setLastLogin(\DateTime $time);
+    public function setLastLogin(\DateTime $time): void;
 
-    /**
-     * Gets the last login time.
-     *
-     * @return \DateTime
-     */
-    public function getLastLogin();
+    public function getLastLogin(): ?\DateTime;
 
-    /**
-     * Adds a role to the user.
-     *
-     * @param string $role
-     *
-     * @return self
-     */
-    public function addRole($role);
+    public function addRole(string $role): void;
 
-    /**
-     * Removes a role to the user.
-     *
-     * @param string $role
-     *
-     * @return self
-     */
-    public function removeRole($role);
+    public function removeRole(string $role): void;
 }

@@ -7,10 +7,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController
@@ -47,7 +50,7 @@ class SecurityController
         $this->loginActionTemplate = $loginActionTemplate;
     }
 
-    public function loginAction()
+    public function loginAction(): Response
     {
         $error = $this->authenticationUtils->getLastAuthenticationError();
         if ($error) {

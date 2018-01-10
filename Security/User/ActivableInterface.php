@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use FSi\Bundle\AdminSecurityBundle\Mailer\EmailableInterface;
@@ -14,25 +16,13 @@ use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
 interface ActivableInterface extends EmailableInterface
 {
-    /**
-     * @return bool
-     */
     public function isEnabled();
 
-    /**
-     * @param boolean $boolean
-     */
-    public function setEnabled($boolean);
+    public function setEnabled(bool $boolean): void;
 
-    /**
-     * @return TokenInterface
-     */
-    public function getActivationToken();
+    public function getActivationToken(): ?TokenInterface;
 
-    /**
-     * @param TokenInterface $token
-     */
-    public function setActivationToken(TokenInterface $token);
+    public function setActivationToken(TokenInterface $token): void;
 
-    public function removeActivationToken();
+    public function removeActivationToken(): void;
 }

@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
@@ -29,12 +31,7 @@ class Token implements TokenInterface
      */
     protected $expiresAt;
 
-    /**
-     * @param $token
-     * @param DateTime $createdAt
-     * @param DateInterval $ttl
-     */
-    public function __construct($token, DateTime $createdAt, DateInterval $ttl)
+    public function __construct(string $token, DateTime $createdAt, DateInterval $ttl)
     {
         $this->token = $token;
         $this->createdAt = clone $createdAt;
@@ -42,18 +39,12 @@ class Token implements TokenInterface
         $this->expiresAt->add($ttl);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isNonExpired()
+    public function isNonExpired(): bool
     {
         return new DateTime() <= $this->expiresAt;
     }

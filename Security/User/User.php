@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
@@ -163,7 +165,7 @@ abstract class User implements UserInterface
     /**
      * Removes sensitive data from the user.
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         $this->plainPassword = null;
     }
@@ -178,101 +180,74 @@ abstract class User implements UserInterface
         return $this->id;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * Gets the encrypted password.
-     *
-     * @return string
-     */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * Gets the last login time.
-     *
-     * @return \DateTime
-     */
-    public function getLastLogin()
+    public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
     }
 
-    /**
-     * @return TokenInterface
-     */
-    public function getActivationToken()
+    public function getActivationToken(): ?TokenInterface
     {
         return $this->activationToken;
     }
 
-    /**
-     * @param TokenInterface $activationToken
-     */
-    public function setActivationToken(TokenInterface $activationToken)
+    public function setActivationToken(TokenInterface $activationToken): void
     {
         $this->activationToken = $activationToken;
     }
 
-    public function removeActivationToken()
+    public function removeActivationToken(): void
     {
         $this->activationToken = null;
     }
 
-    /**
-     * @return TokenInterface
-     */
-    public function getPasswordResetToken()
+    public function getPasswordResetToken(): ?TokenInterface
     {
         return $this->passwordResetToken;
     }
 
-    /**
-     * @param TokenInterface $passwordResetToken
-     */
-    public function setPasswordResetToken(TokenInterface $passwordResetToken)
+    public function setPasswordResetToken(TokenInterface $passwordResetToken): void
     {
         $this->passwordResetToken = $passwordResetToken;
     }
 
-    public function removePasswordResetToken()
+    public function removePasswordResetToken(): void
     {
         $this->passwordResetToken = null;
     }
 
-    /**
-     * Returns the user roles
-     *
-     * @return array The roles
-     */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = $this->roles;
 
         return array_unique($roles);
     }
 
-    public function isAccountNonExpired()
+    public function isAccountNonExpired(): bool
     {
         if (true === $this->expired) {
             return false;
@@ -285,12 +260,12 @@ abstract class User implements UserInterface
         return true;
     }
 
-    public function isAccountNonLocked()
+    public function isAccountNonLocked(): bool
     {
         return !$this->locked;
     }
 
-    public function isCredentialsNonExpired()
+    public function isCredentialsNonExpired(): bool
     {
         if (true === $this->credentialsExpired) {
             return false;
@@ -303,157 +278,109 @@ abstract class User implements UserInterface
         return true;
     }
 
-    public function isCredentialsExpired()
+    public function isCredentialsExpired(): bool
     {
         return !$this->isCredentialsNonExpired();
     }
 
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
-    public function isExpired()
+    public function isExpired(): bool
     {
         return !$this->isAccountNonExpired();
     }
 
-    public function isLocked()
+    public function isLocked(): bool
     {
         return !$this->isAccountNonLocked();
     }
 
-    public function addRole($role)
+    public function addRole(string $role): void
     {
         $role = strtoupper($role);
 
         if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
-
-        return $this;
     }
 
-    public function removeRole($role)
+    public function removeRole(string $role): void
     {
         if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
         }
-
-        return $this;
     }
 
-    public function setUsername($username)
+    public function setUsername(string $username): void
     {
         $this->username = $username;
-
-        return $this;
     }
 
-    /**
-     * @param \DateTime $date
-     *
-     * @return User
-     */
-    public function setCredentialsExpireAt(\DateTime $date)
+    public function setCredentialsExpireAt(\DateTime $date): void
     {
         $this->credentialsExpireAt = $date;
-
-        return $this;
     }
 
-    /**
-     * @param boolean $boolean
-     *
-     * @return User
-     */
-    public function setCredentialsExpired($boolean)
+    public function setCredentialsExpired(bool $boolean): void
     {
         $this->credentialsExpired = $boolean;
-
-        return $this;
     }
 
-    public function setEmail($email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    public function setEnabled($boolean)
+    public function setEnabled(bool $boolean): void
     {
-        $this->enabled = (Boolean) $boolean;
-
-        return $this;
+        $this->enabled = $boolean;
     }
 
-    /**
-     * Sets this user to expired.
-     *
-     * @param Boolean $boolean
-     *
-     * @return User
-     */
-    public function setExpired($boolean)
+    public function setExpired(bool $boolean): void
     {
-        $this->expired = (Boolean) $boolean;
-
-        return $this;
+        $this->expired = $boolean;
     }
 
-    /**
-     * @param \DateTime $date
-     *
-     * @return User
-     */
-    public function setExpiresAt(\DateTime $date)
+    public function setExpiresAt(\DateTime $date): void
     {
         $this->expiresAt = $date;
-
-        return $this;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-
-        return $this;
     }
 
-    public function setPlainPassword($password)
+    public function setPlainPassword(string $password): void
     {
         $this->plainPassword = $password;
-
-        return $this;
     }
 
-    public function setLastLogin(\DateTime $time)
+    public function setLastLogin(\DateTime $time): void
     {
         $this->lastLogin = $time;
-
-        return $this;
     }
 
-    public function setLocked($boolean)
+    public function setLocked(bool $boolean): void
     {
         $this->locked = $boolean;
-
-        return $this;
     }
 
-    public function isForcedToChangePassword()
+    public function isForcedToChangePassword(): bool
     {
         return $this->enforcePasswordChange;
     }
 
-    public function enforcePasswordChange($enforcePasswordChange)
+    public function enforcePasswordChange(bool $enforcePasswordChange): void
     {
         $this->enforcePasswordChange = $enforcePasswordChange;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getUsername();
     }

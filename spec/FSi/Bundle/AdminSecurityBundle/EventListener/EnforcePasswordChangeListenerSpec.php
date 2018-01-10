@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
@@ -22,8 +31,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 {
-    const CONFIGURED_FIREWALL = 'firewall';
-    const USER_FIREWALL = 'user_firewall';
+    private const CONFIGURED_FIREWALL = 'firewall';
+    private const USER_FIREWALL = 'user_firewall';
 
     function let(
         Request $request,
@@ -57,7 +66,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
             $authorizationChecker,
             $tokenStorage,
             $router,
-            'firewall',
+            self::CONFIGURED_FIREWALL,
             'change_password'
         );
     }
@@ -88,9 +97,14 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     function it_does_nothing_if_there_is_no_current_firewall(
         GetResponseEvent $event,
         Request $request,
+        FirewallConfig $firewallConfig,
         FirewallMapper $firewallMapper
     ) {
-        $firewallMapper->getFirewallName($request)->willReturn(null);
+        if (method_exists(FirewallMap::class, 'getFirewallConfig')) {
+            $firewallConfig->getName()->willReturn(null);
+        } else {
+            $firewallMapper->getFirewallName($request)->willReturn(null);
+        }
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
         $event->stopPropagation()->shouldNotBeCalled();
@@ -113,9 +127,14 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     function it_does_nothing_if_there_current_firewall_is_not_configured_in_this_listener(
         GetResponseEvent $event,
         Request $request,
+        FirewallConfig $firewallConfig,
         FirewallMapper $firewallMapper
     ) {
-        $firewallMapper->getFirewallName($request)->willReturn(self::USER_FIREWALL);
+        if (method_exists(FirewallMap::class, 'getFirewallConfig')) {
+            $firewallConfig->getName()->willReturn(self::USER_FIREWALL);
+        } else {
+            $firewallMapper->getFirewallName($request)->willReturn(self::USER_FIREWALL);
+        }
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
         $event->stopPropagation()->shouldNotBeCalled();

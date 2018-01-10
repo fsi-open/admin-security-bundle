@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
@@ -19,18 +21,12 @@ class ActivationEvent extends Event
      */
     private $user;
 
-    /**
-     * @param ActivableInterface $user
-     */
-    function __construct(ActivableInterface $user)
+    public function __construct(ActivableInterface $user)
     {
         $this->user = $user;
     }
 
-    /**
-     * @return ActivableInterface
-     */
-    public function getUser()
+    public function getUser(): ActivableInterface
     {
         return $this->user;
     }

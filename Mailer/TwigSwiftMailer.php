@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
 use Swift_Mailer;
@@ -38,19 +40,12 @@ class TwigSwiftMailer implements MailerInterface
      */
     private $replayToEmail;
 
-    /**
-     * @param Swift_Mailer $mailer
-     * @param SwiftMessageFactoryInterface $messageFactory
-     * @param string $templateName
-     * @param string $fromEmail
-     * @param string $replayToEmail
-     */
     public function __construct(
         Swift_Mailer $mailer,
         SwiftMessageFactoryInterface $messageFactory,
-        $templateName,
-        $fromEmail,
-        $replayToEmail = null
+        string $templateName,
+        string $fromEmail,
+        ?string $replayToEmail = null
     ) {
         $this->mailer = $mailer;
         $this->messageFactory = $messageFactory;
@@ -59,15 +54,11 @@ class TwigSwiftMailer implements MailerInterface
         $this->replayToEmail = $replayToEmail;
     }
 
-    /**
-     * @param EmailableInterface $to
-     * @return int
-     */
-    public function send(EmailableInterface $to)
+    public function send(EmailableInterface $to): int
     {
         $message = $this->messageFactory->createMessage($to->getEmail(), $this->templateName, ['receiver' => $to]);
         $message->setFrom($this->fromEmail);
-        if (isset($this->replayToEmail)) {
+        if (null !== $this->replayToEmail) {
             $message->setReplyTo($this->replayToEmail);
         }
 

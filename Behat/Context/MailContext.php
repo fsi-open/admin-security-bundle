@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
@@ -15,10 +24,7 @@ class MailContext implements KernelAwareContext
      */
     private $kernel;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
     }
@@ -85,10 +91,7 @@ class MailContext implements KernelAwareContext
         return false;
     }
 
-    /**
-     * @return Finder
-     */
-    private function getSpoolFiles()
+    private function getSpoolFiles(): Finder
     {
         $finder = new Finder();
         $finder->in($this->getSpoolDir())->ignoreDotFiles(true)->files();
@@ -96,7 +99,7 @@ class MailContext implements KernelAwareContext
         return $finder;
     }
 
-    private function getSpoolDir()
+    private function getSpoolDir(): string
     {
         return $this->kernel->getContainer()->getParameter('swiftmailer.spool.default.file.path');
     }

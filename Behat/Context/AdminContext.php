@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
@@ -44,7 +46,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
     private $kernel;
 
     /**
-     * @var LoginPage
+     * @var Login
      */
     private $loginPage;
 
@@ -52,6 +54,11 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
      * @var AdminPanel
      */
     private $adminPanelPage;
+
+    /**
+     * @var AdminChangePassword
+     */
+    private $changePasswordPage;
 
     /**
      * @var PasswordResetRequest
@@ -77,34 +84,22 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
         $this->userListPage = $userListPage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMink(Mink $mink)
+    public function setMink(Mink $mink): void
     {
         $this->mink = $mink;
     }
 
-    /**
-     * @return Mink
-     */
-    public function getMink()
+    public function getMink(): Mink
     {
         return $this->mink;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMinkParameters(array $parameters)
+    public function setMinkParameters(array $parameters): void
     {
         $this->minkParameters = $parameters;
     }
@@ -243,11 +238,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
         expect($this->adminPanelPage->hasAnyMenuElements())->toBe(false);
     }
 
-    /**
-     * @param string $name
-     * @return Page
-     */
-    public function getPage($name)
+    public function getPage(string $name): Page
     {
         switch ($name) {
             case 'Login':

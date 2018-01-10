@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
 use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
@@ -16,15 +18,9 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * @author Norbert Orzechowicz <norbert@fsi.pl>
- */
 class FSIAdminSecurityExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -45,7 +41,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         );
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $container->prependExtensionConfig('fsi_admin', [
             'templates' => [
@@ -54,14 +50,10 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         ]);
     }
 
-    /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @param array $config
-     */
-    protected function setTemplateParameters(ContainerBuilder $container, $prefix, $config = [])
+    protected function setTemplateParameters(ContainerBuilder $container, string $prefix, array $config = []): void
     {
         foreach ($config as $key => $value) {
-            $parameterName = join('.', [$prefix, $key]);
+            $parameterName = implode('.', [$prefix, $key]);
             if (is_array($value)) {
                 $this->setTemplateParameters($container, $parameterName, $value);
                 continue;
@@ -71,12 +63,12 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         }
     }
 
-    protected function setModelParameters(ContainerBuilder $container, $model)
+    protected function setModelParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.model.user', $model['user']);
     }
 
-    private function setActivationParameters(ContainerBuilder $container, $model)
+    private function setActivationParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.activation.token_ttl', $model['token_ttl']);
         $container->setParameter('admin_security.activation.token_length', $model['token_length']);
@@ -93,7 +85,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         );
     }
 
-    private function setPasswordResetParameters(ContainerBuilder $container, $model)
+    private function setPasswordResetParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
         $container->setParameter('admin_security.password_reset.token_length', $model['token_length']);
@@ -114,7 +106,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         );
     }
 
-    private function setChangePasswordParameters(ContainerBuilder $container, $model)
+    private function setChangePasswordParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter(
             'admin_security.change_password.form.type',

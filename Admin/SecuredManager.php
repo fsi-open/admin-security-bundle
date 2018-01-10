@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
@@ -45,17 +47,11 @@ class SecuredManager implements ManagerInterface
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addElement(Element $element): void
     {
         $this->manager->addElement($element);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasElement(string $id): bool
     {
         if (!$this->manager->hasElement($id)) {
@@ -121,10 +117,6 @@ class SecuredManager implements ManagerInterface
         $visitor->visitManager($this);
     }
 
-    /**
-     * @param Element $element
-     * @return boolean
-     */
     private function isAccessToElementRestricted(Element $element): bool
     {
         if (!$this->tokenStorage->getToken()) {
@@ -136,14 +128,9 @@ class SecuredManager implements ManagerInterface
             return true;
         }
 
-        return  $element instanceof SecuredElementInterface
-            && !$element->isAllowed($this->authorizationChecker)
-        ;
+        return $element instanceof SecuredElementInterface && !$element->isAllowed($this->authorizationChecker);
     }
 
-    /**
-     * @return boolean
-     */
     private function isUserForcedToChangePassword(): bool
     {
         if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {

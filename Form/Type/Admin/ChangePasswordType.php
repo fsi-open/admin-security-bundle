@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
@@ -14,15 +16,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class ChangePasswordType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $passwordType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\PasswordType', 'password');
+        $passwordType = TypeSolver::getFormType(PasswordType::class, 'password');
         $builder->add('current_password', $passwordType, [
             'label' => 'admin.change_password_form.current_password',
             'mapped' => false,
@@ -32,7 +33,7 @@ class ChangePasswordType extends AbstractType
             ]
         ]);
 
-        $repeatedType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\RepeatedType', 'repeated');
+        $repeatedType = TypeSolver::getFormType(RepeatedType::class, 'repeated');
         $builder->add('plainPassword', $repeatedType, [
             'invalid_message' => 'admin_user.password.mismatch',
             'type' => $passwordType,
@@ -47,20 +48,14 @@ class ChangePasswordType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => 'FSiAdminSecurity'
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'admin_change_password';
     }

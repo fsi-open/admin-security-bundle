@@ -7,15 +7,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Admin;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 interface SecuredElementInterface
 {
-    /**
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @return bool
-     */
-    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker);
+    public function isAllowed(AuthorizationCheckerInterface $authorizationChecker): bool;
 }

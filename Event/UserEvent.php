@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -19,18 +21,12 @@ class UserEvent extends Event
      */
     private $user;
 
-    /**
-     * @param AdvancedUserInterface $user
-     */
-    function __construct(AdvancedUserInterface $user)
+    public function __construct(AdvancedUserInterface $user)
     {
         $this->user = $user;
     }
 
-    /**
-     * @return AdvancedUserInterface
-     */
-    public function getUser()
+    public function getUser(): AdvancedUserInterface
     {
         return $this->user;
     }

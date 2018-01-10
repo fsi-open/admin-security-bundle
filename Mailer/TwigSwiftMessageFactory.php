@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,17 +32,11 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
         $this->requestStack = $requestStack;
     }
 
-    /**
-     * @param string $email
-     * @param string $template
-     * @param array $data
-     * @return \Swift_Message
-     */
-    public function createMessage($email, $template, array $data)
+    public function createMessage(string $email, string $template, array $data): \Swift_Message
     {
         $masterRequest = $this->requestStack->getMasterRequest();
 
-        if (!empty($masterRequest)) {
+        if (null !== $masterRequest) {
             $data['request'] = $masterRequest;
         }
 

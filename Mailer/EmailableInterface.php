@@ -7,12 +7,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
 interface EmailableInterface
 {
-    /**
-     * @return string
-     */
-    public function getEmail();
+    public function getEmail(): ?string;
 }

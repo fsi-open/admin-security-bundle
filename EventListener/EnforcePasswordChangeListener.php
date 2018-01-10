@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
@@ -60,22 +62,14 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
      */
     private $router;
 
-    /**
-     * @param FirewallMapper $firewallMapper
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param TokenStorageInterface $tokenStorage
-     * @param RouterInterface $router
-     * @param string $firewallName
-     * @param string $changePasswordRoute
-     */
     public function __construct(
         FirewallMapper $firewallMapper,
         FirewallMapInterface $firewallMap,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
-        $firewallName,
-        $changePasswordRoute
+        string $firewallName,
+        string $changePasswordRoute
     ) {
         $this->firewallMapper = $firewallMapper;
         $this->firewallMap = $firewallMap;
@@ -86,20 +80,14 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest'
         ];
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
         if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
             return;
@@ -131,11 +119,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param Request $request
-     * @return boolean
-     */
-    private function isConfiguredFirewall(Request $request)
+    private function isConfiguredFirewall(Request $request): bool
     {
         if (method_exists($this->firewallMap, 'getFirewallConfig')) {
             $firewallName = $this->firewallMap->getFirewallConfig($request)->getName();
@@ -143,6 +127,6 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             $firewallName = $this->firewallMapper->getFirewallName($request);
         }
 
-        return !empty($firewallName) && $firewallName === $this->firewallName;
+        return $firewallName === $this->firewallName;
     }
 }

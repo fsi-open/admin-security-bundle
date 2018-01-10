@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
@@ -27,30 +29,20 @@ class LogoutUserListener implements EventSubscriberInterface
      */
     private $tokenStorage;
 
-    /**
-     * @param RequestStack $requestStack
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage)
     {
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
         ];
     }
 
-    /**
-     * @param ChangePasswordEvent $event
-     */
-    public function onChangePassword(ChangePasswordEvent $event)
+    public function onChangePassword(ChangePasswordEvent $event): void
     {
         $token = $this->tokenStorage->getToken();
         if ($token && $token->getUser() === $event->getUser()) {

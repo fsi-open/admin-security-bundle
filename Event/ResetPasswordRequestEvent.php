@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -19,18 +21,12 @@ class ResetPasswordRequestEvent extends Event
      */
     private $user;
 
-    /**
-     * @param ResettablePasswordInterface $user
-     */
-    function __construct(ResettablePasswordInterface $user)
+    public function __construct(ResettablePasswordInterface $user)
     {
         $this->user = $user;
     }
 
-    /**
-     * @return ResettablePasswordInterface
-     */
-    public function getUser()
+    public function getUser(): ResettablePasswordInterface
     {
         return $this->user;
     }

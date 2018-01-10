@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
@@ -24,28 +26,18 @@ class TokenFactory implements TokenFactoryInterface
      */
     private $length;
 
-    /**
-     * @param integer $ttl
-     * @param integer $length
-     */
-    public function __construct($ttl, $length = 32)
+    public function __construct(int $ttl, int $length = 32)
     {
         $this->ttl = new DateInterval(sprintf('PT%dS', $ttl));
         $this->length = $length;
     }
 
-    /**
-     * @return TokenInterface
-     */
-    public function createToken()
+    public function createToken(): TokenInterface
     {
         return new Token($this->generateToken(), new DateTime(), $this->ttl);
     }
 
-    /**
-     * @return string
-     */
-    private function generateToken()
+    private function generateToken(): string
     {
         return rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
     }

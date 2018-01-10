@@ -7,12 +7,16 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserType extends AbstractType
 {
@@ -32,15 +36,12 @@ class UserType extends AbstractType
         $this->roles = $roles;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $emailType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\EmailType', 'email');
+        $emailType = TypeSolver::getFormType(EmailType::class, 'email');
         $builder->add('email', $emailType, ['label' => 'admin.admin_user.email']);
 
-        $choiceType = TypeSolver::getFormType('Symfony\Component\Form\Extension\Core\Type\ChoiceType', 'choice');
+        $choiceType = TypeSolver::getFormType(ChoiceType::class, 'choice');
         $builder->add('roles', $choiceType, [
             'label' => 'admin.admin_user.roles',
             'choices' => $this->getRoleList(),
@@ -49,10 +50,7 @@ class UserType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => $this->dataClass,
@@ -60,23 +58,17 @@ class UserType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'admin_user';
     }
 
-    /**
-     * @return array
-     */
-    private function getRoleList()
+    private function getRoleList(): array
     {
         $roleList = [];
 
         foreach ($this->roles as $role => $child) {
-            $roleList[$role] = sprintf('%s [ %s ]', $role, join(', ', $child));
+            $roleList[$role] = sprintf('%s [ %s ]', $role, implode(', ', $child));
         }
 
         if (TypeSolver::isChoicesAsValuesOptionTrueByDefault()) {

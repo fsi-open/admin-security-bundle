@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\FixturesBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -16,10 +18,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FSiFixturesExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');

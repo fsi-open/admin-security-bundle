@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\FormEvent;
@@ -29,10 +31,7 @@ class PrepareUserListener implements EventSubscriberInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             FormEvents::FORM_DATA_PRE_SAVE => [
@@ -41,7 +40,7 @@ class PrepareUserListener implements EventSubscriberInterface
         ];
     }
 
-    public function prepareAndDispatchUserCreated(FormEvent $event)
+    public function prepareAndDispatchUserCreated(FormEvent $event): void
     {
         $entity = $event->getForm()->getData();
 

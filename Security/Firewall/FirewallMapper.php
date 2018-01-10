@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\Firewall;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -15,23 +17,19 @@ use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 class FirewallMapper
 {
     /**
-     * @var array|RequestMatcherInterface[]
+     * @var RequestMatcherInterface[]
      */
     private $map;
 
     /**
-     * @param array|RequestMatcherInterface[] $map
+     * @param RequestMatcherInterface[] $map
      */
     public function __construct(array $map)
     {
         $this->map = $map;
     }
 
-    /**
-     * @param Request $request
-     * @return string|null
-     */
-    public function getFirewallName(Request $request)
+    public function getFirewallName(Request $request): ?string
     {
         foreach ($this->map as $firewallName => $requestMatcher) {
             if (null === $requestMatcher || $requestMatcher->matches($request)) {

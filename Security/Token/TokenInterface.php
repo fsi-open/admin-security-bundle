@@ -7,17 +7,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 interface TokenInterface
 {
-    /**
-     * @return string
-     */
-    public function getToken();
+    public function getToken(): string;
 
-    /**
-     * @return bool
-     */
-    public function isNonExpired();
+    public function isNonExpired(): bool;
 }

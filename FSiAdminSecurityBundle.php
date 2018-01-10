@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
@@ -20,7 +22,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class FSiAdminSecurityBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
@@ -37,7 +39,7 @@ class FSiAdminSecurityBundle extends Bundle
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
     }
 
-    public function boot()
+    public function boot(): void
     {
         $userRepository = $this->container->get('admin_security.repository.user');
         if (!($userRepository instanceof UserRepositoryInterface)) {
@@ -51,10 +53,7 @@ class FSiAdminSecurityBundle extends Bundle
         parent::boot();
     }
 
-    /**
-     * @return FSIAdminSecurityExtension
-     */
-    public function getContainerExtension()
+    public function getContainerExtension(): FSIAdminSecurityExtension
     {
         if (null === $this->extension) {
             $this->extension = new FSIAdminSecurityExtension();

@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -23,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ResetRequestController
 {
@@ -86,7 +89,7 @@ class ResetRequestController
         $this->formType = $formType;
     }
 
-    public function requestAction(Request $request)
+    public function requestAction(Request $request): Response
     {
         $form = $this->formFactory->create($this->formType);
 
@@ -101,7 +104,7 @@ class ResetRequestController
                 return $redirectResponse;
             }
 
-            if (!$user->isEnabled()) {
+            if (($user instanceof AdvancedUserInterface) && !$user->isEnabled()) {
                 return $redirectResponse;
             }
 
@@ -127,32 +130,19 @@ class ResetRequestController
         );
     }
 
-    /**
-     * @param string $type
-     * @param string $message
-     * @return RedirectResponse
-     */
-    private function addFlashAndRedirect($type, $message)
+    private function addFlashAndRedirect(string $type, string $message): RedirectResponse
     {
         $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
 
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 
-    /**
-     * @param FormInterface $form
-     * @return ResettablePasswordInterface|null
-     */
-    private function getUser(FormInterface $form)
+    private function getUser(FormInterface $form): UserInterface
     {
         return $this->userRepository->findUserByEmail($form->get('email')->getData());
     }
 
-    /**
-     * @param ResettablePasswordInterface $user
-     * @return bool
-     */
-    private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user)
+    private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user): bool
     {
         return $user->getPasswordResetToken() && $user->getPasswordResetToken()->isNonExpired();
     }

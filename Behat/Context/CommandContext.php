@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
@@ -33,10 +35,7 @@ class CommandContext implements KernelAwareContext
      */
     private $tester;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
         $this->application = new Application($kernel);

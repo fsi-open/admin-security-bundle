@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace spec\FSi\Bundle\AdminSecurityBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
@@ -23,8 +25,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecuredManagerSpec extends ObjectBehavior
 {
-    const INSECURE_ID = 'insecure';
-    const SECURE_ID = 'secure';
+    private const INSECURE_ID = 'insecure';
+    private const SECURE_ID = 'secure';
 
     function let(
         AuthorizationCheckerInterface $authorizationChecker,

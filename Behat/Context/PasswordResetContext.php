@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * (c) FSi sp. z o.o. <info@fsi.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Mink\Mink;
@@ -51,43 +60,27 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
         $this->passwordResetChangePage = $passwordResetChangePage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMink(Mink $mink)
+    public function setMink(Mink $mink): void
     {
         $this->mink = $mink;
     }
 
-    /**
-     * @return Mink
-     */
-    public function getMink()
+    public function getMink(): Mink
     {
         return $this->mink;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMinkParameters(array $parameters)
+    public function setMinkParameters(array $parameters): void
     {
         $this->minkParameters = $parameters;
     }
 
-    /**
-     * @param string|null $name name of the session OR active session will be used
-     * @return Session
-     */
-    public function getSession($name = null)
+    public function getSession(?string $name = null): Session
     {
         return $this->getMink()->getSession($name);
     }
@@ -187,10 +180,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
         $this->passwordResetChangePage->fillFormWithInvalidData();
     }
 
-    /**
-     * @return UserRepository
-     */
-    private function getUserRepository()
+    private function getUserRepository(): UserRepository
     {
         return $this->kernel->getContainer()->get('doctrine')->getRepository('FSiFixturesBundle:User');
     }

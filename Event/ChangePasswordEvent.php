@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
@@ -19,18 +21,12 @@ class ChangePasswordEvent extends Event
      */
     private $user;
 
-    /**
-     * @param ChangeablePasswordInterface $user
-     */
-    function __construct(ChangeablePasswordInterface $user)
+    public function __construct(ChangeablePasswordInterface $user)
     {
         $this->user = $user;
     }
 
-    /**
-     * @return ChangeablePasswordInterface
-     */
-    public function getUser()
+    public function getUser(): ChangeablePasswordInterface
     {
         return $this->user;
     }

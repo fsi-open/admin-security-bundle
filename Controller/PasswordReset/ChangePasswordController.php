@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -92,12 +94,9 @@ class ChangePasswordController
         $this->formValidationGroups = $formValidationGroups;
     }
 
-    public function changePasswordAction(Request $request, $token)
+    public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
-        if (!($user instanceof ResettablePasswordInterface)) {
-            throw new NotFoundHttpException();
-        }
 
         if (!$user->getPasswordResetToken()->isNonExpired()) {
             throw new NotFoundHttpException();
