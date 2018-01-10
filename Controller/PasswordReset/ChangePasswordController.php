@@ -98,6 +98,10 @@ class ChangePasswordController
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
 
+        if (null === $user) {
+            throw new NotFoundHttpException();
+        }
+
         if (!$user->getPasswordResetToken()->isNonExpired()) {
             throw new NotFoundHttpException();
         }
