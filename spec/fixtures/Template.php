@@ -20,4 +20,8 @@ class Template extends Twig_Template
     public function getTemplateName()
     {
     }
+
+    public function getDebugInfo()
+    {
+    }
 }

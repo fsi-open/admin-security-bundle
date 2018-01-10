@@ -1,7 +1,7 @@
 default: &default
     suites:
         admin:
-            paths: [ %paths.base%/features/admin ]
+            paths: [ "%paths.base%/features/admin" ]
             contexts:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\DataContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminContext
@@ -10,7 +10,7 @@ default: &default
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserManagementContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\MailContext
         password_reset:
-            paths: [ %paths.base%/features/password_reset ]
+            paths: [ "%paths.base%/features/password_reset" ]
             contexts:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserContext
@@ -18,7 +18,7 @@ default: &default
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\MailContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\PasswordResetContext
         activation:
-            paths: [ %paths.base%/features/activation ]
+            paths: [ "%paths.base%/features/activation" ]
             contexts:
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\DataContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminContext
