@@ -72,7 +72,7 @@ EOT
         }
 
         $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
-        $output->writeln(sprintf('User <comment>%s</comment> has been deactivated', $email));
+        $output->writeln(sprintf('User <comment>%s</comment> has been activated', $email));
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
