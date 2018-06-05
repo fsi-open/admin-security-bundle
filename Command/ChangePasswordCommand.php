@@ -11,16 +11,41 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
+use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use InvalidArgumentException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class ChangePasswordCommand extends ContainerAwareCommand
+class ChangePasswordCommand extends Command
 {
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        EventDispatcherInterface $eventDispatcher,
+        $name = null
+    ) {
+        parent::__construct($name);
+
+        $this->userRepository = $userRepository;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     protected function configure(): void
     {
         $this
@@ -50,17 +75,12 @@ EOT
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
 
-        $userRepository = $this->getContainer()->get('admin_security.repository.user');
-        $user = $userRepository->findUserByEmail($email);
-        if (!($user instanceof ChangeablePasswordInterface)) {
-            throw new \InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+        $user = $this->userRepository->findUserByEmail($email);
+        if (false === $user instanceof ChangeablePasswordInterface) {
+            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
         $user->setPlainPassword($password);
-
-        $this->getContainer()->get('event_dispatcher')->dispatch(
-            AdminSecurityEvents::CHANGE_PASSWORD,
-            new ChangePasswordEvent($user)
-        );
+        $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
 
         $output->writeln(sprintf('Changed password of user <comment>%s</comment>', $email));
     }
@@ -73,7 +93,7 @@ EOT
                 'Please choose an email:',
                 function($email) {
                     if (empty($email)) {
-                        throw new \Exception('Email can not be empty');
+                        throw new Exception('Email can not be empty');
                     }
 
                     return $email;
@@ -88,7 +108,7 @@ EOT
                 'Please choose a password:',
                 function($password) {
                     if (empty($password)) {
-                        throw new \Exception('Password can not be empty');
+                        throw new Exception('Password can not be empty');
                     }
 
                     return $password;

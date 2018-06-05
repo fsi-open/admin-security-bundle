@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="admin_security.command.activate_user" class="FSi\Bundle\AdminSecurityBundle\Command\ActivateUserCommand">
+            <argument type="service" id="admin_security.repository.user" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="admin_security.command.deactivate_user" class="FSi\Bundle\AdminSecurityBundle\Command\DeactivateUserCommand">
+            <argument type="service" id="admin_security.repository.user" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="admin_security.command.create_user" class="FSi\Bundle\AdminSecurityBundle\Command\CreateUserCommand">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="string">%admin_security.model.user%</argument>
+            <tag name="console.command" />
+        </service>
+
+        <service id="admin_security.command.change_password" class="FSi\Bundle\AdminSecurityBundle\Command\ChangePasswordCommand">
+            <argument type="service" id="admin_security.repository.user" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="admin_security.command.promote_user" class="FSi\Bundle\AdminSecurityBundle\Command\PromoteUserCommand">
+            <argument type="service" id="admin_security.repository.user" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="admin_security.command.demote_user" class="FSi\Bundle\AdminSecurityBundle\Command\DemoteUserCommand">
+            <argument type="service" id="admin_security.repository.user" />
+            <argument type="service" id="event_dispatcher" />
+            <tag name="console.command" />
+        </service>
+
+    </services>
+
+</container>

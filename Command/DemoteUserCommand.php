@@ -11,17 +11,41 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
-use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
+use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use InvalidArgumentException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class DemoteUserCommand extends ContainerAwareCommand
+class DemoteUserCommand extends Command
 {
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        EventDispatcherInterface $eventDispatcher,
+        $name = null
+    ) {
+        parent::__construct($name);
+
+        $this->userRepository = $userRepository;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     protected function configure(): void
     {
         $this
@@ -45,19 +69,13 @@ EOT
         $email = $input->getArgument('email');
         $role = $input->getArgument('role');
 
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->getContainer()->get('admin_security.repository.user');
-        $user = $userRepository->findUserByEmail($email);
-        if (!($user instanceof UserInterface)) {
-            throw new \InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+        $user = $this->userRepository->findUserByEmail($email);
+        if (false === $user instanceof UserInterface) {
+            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
 
         $user->removeRole($role);
-
-        $this->getContainer()->get('event_dispatcher')->dispatch(
-            AdminSecurityEvents::DEMOTE_USER,
-            new UserEvent($user)
-        );
+        $this->eventDispatcher->dispatch(AdminSecurityEvents::DEMOTE_USER, new UserEvent($user));
 
         $output->writeln(sprintf('User <comment>%s</comment> has been demoted', $email));
     }
@@ -70,7 +88,7 @@ EOT
                 'Please choose an email:',
                 function($email) {
                     if (empty($email)) {
-                        throw new \Exception('Email can not be empty');
+                        throw new Exception('Email can not be empty');
                     }
 
                     return $email;
@@ -85,7 +103,7 @@ EOT
                 'Please choose a role:',
                 function($email) {
                     if (empty($email)) {
-                        throw new \Exception('Role can not be empty');
+                        throw new Exception('Role can not be empty');
                     }
 
                     return $email;
