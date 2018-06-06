@@ -39,6 +39,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $loader->load(
             TypeSolver::isSymfony3FormNamingConvention() ? 'forms-symfony-3.xml' : 'forms-symfony-2.xml'
         );
+        $loader->load('commands.xml');
     }
 
     public function prepend(ContainerBuilder $container): void

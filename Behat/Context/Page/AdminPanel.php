@@ -58,7 +58,8 @@ class AdminPanel extends Page
 
     public function hasAnyMenuElements(): bool
     {
-        return count($this->find('css', '#top-menu a')) !== 0;
+        $elements = $this->find('css', '#top-menu a');
+        return null !== $elements && count($elements) !== 0;
     }
 }
 

@@ -11,17 +11,40 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
+use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class CreateUserCommand extends ContainerAwareCommand
+class CreateUserCommand extends Command
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var string
+     */
+    private $userClass;
+
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        string $userClass,
+        $name = null
+    ) {
+        parent::__construct($name);
+
+        $this->eventDispatcher = $eventDispatcher;
+        $this->userClass = $userClass;
+    }
+
     protected function configure(): void
     {
         $this
@@ -55,9 +78,8 @@ EOT
         $password = $input->getArgument('password');
         $role = $input->getArgument('role');
 
-        $userClass = $this->getContainer()->getParameter('admin_security.model.user');
-        /** @var UserInterface $user */
-        $user = new $userClass();
+        /* @var $user UserInterface */
+        $user = new $this->userClass();
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->addRole($role);
@@ -67,11 +89,7 @@ EOT
         if ($input->getOption('enforce-password-change')) {
             $user->enforcePasswordChange(true);
         }
-
-        $this->getContainer()->get('event_dispatcher')->dispatch(
-            AdminSecurityEvents::USER_CREATED,
-            new UserEvent($user)
-        );
+        $this->eventDispatcher->dispatch(AdminSecurityEvents::USER_CREATED, new UserEvent($user));
 
         $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
     }
@@ -84,7 +102,7 @@ EOT
                 'Please choose an email:',
                 function($email) {
                     if (empty($email)) {
-                        throw new \Exception('Email can not be empty');
+                        throw new Exception('Email can not be empty');
                     }
 
                     return $email;
@@ -99,7 +117,7 @@ EOT
                 'Please choose a password:',
                 function($password) {
                     if (empty($password)) {
-                        throw new \Exception('Password can not be empty');
+                        throw new Exception('Password can not be empty');
                     }
 
                     return $password;
@@ -114,7 +132,7 @@ EOT
                 'Please choose a role:',
                 function($role) {
                     if (empty($role)) {
-                        throw new \Exception('Role can not be empty');
+                        throw new Exception('Role can not be empty');
                     }
 
                     return $role;
