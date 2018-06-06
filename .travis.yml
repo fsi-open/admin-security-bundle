@@ -2,7 +2,6 @@ language: php
 
 cache:
   directories:
-    - bin
     - vendor
     - $HOME/.composer/cache
 
@@ -16,26 +15,24 @@ matrix:
     - php: 7.1
       env:
         - COMPOSER_FLAGS='--prefer-lowest'
-    - php: 7.1
+    - php: 7.2
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer self-update
-  - if [[ $SYMFONY_VERSION ]]; then composer require symfony/symfony:${SYMFONY_VERSION} -n --no-update; fi;
-  - wget --no-clobber -O bin/selenium.jar http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar || true
   - composer update $COMPOSER_FLAGS
+  - wget --no-clobber -O vendor/bin/selenium.jar http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar || true
 
 before_script:
   - nohup php -S localhost:8080 -t features/fixtures/project/web > /tmp/server.log 2>&1 &
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
-  - java -jar bin/selenium.jar > /dev/null 2>&1 &
+  - java -jar vendor/bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
   - features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web
 
 script:
-  - bin/phpspec run -f pretty
-  - bin/behat --no-snippets --profile=travis -vvv
+  - vendor/bin/phpspec run -f pretty
+  - vendor/bin/behat --no-snippets --profile=travis -vvv
 
 after_failure:
   - cat /tmp/FSiAdminSecurityBundle/logs/test.log

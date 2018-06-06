@@ -49,7 +49,7 @@
         "fsi/datasource-bundle": "^2.0@dev"
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "vendor/bin"
     },
     "autoload": {
         "psr-4": {
