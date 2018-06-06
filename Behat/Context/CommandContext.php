@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use FSi\Bundle\AdminSecurityBundle\Command\CreateUserCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -38,33 +37,14 @@ class CommandContext implements KernelAwareContext
     public function setKernel(KernelInterface $kernel): void
     {
         $this->kernel = $kernel;
+        $container = $kernel->getContainer();
         $this->application = new Application($kernel);
-        $this->application->add(new CreateUserCommand());
-    }
-
-    /**
-     * @When /^I run a "([^"]*)" command$/
-     */
-    public function iRunCommand($name)
-    {
-        $command = $this->application->find($name);
-        $this->tester = new CommandTester($command);
-        $this->tester->execute(['command' => $command->getName()]);
-    }
-
-    /**
-     * @Given /^I run a command "([^"]*)" with parameters:$/
-     */
-    public function iRunCommandWithParameters($command, TableNode $parameters)
-    {
-        $params = [];
-        foreach ($parameters->getHash() as $parameterRow) {
-            $params[$parameterRow['parameter']] = $parameterRow['value'];
-        }
-
-        $command = $this->application->find($command);
-        $this->tester = new CommandTester($command);
-        $this->tester->execute(['command' => $command->getName()]);
+        $this->application->add(
+            new CreateUserCommand(
+                $container->get('event_dispatcher'),
+                $container->getParameter('admin_security.model.user')
+            )
+        );
     }
 
     /**
