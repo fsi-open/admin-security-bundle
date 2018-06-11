@@ -106,6 +106,10 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
+        if ($this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            return;
+        }
+
         $user = $token->getUser();
         if (!($user instanceof EnforceablePasswordChangeInterface) ||
             !$user->isForcedToChangePassword()) {

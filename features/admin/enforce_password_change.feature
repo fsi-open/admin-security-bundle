@@ -22,3 +22,10 @@ Feature: Admin change password
     """
     Your password has been successfully changed
     """
+
+  Scenario: Do not redirect to change password for impersonated user
+    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    And I'm logged in as admin
+    When I impersonate user "redactor"
+    Then I should be on the "Admin panel" page
+    And I should be logged in as "redactor"
