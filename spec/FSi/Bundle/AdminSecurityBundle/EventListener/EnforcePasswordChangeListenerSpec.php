@@ -57,6 +57,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
             $firewallMapper->getFirewallName($request)->willReturn(self::CONFIGURED_FIREWALL);
         }
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
+        $authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')->willReturn(false);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
@@ -147,6 +148,19 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker
     ) {
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
+
+        $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
+
+        $this->onKernelRequest($event);
+    }
+
+    function it_does_nothing_when_user_is_impersonated(
+        GetResponseEvent $event,
+        AuthorizationCheckerInterface $authorizationChecker
+    ) {
+        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
+        $authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')->willReturn(true);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
         $event->stopPropagation()->shouldNotBeCalled();

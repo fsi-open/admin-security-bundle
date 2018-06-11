@@ -125,6 +125,24 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
     }
 
     /**
+     * @When I impersonate user :user
+     */
+    public function iImpersonateUser($user)
+    {
+        $this->getMink()->getSession()->visit(
+            sprintf('%s/admin/?_switch_user=%s', $this->minkParameters['base_url'], $user)
+        );
+    }
+
+    /**
+     * @Then I should be logged in as :user
+     */
+    public function iShouldBeLoggedInAs($user)
+    {
+        expect($this->kernel->getContainer()->get('security.token_storage')->getToken()->getUsername())->toBe($user);
+    }
+
+    /**
      * @When /^I open "([^"]*)" page$/
      */
     public function iOpenPage($pageName)
