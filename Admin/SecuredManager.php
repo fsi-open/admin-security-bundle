@@ -69,17 +69,11 @@ class SecuredManager implements ManagerInterface
     /**
      * @param string $id
      * @return Element
-     * @throws RuntimeException
      * @throws AccessDeniedException
      */
     public function getElement(string $id): Element
     {
         $element = $this->manager->getElement($id);
-        if (!$element) {
-            throw new RuntimeException(
-                sprintf('Element with id "%s" does not exist', $id)
-            );
-        }
 
         if ($this->isAccessToElementRestricted($element)) {
             throw new AccessDeniedException(sprintf(
