@@ -93,41 +93,27 @@ class ResetRequestController
     {
         $form = $this->formFactory->create($this->formType);
 
-        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser($form);
-            $redirectResponse = $this->addFlashAndRedirect(
-                'info',
-                'admin.password_reset.request.mail_sent_if_correct'
-            );
+        $form->handleRequest($request);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->templating->renderResponse($this->requestActionTemplate, ['form' => $form->createView()]);
+        }
 
-            if (!($user instanceof ResettablePasswordInterface)) {
-                return $redirectResponse;
-            }
+        $user = $this->getUser($form);
+        $redirectResponse = $this->addFlashAndRedirect(
+            'info',
+            'admin.password_reset.request.mail_sent_if_correct'
+        );
 
-            if (($user instanceof AdvancedUserInterface) && !$user->isEnabled()) {
-                return $redirectResponse;
-            }
-
-            if ($this->hasNonExpiredPasswordResetToken($user)) {
-                return $redirectResponse;
-            }
-
-            if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
-                return $redirectResponse;
-            }
-
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::RESET_PASSWORD_REQUEST,
-                new ResetPasswordRequestEvent($user)
-            );
-
+        if (!$this->isUserEligibleForResettingPassword($user)) {
             return $redirectResponse;
         }
 
-        return $this->templating->renderResponse(
-            $this->requestActionTemplate,
-            ['form' => $form->createView()]
+        $this->eventDispatcher->dispatch(
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+            new ResetPasswordRequestEvent($user)
         );
+
+        return $redirectResponse;
     }
 
     private function addFlashAndRedirect(string $type, string $message): RedirectResponse
@@ -140,6 +126,27 @@ class ResetRequestController
     private function getUser(FormInterface $form): ?UserInterface
     {
         return $this->userRepository->findUserByEmail($form->get('email')->getData());
+    }
+
+    private function isUserEligibleForResettingPassword($user): bool
+    {
+        if (!($user instanceof ResettablePasswordInterface)) {
+            return false;
+        }
+
+        if (($user instanceof AdvancedUserInterface) && !$user->isEnabled()) {
+            return false;
+        }
+
+        if ($this->hasNonExpiredPasswordResetToken($user)) {
+            return false;
+        }
+
+        if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
+            return false;
+        }
+
+        return true;
     }
 
     private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user): bool
