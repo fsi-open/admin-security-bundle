@@ -18,9 +18,11 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DemoteUserCommand extends Command
@@ -83,33 +85,46 @@ EOT
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (!$input->getArgument('email')) {
-            $email = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Please choose an email:',
-                function($email) {
-                    if (empty($email)) {
-                        throw new Exception('Email can not be empty');
-                    }
-
-                    return $email;
-                }
-            );
-            $input->setArgument('email', $email);
+            $this->askEmail($input, $output);
         }
 
         if (!$input->getArgument('role')) {
-            $email = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Please choose a role:',
-                function($email) {
-                    if (empty($email)) {
-                        throw new Exception('Role can not be empty');
-                    }
-
-                    return $email;
-                }
-            );
-            $input->setArgument('role', $email);
+            $this->askRole($input, $output);
         }
+    }
+
+    private function askEmail(InputInterface $input, OutputInterface $output): void
+    {
+        $question = new Question('Please choose an email:');
+        $question->setValidator(function (string $email): string {
+            if (empty($email)) {
+                throw new Exception('Email can not be empty');
+            }
+
+            return $email;
+        });
+
+        $email = $this->getQuestionHelper()->ask($input, $output, $question);
+        $input->setArgument('email', $email);
+    }
+
+    private function askRole(InputInterface $input, OutputInterface $output): void
+    {
+        $question = new Question('Please choose a role:');
+        $question->setValidator(function (string $password): string {
+            if (empty($password)) {
+                throw new Exception('Role can not be empty');
+            }
+
+            return $password;
+        });
+
+        $role = $this->getQuestionHelper()->ask($input, $output, $question);
+        $input->setArgument('role', $role);
+    }
+
+    private function getQuestionHelper(): QuestionHelper
+    {
+        return $this->getHelper('question');
     }
 }

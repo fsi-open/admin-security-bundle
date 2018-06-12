@@ -18,9 +18,11 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ChangePasswordCommand extends Command
@@ -88,33 +90,46 @@ EOT
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (!$input->getArgument('email')) {
-            $email = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Please choose an email:',
-                function($email) {
-                    if (empty($email)) {
-                        throw new Exception('Email can not be empty');
-                    }
-
-                    return $email;
-                }
-            );
-            $input->setArgument('email', $email);
+            $this->askEmail($input, $output);
         }
 
         if (!$input->getArgument('password')) {
-            $password = $this->getHelper('dialog')->askAndValidate(
-                $output,
-                'Please choose a password:',
-                function($password) {
-                    if (empty($password)) {
-                        throw new Exception('Password can not be empty');
-                    }
-
-                    return $password;
-                }
-            );
-            $input->setArgument('password', $password);
+            $this->askPassword($input, $output);
         }
+    }
+
+    private function askEmail(InputInterface $input, OutputInterface $output): void
+    {
+        $question = new Question('Please choose an email:');
+        $question->setValidator(function (string $email): string {
+            if (empty($email)) {
+                throw new Exception('Email can not be empty');
+            }
+
+            return $email;
+        });
+
+        $email = $this->getQuestionHelper()->ask($input, $output, $question);
+        $input->setArgument('email', $email);
+    }
+
+    private function askPassword(InputInterface $input, OutputInterface $output): void
+    {
+        $question = new Question('Please choose a password:');
+        $question->setValidator(function (string $password): string {
+            if (empty($password)) {
+                throw new Exception('Password can not be empty');
+            }
+
+            return $password;
+        });
+
+        $password = $this->getQuestionHelper()->ask($input, $output, $question);
+        $input->setArgument('password', $password);
+    }
+
+    private function getQuestionHelper(): QuestionHelper
+    {
+        return $this->getHelper('question');
     }
 }

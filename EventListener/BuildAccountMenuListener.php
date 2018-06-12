@@ -39,7 +39,7 @@ class BuildAccountMenuListener
     public function createAccountMenu(MenuEvent $event): Item
     {
         if (!$this->hasUserLoggedIn()) {
-            return null;
+            return $event->getMenu();
         }
 
         $rootItem = $this->createRootItem();

@@ -111,16 +111,11 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         }
 
         $user = $token->getUser();
-        if (!($user instanceof EnforceablePasswordChangeInterface) ||
-            !$user->isForcedToChangePassword()) {
+        if (!($user instanceof EnforceablePasswordChangeInterface) || !$user->isForcedToChangePassword()) {
             return;
         }
 
-        if ($event->getRequest()->get('_route') !== $this->changePasswordRoute) {
-            $event->setResponse(new RedirectResponse($this->router->generate($this->changePasswordRoute)));
-        } else {
-            $event->stopPropagation();
-        }
+        $this->redirectToChangePassword($event);
     }
 
     private function isConfiguredFirewall(Request $request): bool
@@ -132,5 +127,14 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         }
 
         return $firewallName === $this->firewallName;
+    }
+
+    private function redirectToChangePassword(GetResponseEvent $event): void
+    {
+        if ($event->getRequest()->get('_route') !== $this->changePasswordRoute) {
+            $event->setResponse(new RedirectResponse($this->router->generate($this->changePasswordRoute)));
+        } else {
+            $event->stopPropagation();
+        }
     }
 }

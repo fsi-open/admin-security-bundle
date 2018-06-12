@@ -47,6 +47,7 @@ Feature: User management
       | red1@example.com | Yes    | Yes                    | No                 |
       | red2@example.com | Yes    | No                     | No                 |
 
+  @email
   Scenario: Create User
     Given I am on the "User list" page
     And I click "Add new" link
