@@ -64,3 +64,6 @@ monolog:
             level:  debug
         console:
             type:   console
+
+web_profiler:
+    toolbar: true
