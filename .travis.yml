@@ -32,7 +32,7 @@ before_script:
 
 script:
   - vendor/bin/phpspec run -f pretty
-  - vendor/bin/behat --no-snippets --profile=travis -vvv
+  - vendor/bin/behat --no-snippets --profile=travis
 
 after_failure:
   - cat /tmp/FSiAdminSecurityBundle/logs/test.log
