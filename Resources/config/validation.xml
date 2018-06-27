@@ -6,26 +6,6 @@
 
     <class name="FSi\Bundle\AdminSecurityBundle\Security\User\User">
 
-        <property name="username">
-            <constraint name="NotBlank">
-                <option name="message">admin_user.username.blank</option>
-                <option name="groups">
-                    <value>Create</value>
-                    <value>Edit</value>
-                </option>
-            </constraint>
-            <constraint name="Length">
-                <option name="min">2</option>
-                <option name="minMessage">admin_user.username.short</option>
-                <option name="max">255</option>
-                <option name="maxMessage">admin_user.username.long</option>
-                <option name="groups">
-                    <value>Create</value>
-                    <value>Edit</value>
-                </option>
-            </constraint>
-        </property>
-
         <property name="email">
             <constraint name="NotBlank">
                 <option name="message">admin_user.email.blank</option>
