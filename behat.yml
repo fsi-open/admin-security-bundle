@@ -28,7 +28,7 @@ default: &default
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\ActivationContext
     extensions:
         Behat\MinkExtension:
-            base_url: 'http://admin-security-bundle-web/'
+            base_url: 'http://admin-security-bundle-web'
             sessions:
                 default:
                     symfony2: ~
