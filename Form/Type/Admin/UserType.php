@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
 use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
 {
@@ -30,7 +32,7 @@ class UserType extends AbstractType
      */
     private $roles;
 
-    public function __construct($dataClass, $roles)
+    public function __construct(?string $dataClass, ?array $roles)
     {
         $this->dataClass = $dataClass;
         $this->roles = $roles;
@@ -54,7 +56,10 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => $this->dataClass,
-            'translation_domain' => 'FSiAdminSecurity'
+            'translation_domain' => 'FSiAdminSecurity',
+            'validation_groups' => function (FormInterface $form): array {
+                return ['Default', null !== $form->getData() ? 'Edit' : 'Create'];
+            }
         ]);
     }
 

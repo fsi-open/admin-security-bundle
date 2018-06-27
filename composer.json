@@ -57,6 +57,9 @@
             "FSi\\Bundle\\AdminSecurityBundle\\": ""
         }
     },
+    "autoload-dev": {
+        "classmap": ["features/fixtures/project/app/AppKernel.php"]
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0-dev",

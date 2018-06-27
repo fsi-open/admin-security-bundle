@@ -5,8 +5,8 @@ security:
     providers:
         entity_provider:
             entity:
-                class: FSiFixturesBundle:User
-                property: username
+                class: FSi\FixturesBundle\Entity\User
+                property: email
 
     role_hierarchy:
         ROLE_ADMIN: [ROLE_REDACTOR, ROLE_ALLOWED_TO_SWITCH]
@@ -25,8 +25,8 @@ security:
                 login_path: fsi_admin_security_user_login
                 default_target_path: /admin
             logout:
-                path:   fsi_admin_security_user_logout
-            anonymous:    ~
+                path: fsi_admin_security_user_logout
+            anonymous: ~
             switch_user: true
 
     access_control:
