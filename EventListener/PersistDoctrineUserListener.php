@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
@@ -25,11 +25,11 @@ use Symfony\Component\Security\Http\SecurityEvents;
 class PersistDoctrineUserListener implements EventSubscriberInterface
 {
     /**
-     * @var Registry
+     * @var ManagerRegistry
      */
     private $registry;
 
-    public function __construct(Registry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
