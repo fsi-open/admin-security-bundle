@@ -44,6 +44,11 @@ class Token implements TokenInterface
         return $this->token;
     }
 
+    public function getExpiresAt(): DateTime
+    {
+        return $this->expiresAt;
+    }
+
     public function isNonExpired(): bool
     {
         return new DateTime() <= $this->expiresAt;

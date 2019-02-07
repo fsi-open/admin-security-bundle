@@ -65,6 +65,8 @@ admin:
   admin_user:
     email: Adres email
     roles: Role użytkownika
+  mail:
+    link_valid: Link ważny do
 
 crud:
   list:
