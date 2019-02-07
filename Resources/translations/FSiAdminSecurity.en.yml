@@ -65,7 +65,8 @@ admin:
   admin_user:
     email: Email address
     roles: User roles
-
+  mail:
+    link_valid: Link valid until
 crud:
   list:
     batch:
