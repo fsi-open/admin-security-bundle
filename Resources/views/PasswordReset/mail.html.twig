@@ -12,6 +12,6 @@
         {{ 'admin.password_reset.request.mail.requested_by'|trans({'%ip%': request.clientIp, '%user_agent%': request.headers.get('User-Agent')}, 'FSiAdminSecurity') }}
     </p>
     <p>
-        {{ 'admin.mail.link_valid'|trans }} <b>{{ receiver.passwordResetToken.token.expiresAd|data('d/m/Y H:i') }}</b>
+        {{ 'admin.mail.link_valid'|trans({}, 'FSiAdminSecurity') }} <b>{{ receiver.passwordResetToken.expiresAt|date('d/m/Y H:i') }}</b>
     </p>
 {%- endblock %}

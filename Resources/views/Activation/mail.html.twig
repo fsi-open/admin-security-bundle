@@ -9,6 +9,6 @@
         <a href="{{ activationUrl }}">{{ activationUrl }}</a>
     </p>
     <p>
-        {{ 'admin.mail.link_valid'|trans }} <b>{{ receiver.activationToken.token.expiresAd|data('d/m/Y H:i') }}</b>
+        {{ 'admin.mail.link_valid'|trans({}, 'FSiAdminSecurity') }} <b>{{ receiver.activationToken.expiresAt|date('d/m/Y H:i') }}</b>
     </p>
 {%- endblock %}
