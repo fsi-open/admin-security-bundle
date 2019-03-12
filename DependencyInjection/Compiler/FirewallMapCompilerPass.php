@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -27,6 +28,9 @@ class FirewallMapCompilerPass implements CompilerPassInterface
 
         $map = $container->getDefinition('security.firewall.map');
         $maps = $map->getArgument(1);
+        if ($maps instanceof IteratorArgument) {
+            $maps = $maps->getValues();
+        }
 
         $refs = [];
         foreach ($maps as $serviceName => $firewall) {
