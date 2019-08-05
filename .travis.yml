@@ -10,12 +10,15 @@ sudo: required
 addons:
     firefox: "47.0.1"
 
+services:
+    - xvfb
+
 matrix:
   include:
     - php: 7.1
       env:
         - COMPOSER_FLAGS='--prefer-lowest'
-    - php: 7.2
+    - php: 7.3
 
 before_install:
   - phpenv config-rm xdebug.ini
@@ -24,8 +27,6 @@ before_install:
 
 before_script:
   - nohup php -S localhost:8080 -t features/fixtures/project/web > /tmp/server.log 2>&1 &
-  - sh -e /etc/init.d/xvfb start
-  - export DISPLAY=:99.0
   - java -jar vendor/bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
   - features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web

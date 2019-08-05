@@ -13,7 +13,6 @@ namespace FSi\FixturesBundle\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataGrid\DataGridInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
@@ -57,6 +56,6 @@ class News extends CRUDElement implements SecuredElementInterface
 
     protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
     {
-        return $factory->create(TypeSolver::getFormType(FormType::class, 'form'), $data);
+        return $factory->create(FormType::class, $data);
     }
 }
