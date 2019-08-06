@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -40,11 +38,9 @@ class UserType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $emailType = TypeSolver::getFormType(EmailType::class, 'email');
-        $builder->add('email', $emailType, ['label' => 'admin.admin_user.email']);
+        $builder->add('email', EmailType::class, ['label' => 'admin.admin_user.email']);
 
-        $choiceType = TypeSolver::getFormType(ChoiceType::class, 'choice');
-        $builder->add('roles', $choiceType, [
+        $builder->add('roles', ChoiceType::class, [
             'label' => 'admin.admin_user.roles',
             'choices' => $this->getRoleList(),
             'expanded' => true,
@@ -63,21 +59,13 @@ class UserType extends AbstractType
         ]);
     }
 
-    public function getName(): string
-    {
-        return 'admin_user';
-    }
-
     private function getRoleList(): array
     {
         $roleList = [];
 
         foreach ($this->roles as $role => $child) {
-            $roleList[$role] = sprintf('%s [ %s ]', $role, implode(', ', $child));
-        }
-
-        if (TypeSolver::isChoicesAsValuesOptionTrueByDefault()) {
-            $roleList = array_flip($roleList);
+            $label = sprintf('%s [ %s ]', $role, implode(', ', $child));
+            $roleList[$label] = $role;
         }
 
         return $roleList;

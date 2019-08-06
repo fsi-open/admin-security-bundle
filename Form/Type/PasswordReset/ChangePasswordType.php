@@ -11,22 +11,19 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $passwordType = TypeSolver::getFormType(PasswordType::class, 'password');
-        $repeatedType = TypeSolver::getFormType(RepeatedType::class, 'repeated');
-        $builder->add('plainPassword', $repeatedType, [
+        $builder->add('plainPassword', RepeatedType::class, [
             'invalid_message' => 'admin_user.password.mismatch',
-            'type' => $passwordType,
+            'type' => PasswordType::class,
             'first_options' => [
                 'label' => 'admin.password_reset.change_password.form.password'
             ],
@@ -38,13 +35,6 @@ class ChangePasswordType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'translation_domain' => 'FSiAdminSecurity'
-        ]);
-    }
-
-    public function getName(): string
-    {
-        return 'admin_password_reset_change_password';
+        $resolver->setDefault('translation_domain', 'FSiAdminSecurity');
     }
 }

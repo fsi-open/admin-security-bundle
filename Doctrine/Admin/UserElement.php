@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataGrid\DataGridInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
@@ -66,7 +65,6 @@ class UserElement extends CRUDElement
 
     protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
     {
-        $formType = TypeSolver::getFormType($this->formClass, 'admin_user');
-        return $factory->create($formType, $data);
+        return $factory->create($this->formClass, $data);
     }
 }

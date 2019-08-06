@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context\Page;
 
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
@@ -21,8 +20,7 @@ class PasswordResetRequest extends Page
 
     public function verifyPage(): void
     {
-        $formName = TypeSolver::isSymfony3FormNamingConvention() ? 'request' : 'admin_password_reset_request';
-        if (!$this->has('css', sprintf('form[name="%s"]', $formName))) {
+        if (!$this->has('css', 'form[name="request"]')) {
             throw new UnexpectedPageException(
                 sprintf("Page %s does not have a Password Reset Request form", $this->path)
             );
