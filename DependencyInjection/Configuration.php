@@ -11,32 +11,24 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection;
 
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
+use FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType;
+use FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\ChangePasswordType;
-use FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\RequestType;
 
 class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('fsi_admin_security');
+        if (true === method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('fsi_admin_security');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('fsi_admin_security');
+        }
 
         $supportedStorages = ['orm'];
-        $adminChangePasswordFormType = TypeSolver::getFormType(
-            ChangePasswordType::class,
-            'admin_change_password'
-        );
-        $resetRequestFormType = TypeSolver::getFormType(
-            RequestType::class,
-            'admin_password_reset_request'
-        );
-        $changePasswordFormType = TypeSolver::getFormType(
-            \FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType::class,
-            'admin_password_reset_change_password'
-        );
 
         $rootNode
             ->beforeNormalization()
@@ -111,7 +103,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('change_password_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue($changePasswordFormType)->end()
+                                ->scalarNode('type')->defaultValue(PasswordReset\ChangePasswordType::class)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ResetPassword', 'Default'])
@@ -146,7 +138,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('change_password_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue($changePasswordFormType)->end()
+                                ->scalarNode('type')->defaultValue(PasswordReset\ChangePasswordType::class)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ResetPassword', 'Default'])
@@ -156,7 +148,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('request_form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue($resetRequestFormType)->end()
+                                ->scalarNode('type')->defaultValue(PasswordReset\RequestType::class)->end()
                             ->end()
                         ->end()
                     ->end()
@@ -167,7 +159,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('form')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('type')->defaultValue($adminChangePasswordFormType)->end()
+                                ->scalarNode('type')->defaultValue(ChangePasswordType::class)->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
                                     ->defaultValue(['ChangePassword', 'Default'])

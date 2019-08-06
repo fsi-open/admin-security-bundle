@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
-use FSi\Bundle\AdminSecurityBundle\Form\TypeSolver;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -28,8 +27,7 @@ class ChangePasswordTypeSpec extends ObjectBehavior
 
     function it_add_fields_during_build(FormBuilderInterface $formBuilder)
     {
-        $passwordType = TypeSolver::getFormType(PasswordType::class, 'password');
-        $formBuilder->add('current_password', $passwordType, [
+        $formBuilder->add('current_password', PasswordType::class, [
             'label' => 'admin.change_password_form.current_password',
             'mapped' => false,
             'required' => true,
@@ -38,10 +36,9 @@ class ChangePasswordTypeSpec extends ObjectBehavior
             ]
         ])->shouldBeCalled()->willReturn($formBuilder);
 
-        $repeatedType = TypeSolver::getFormType(RepeatedType::class, 'repeated');
-        $formBuilder->add('plainPassword', $repeatedType, [
+        $formBuilder->add('plainPassword', RepeatedType::class, [
             'invalid_message' => 'admin_user.password.mismatch',
-            'type' => $passwordType,
+            'type' => PasswordType::class,
             'first_options' => [
                 'label' => 'admin.change_password_form.password',
                 'required' => true
