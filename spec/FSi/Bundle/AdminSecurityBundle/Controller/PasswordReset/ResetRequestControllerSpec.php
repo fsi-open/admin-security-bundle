@@ -11,21 +11,21 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use Twig\Environment;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
@@ -35,7 +35,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
     }
 
     function let(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
@@ -61,7 +61,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $user->isAccountNonLocked()->willReturn(true);
 
         $this->beConstructedWith(
-            $templating,
+            $twig,
             'template_path',
             $formFactory,
             $router,

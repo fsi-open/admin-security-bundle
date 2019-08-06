@@ -14,7 +14,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Twig\Environment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -22,12 +22,12 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityControllerSpec extends ObjectBehavior
 {
     function let(
-        EngineInterface $templating,
+        Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages
     ) {
         $this->beConstructedWith(
-            $templating,
+            $twig,
             $authenticationUtils,
             $flashMessages,
             'login_template'
@@ -35,11 +35,10 @@ class SecurityControllerSpec extends ObjectBehavior
     }
 
     function it_render_login_template_in_login_action(
-        EngineInterface $templating,
+        Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
-        AuthenticationException $exception,
-        Response $response
+        AuthenticationException $exception
     ) {
         $error = new \Exception('message');
         $authenticationUtils->getLastAuthenticationError()->willReturn($error);
@@ -54,11 +53,11 @@ class SecurityControllerSpec extends ObjectBehavior
             Argument::type('string')
         )->shouldBeCalled();
 
-        $templating->renderResponse(
+        $twig->render(
             Argument::type('string'),
             ['last_username' => 'user']
-        )->willReturn($response);
+        )->willReturn('response');
 
-        $this->loginAction()->shouldReturn($response);
+        $this->loginAction()->shouldReturnAnInstanceOf(Response::class);
     }
 }

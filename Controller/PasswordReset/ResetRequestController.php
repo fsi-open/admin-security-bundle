@@ -16,7 +16,6 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -26,13 +25,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Twig\Environment;
 
 class ResetRequestController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -70,16 +70,16 @@ class ResetRequestController
     private $formType;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         $requestActionTemplate,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType
+        string $formType
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->requestActionTemplate = $requestActionTemplate;
         $this->formFactory = $formFactory;
         $this->router = $router;
@@ -94,8 +94,10 @@ class ResetRequestController
         $form = $this->formFactory->create($this->formType);
 
         $form->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->templating->renderResponse($this->requestActionTemplate, ['form' => $form->createView()]);
+        if (false === $form->isSubmitted() || false === $form->isValid()) {
+            return new Response(
+                $this->twig->render($this->requestActionTemplate, ['form' => $form->createView()])
+            );
         }
 
         $user = $this->getUser($form);
@@ -104,7 +106,7 @@ class ResetRequestController
             'admin.password_reset.request.mail_sent_if_correct'
         );
 
-        if (!$this->isUserEligibleForResettingPassword($user)) {
+        if (false === $this->isUserEligibleForResettingPassword($user)) {
             return $redirectResponse;
         }
 

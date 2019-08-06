@@ -19,7 +19,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -30,11 +29,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
+use Twig\Environment;
+use TypeError;
 
 class ActivationControllerSpec extends ObjectBehavior
 {
     function let(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -55,7 +56,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $form->isSubmitted()->willReturn(true);
 
         $this->beConstructedWith(
-            $templating,
+            $twig,
             'change-password.html.twig',
             $userRepository,
             $router,
@@ -86,9 +87,9 @@ class ActivationControllerSpec extends ObjectBehavior
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
-        $this->shouldThrow(\TypeError::class)
+        $this->shouldThrow(TypeError::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow(\TypeError::class)
+        $this->shouldThrow(TypeError::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -189,15 +190,14 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     function it_renders_form_to_change_password(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         FormFactoryInterface $formFactory,
         FormInterface $form,
         FormView $formView,
         Request $request,
         UserInterface $user,
-        TokenInterface $token,
-        Response $response
+        TokenInterface $token
     ) {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
@@ -210,11 +210,11 @@ class ActivationControllerSpec extends ObjectBehavior
             ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->isValid()->willReturn(false);
-        $templating->renderResponse('change-password.html.twig', ['form' => $formView])->willReturn($response);
+        $twig->render('change-password.html.twig', ['form' => $formView])->willReturn('response');
 
         $form->handleRequest($request)->shouldBeCalled();
 
-        $this->changePasswordAction($request, 'activation-token')->shouldReturn($response);
+        $this->changePasswordAction($request, 'activation-token')->shouldReturnAnInstanceOf(Response::class);
     }
 
     function it_handles_change_password_form(

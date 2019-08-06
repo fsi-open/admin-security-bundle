@@ -11,12 +11,11 @@ framework:
     form:            true
     csrf_protection: true
     validation:      { enable_annotations: true }
-    templating:      { engines: ["twig"] }
     profiler:        { only_exceptions: false }
     test:            ~
     assets:          ~
     session:
-        storage_id:     session.storage.filesystem
+        storage_id: session.storage.filesystem
 
 doctrine:
     dbal:

@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "fsi/admin-bundle" : "^3.0",
+        "fsi/admin-bundle" : "^4.0@dev",
         "symfony/console": "^3.4|^4.2",
         "symfony/dependency-injection": "^3.4|^4.2",
         "symfony/form": "^3.4|^4.2",

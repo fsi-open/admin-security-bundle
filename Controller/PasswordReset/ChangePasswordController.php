@@ -14,9 +14,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,13 +22,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class ChangePasswordController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -73,17 +72,17 @@ class ChangePasswordController
     private $formValidationGroups;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType,
+        string $formType,
         array $formValidationGroups
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
@@ -129,9 +128,11 @@ class ChangePasswordController
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
-        return $this->templating->renderResponse(
-            $this->changePasswordActionTemplate,
-            ['form' => $form->createView()]
+        return new Response(
+            $this->twig->render(
+                $this->changePasswordActionTemplate,
+                ['form' => $form->createView()]
+            )
         );
     }
 }

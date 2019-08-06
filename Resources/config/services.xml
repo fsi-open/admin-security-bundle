@@ -39,14 +39,14 @@
     <services>
         <!-- Controllers -->
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="service" id="security.authentication_utils" />
             <argument type="service" id="admin.messages.flash" />
             <argument type="string">%admin_security.templates.login%</argument>
         </service>
 
         <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
@@ -58,7 +58,7 @@
         </service>
 
         <service id="admin_security.controller.password_reset.request" class="%admin_security.controller.password_reset.request.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
@@ -69,7 +69,7 @@
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
@@ -81,7 +81,7 @@
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="router" />
