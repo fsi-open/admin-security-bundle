@@ -19,8 +19,9 @@ Feature: User management
   Scenario: Batch actions
     Given I am on the "User list" page
     Then I should have following list batch actions:
-      | Delete         |
-      | Reset password |
+      | Delete                  |
+      | Reset password          |
+      | Resend activation token |
 
   @javascript
   Scenario: Delete user

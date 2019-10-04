@@ -13,11 +13,14 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Exception;
+use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
+use function expect;
 
-class MailContext implements KernelAwareContext
+final class MailContext implements KernelAwareContext
 {
     /**
      * @var KernelInterface
@@ -35,9 +38,11 @@ class MailContext implements KernelAwareContext
     public function cleanEmailSpool()
     {
         $filesystem = new Filesystem();
-        if ($filesystem->exists($this->getSpoolDir())) {
-            $filesystem->remove($this->getSpoolFiles());
+        if (false === $filesystem->exists($this->getSpoolDir())) {
+            return;
         }
+
+        $filesystem->remove($this->getSpoolFiles());
     }
 
     /**
@@ -59,14 +64,14 @@ class MailContext implements KernelAwareContext
         $files = $this->getSpoolFiles();
         $files->sortByModifiedTime();
 
-        if ($files->count() < 1) {
-            throw new \Exception("There should be at least 1 email");
+        if (0 === $files->count()) {
+            throw new Exception("There should be at least 1 email");
         }
 
         $expected = $table->getRowsHash();
-
-        if (false === ($email = $this->fetchEmail($expected['subject']))) {
-            throw new \Exception(sprintf('There is no email with "%s" subject', $expected['subject']));
+        $email = $this->fetchEmail($expected['subject']);
+        if (null === $email) {
+            throw new Exception(sprintf('There is no email with "%s" subject', $expected['subject']));
         }
 
         expect(key($email->getFrom()))->toBe($expected['from']);
@@ -74,21 +79,29 @@ class MailContext implements KernelAwareContext
         expect(key($email->getReplyTo()))->toBe($expected['reply_to']);
     }
 
-    private function fetchEmail($subject)
+    /**
+     * @Given I clear the email pool
+     */
+    public function iClearTheEmailPool(): void
+    {
+        $this->cleanEmailSpool();
+        $this->thereShouldBeNoEmailSent();
+    }
+
+    private function fetchEmail($subject): ?Swift_Message
     {
         $files = $this->getSpoolFiles();
         foreach ($files as $file) {
-            /** @var \Swift_Message $message */
+            /** @var Swift_Message $message */
             $message = unserialize(file_get_contents((string) $file));
 
             if ($subject === $message->getSubject()) {
                 unlink((string) $file);
-
                 return $message;
             }
         }
 
-        return false;
+        return null;
     }
 
     private function getSpoolFiles(): Finder

@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class CommandContext implements KernelAwareContext
+final class CommandContext implements KernelAwareContext
 {
     /**
      * @var KernelInterface

@@ -16,14 +16,16 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\SchemaTool;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use function expect;
 
-class DataContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext, SnippetAcceptingContext
+final class DataContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext, SnippetAcceptingContext
 {
     /**
      * @var Mink
@@ -176,21 +178,28 @@ class DataContext extends PageObjectContext implements KernelAwareContext, MinkA
         }
     }
 
-    /**
-     * @return Registry
-     */
-    protected function getDoctrine()
+    protected function getDoctrine(): ManagerRegistry
     {
-        return $this->kernel->getContainer()->get('doctrine');
+        $doctrine = $this->kernel->getContainer()->get('doctrine');
+        if (false === $doctrine instanceof ManagerRegistry) {
+            return $doctrine;
+        }
+
+        return $doctrine;
+    }
+
+    private function getUserRepository(): UserRepositoryInterface
+    {
+        return $this->getDoctrine()->getRepository(User::class);
     }
 
     private function findUserByUsername(string $username): User
     {
-        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['username' => $username]);
+        return $this->getUserRepository()->findOneBy(['username' => $username]);
     }
 
     private function findUserByEmail(string $userEmail): User
     {
-        return $this->getDoctrine()->getRepository('FSiFixturesBundle:User')->findOneBy(['email' => $userEmail]);
+        return $this->getUserRepository()->findOneBy(['email' => $userEmail]);
     }
 }
