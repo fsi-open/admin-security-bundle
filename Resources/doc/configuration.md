@@ -11,8 +11,9 @@ fsi_admin_security:
     activation:
         mailer:
           from: null      # required, copied from mailer.from if empty
-          reply_to: nul   # copied from mailer.reply_to if empty
+          reply_to: null  # copied from mailer.reply_to if empty
           template: '@FSiAdminSecurity/Activation/mail.html.twig'
+          template_new_token: '@FSiAdminSecurity/Activation/mailNewToken.html.twig'
         token_ttl: 43200
         token_length: 32
         change_password_form:

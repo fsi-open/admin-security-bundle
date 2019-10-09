@@ -20,6 +20,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\SchemaTool;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
+use RuntimeException;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -182,7 +183,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     {
         $doctrine = $this->kernel->getContainer()->get('doctrine');
         if (false === $doctrine instanceof ManagerRegistry) {
-            return $doctrine;
+            throw new RuntimeException('Doctrine not found!');
         }
 
         return $doctrine;

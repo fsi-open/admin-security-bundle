@@ -16,6 +16,7 @@ use FSi\Bundle\AdminBundle\Event\BatchEvents;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,8 +60,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
     public function preventDeletingCurrentUser(FormEvent $event): void
     {
         $element = $event->getElement();
-
-        if (!($element instanceof UserElement)) {
+        if (false === $element instanceof UserElement) {
             return;
         }
 
@@ -69,7 +69,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         $indexes = $request->get('indexes', []);
 
         foreach ($indexes as $index) {
-            /** @var \FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface $entity */
+            /** @var UserInterface $entity */
             $entity = $element->getDataIndexer()->getData($index);
 
             if ($user === $entity) {
@@ -95,8 +95,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
     private function getRedirectUrl(Element $element, Request $request): string
     {
         $redirectUrl = $request->get('redirect_uri');
-
-        if ($redirectUrl === null) {
+        if (null === $redirectUrl) {
             return $this->router->generate($element->getRoute(), $element->getRouteParameters());
         }
 

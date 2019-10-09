@@ -64,7 +64,8 @@
         "classmap": ["features/fixtures/project/app/AppKernel.php"],
         "psr-4": {
             "FSi\\Bundle\\AdminSecurityBundle\\Behat\\": "Behat",
-            "spec\\FSi\\Bundle\\AdminSecurityBundle\\": "spec"
+            "spec\\FSi\\Bundle\\AdminSecurityBundle\\": "spec/FSi/Bundle/AdminSecurityBundle",
+            "FSi\\Bundle\\AdminSecurityBundle\\spec\\fixtures\\": "spec/fixtures"
         }
     },
     "extra": {

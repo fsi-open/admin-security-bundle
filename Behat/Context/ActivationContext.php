@@ -122,7 +122,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     }
 
     /**
-     * @When /^i try open activation page with token "([^"]*)"$/
+     * @When /^I try open activation page with token "([^"]*)"$/
      */
     public function iTryOpenActivationPageWithToken($activationToken)
     {
@@ -130,7 +130,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     }
 
     /**
-     * @When /^i open activation page with token "([^"]*)"$/
+     * @When /^I open activation page with token "([^"]*)"$/
      */
     public function iOpenActivationPageWithToken($activationToken)
     {
@@ -138,7 +138,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     }
 
     /**
-     * @When /^i open activation page with token received by user "([^"]*)" in the email$/
+     * @When /^I open activation page with token received by user "([^"]*)" in the email$/
      */
     public function iOpenActivationPageWithTokenReceivedByUserInTheEmail($email)
     {
@@ -149,7 +149,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     }
 
     /**
-     * @Given /^i fill in new password with confirmation$/
+     * @Given /^I fill in new password with confirmation$/
      */
     public function iFillInNewPasswordWithConfirmation()
     {
@@ -157,7 +157,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     }
 
     /**
-     * @Given /^i fill in new password with invalid confirmation$/
+     * @Given /^I fill in new password with invalid confirmation$/
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
