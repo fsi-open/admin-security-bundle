@@ -15,8 +15,9 @@ use Behat\Gherkin\Node\TableNode;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Datagrid;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use function expect;
 
-class AdminUserManagementContext extends PageObjectContext
+final class AdminUserManagementContext extends PageObjectContext
 {
     /**
      * @var UserList
@@ -59,12 +60,7 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iDeleteSecondUserOnTheList()
     {
-        $this->userListPage->getBatchActionsElement()->selectOption('Delete');
-
-        $datagrid = $this->getDatagrid();
-        $datagrid->checkCellCheckbox(2);
-
-        $this->userListPage->pressButton('Ok');
+        $this->performBatchAction('Delete', 2);
     }
 
     /**
@@ -72,12 +68,15 @@ class AdminUserManagementContext extends PageObjectContext
      */
     public function iResetPasswordForTheSecondUserOnTheList()
     {
-        $this->userListPage->getBatchActionsElement()->selectOption('Reset password');
+        $this->performBatchAction('Reset password', 2);
+    }
 
-        $datagrid = $this->getDatagrid();
-        $datagrid->checkCellCheckbox(2);
-
-        $this->userListPage->pressButton('Ok');
+    /**
+     * @When I resend activation token to the second user on the list
+     */
+    public function iResendActivationTokenToTheFirstUserOnTheList()
+    {
+        $this->performBatchAction('Resend activation token', 2);
     }
 
     /**
@@ -97,11 +96,19 @@ class AdminUserManagementContext extends PageObjectContext
         $this->userListPage->checkField('ROLE_ADMIN');
     }
 
-    /**
-     * @return Datagrid
-     */
-    private function getDatagrid()
+    private function performBatchAction(string $action, int $cellIndex): void
     {
-        return $this->getElement('Datagrid');
+        $this->userListPage->getBatchActionsElement()->selectOption($action);
+
+        $this->getDatagrid()->checkCellCheckbox($cellIndex);
+
+        $this->userListPage->pressButton('Ok');
+    }
+
+    private function getDatagrid(): Datagrid
+    {
+        /** @var Datagrid $datagrid */
+        $datagrid = $this->getElement('Datagrid');
+        return $datagrid;
     }
 }

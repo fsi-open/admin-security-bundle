@@ -16,7 +16,7 @@ admin:
     button:
       save: Save
       reset: Reset
-  welcome: Hello %username%
+  welcome: 'Hello %username%'
   password_reset:
     request:
       form:
@@ -45,6 +45,11 @@ admin:
     mail:
       subject: User Activation
       info: "To activate your account - please visit:"
+    new_token:
+      subject: User activation - new token
+      info: >
+        Your previous activation token has expired and a new one has been generated.
+        Please visit the link below to activate your account:
     message:
       change_password: Please setup a new password to activate your account
       change_password_success: Your password has been successfully changed and your account has been activated
@@ -60,6 +65,7 @@ admin:
     batch_action:
       delete: Delete
       password_reset: Reset password
+      resend_activation_token: Resend activation token
     message:
       delete_current_user: Cannot delete your own user
   admin_user:

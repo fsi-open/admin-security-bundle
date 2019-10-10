@@ -9,17 +9,17 @@ Feature:
     And I'm not logged in
 
   Scenario: Open password change page with invalid token
-    When i try open password change page with token "invalid-token"
-    Then i should see 404 error
+    When I try open password change page with token "invalid-token"
+    Then I should see 404 error
 
   Scenario: Open password change page with expired token
     Given user "admin@fsi.pl" has expired confirmation token "expired-token"
-    When i try open password change page with token "expired-token"
-    Then i should see 404 error
+    When I try open password change page with token "expired-token"
+    Then I should see 404 error
 
   Scenario: Submit change password form with valid data
-    When i open password change page with token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
-    And i fill in new password with confirmation
+    When I open password change page with token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
+    And I fill in new password with confirmation
     And I press "Change password" button
     And I should be redirected to "Login" page
     Then user "admin@fsi.pl" should have changed password
@@ -29,7 +29,7 @@ Feature:
     """
 
   Scenario: Submit change password form with invalid data
-    When i open password change page with token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
-    And i fill in new password with invalid confirmation
+    When I open password change page with token "EwAq42G68-dg5Jl-HGr3Z7wII4cYh3sUvSpcdLhVxRQ"
+    And I fill in new password with invalid confirmation
     And I press "Change password" button
     Then I should see information about passwords mismatch

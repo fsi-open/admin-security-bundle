@@ -17,12 +17,8 @@ use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 interface ActivableInterface extends EmailableInterface
 {
     public function isEnabled();
-
     public function setEnabled(bool $boolean): void;
-
     public function getActivationToken(): ?TokenInterface;
-
     public function setActivationToken(TokenInterface $token): void;
-
     public function removeActivationToken(): void;
 }

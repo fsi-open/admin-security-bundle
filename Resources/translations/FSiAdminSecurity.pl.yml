@@ -45,6 +45,11 @@ admin:
     mail:
       subject: Aktywacja użytkownika
       info: "Aby aktywować twoje konto proszę otworzyć link:"
+    new_token:
+      subject: Aktywacja użytkownika - nowy token
+      info: >
+        Poprzedni kod aktywacyjny utracił ważność i wygenerowano nowy. Proszę otworzyć
+        poniższy link, aby aktywować konto:
     message:
       change_password: Proszę ustawić nowe hasło aby aktywować konto
       change_password_success: Twoje hasło zostało poprawnie zmienione oraz twoje konto zostało aktywowane
@@ -60,6 +65,7 @@ admin:
     batch_action:
       delete: Usuń
       password_reset: Przypomnij hasło
+      resend_activation_token: Wyślij ponownie email aktywacyjny
     message:
       delete_current_user: Nie można usunąć swojego użytkownika
   admin_user:

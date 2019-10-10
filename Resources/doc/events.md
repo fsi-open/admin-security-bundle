@@ -32,7 +32,13 @@ It has following built-in subscribers:
 
 - [ensure user is enabled](EventListener/ActivateUserListener.php)
 
-## Other listeners 
+``FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents::RESEND_ACTIVATION_TOKEN`` is fired when a batch action
+for resending activation token is submitted.
+It has following built-in subscribers:
+
+- [resend activation email](EventListener/ResendActvationMailListener.php)
+
+## Other listeners
 
 There is also a subscriber for all of the above events and it is responsible for saving changes to the
 corresponding ORM/ODM - [PersistDoctrineUserListener](EventListener/PersistDoctrineUserListener.php) by the ODM/ORM.

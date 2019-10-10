@@ -17,7 +17,7 @@ use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Login;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
-class AdminUserContext extends PageObjectContext
+final class AdminUserContext extends PageObjectContext
 {
     /**
      * @var Login

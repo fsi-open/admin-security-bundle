@@ -114,6 +114,14 @@
             <argument type="string">%admin_security.password_reset.mailer.reply_to%</argument>
         </service>
 
+        <service id="admin_security.mailer.resend_activation" class="FSi\Bundle\AdminSecurityBundle\Mailer\TwigSwiftMailer">
+            <argument type="service" id="swiftmailer.mailer" />
+            <argument type="service" id="admin_security.mailer.message_factory" />
+            <argument type="string">%admin_security.activation.mailer.template_new_token%</argument>
+            <argument type="string">%admin_security.activation.mailer.from%</argument>
+            <argument type="string">%admin_security.activation.mailer.reply_to%</argument>
+        </service>
+
         <!-- Event listeners -->
         <service id="admin_security.listener.encode_password" class="%admin_security.listener.encode_password.class%">
             <argument type="service" id="security.encoder_factory" />
@@ -166,6 +174,12 @@
         <service id="admin_security.listener.send_password_reset_mail" class="%admin_security.listener.send_password_reset_mail.class%">
             <argument type="service" id="admin_security.mailer.password_reset"/>
             <argument type="service" id="admin_security.token_factory.password_reset"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="admin_security.listener.resend_send_activation_mail" class="FSi\Bundle\AdminSecurityBundle\EventListener\ResendActvationMailListener">
+            <argument type="service" id="admin_security.mailer.resend_activation"/>
+            <argument type="service" id="admin_security.token_factory.activation"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -227,6 +241,13 @@
             <argument type="collection"/>
             <argument type="string">%admin_security.model.user%</argument>
             <argument type="service" id="event_dispatcher"/>
+            <tag name="admin.element"/>
+        </service>
+
+        <service id="admin_security.admin.resend_activation_token" class="FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\ResendActivationTokenBatchElement">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="string">%admin_security.model.user%</argument>
+            <argument type="collection"/>
             <tag name="admin.element"/>
         </service>
     </services>

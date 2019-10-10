@@ -94,10 +94,11 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
     private function flushUserObjectManager($user): void
     {
         $objectManager = $this->registry->getManagerForClass(get_class($user));
-
-        if ($objectManager instanceof ObjectManager) {
-            $objectManager->persist($user);
-            $objectManager->flush();
+        if (false === $objectManager instanceof ObjectManager) {
+            return;
         }
+
+        $objectManager->persist($user);
+        $objectManager->flush();
     }
 }
