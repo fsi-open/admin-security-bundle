@@ -17,15 +17,19 @@ use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use DateTime;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Exception;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
-use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Symfony\Component\HttpKernel\KernelInterface;
+use function expect;
 
-class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
+final class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
     /**
      * @var Mink
@@ -149,7 +153,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @When /^i try open password change page with token "([^"]*)"$/
+     * @When /^I try open password change page with token "([^"]*)"$/
      */
     public function iTryOpenPasswordChangePageWithToken($confirmationToken)
     {
@@ -157,7 +161,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @When /^i open password change page with token "([^"]*)"$/
+     * @When /^I open password change page with token "([^"]*)"$/
      */
     public function iOpenPasswordChangePageWithToken($confirmationToken)
     {
@@ -165,7 +169,7 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @Given /^i fill in new password with confirmation$/
+     * @Given /^I fill in new password with confirmation$/
      */
     public function iFillInNewPasswordWithConfirmation()
     {
@@ -173,16 +177,26 @@ class PasswordResetContext extends PageObjectContext implements KernelAwareConte
     }
 
     /**
-     * @Given /^i fill in new password with invalid confirmation$/
+     * @Given /^I fill in new password with invalid confirmation$/
      */
     public function iFillInNewPasswordWithInvalidConfirmation()
     {
         $this->passwordResetChangePage->fillFormWithInvalidData();
     }
 
-    private function getUserRepository(): UserRepository
+    private function getDoctrine(): ManagerRegistry
     {
-        return $this->kernel->getContainer()->get('doctrine')->getRepository('FSiFixturesBundle:User');
+        $doctrine = $this->kernel->getContainer()->get('doctrine');
+        if (false === $doctrine instanceof ManagerRegistry) {
+            throw new Exception('Unable to fetch Doctrine');
+        }
+
+        return $doctrine;
+    }
+
+    private function getUserRepository(): UserRepositoryInterface
+    {
+        return $this->getDoctrine()->getRepository(User::class);
     }
 
     /**

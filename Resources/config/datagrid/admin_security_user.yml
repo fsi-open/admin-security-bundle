@@ -38,3 +38,6 @@ columns:
         password_reset:
           label: admin.user_list.batch_action.password_reset
           element: admin_security_password_reset
+        resend_activation_token:
+          label: admin.user_list.batch_action.resend_activation_token
+          element: admin_security_reset_activation_token

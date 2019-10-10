@@ -6,6 +6,7 @@ Feature: Activation of disabled user
   Background:
     Given I create disabled user with email address "user@example.com"
 
+
   @email
   Scenario: Send email to new user
     Then an email should be sent:
@@ -14,8 +15,9 @@ Feature: Activation of disabled user
       | to       | user@example.com         |
       | reply_to | do-not-reply@example.com |
 
+
   Scenario: Activate user
-    When i open activation page with token received by user "user@example.com" in the email
+    When I open activation page with token received by user "user@example.com" in the email
     Then I should be redirected to "Login" page
     And I should see message:
     """

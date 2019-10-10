@@ -2,5 +2,7 @@
 /bin
 composer.lock
 composer.phar
+features/fixtures/project/app/cache/
+features/fixtures/project/app/logs/
 features/fixtures/project/web/bundles/
 *.sqlite

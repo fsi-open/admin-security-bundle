@@ -26,6 +26,7 @@ default: &default
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\MailContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\CommandContext
                 - FSi\Bundle\AdminSecurityBundle\Behat\Context\ActivationContext
+                - FSi\Bundle\AdminSecurityBundle\Behat\Context\AdminUserManagementContext
     extensions:
         Behat\MinkExtension:
             base_url: 'http://admin-security-bundle-web'

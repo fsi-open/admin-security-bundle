@@ -20,4 +20,5 @@ class AdminSecurityEvents
     public const USER_CREATED = 'admin.security.user_created';
     public const PROMOTE_USER = 'admin.security.promote_user';
     public const DEMOTE_USER = 'admin.security.demote_user';
+    public const RESEND_ACTIVATION_TOKEN = 'admin.security.resend_activation_token';
 }

@@ -97,6 +97,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
                                 ->scalarNode('template')->defaultValue('@FSiAdminSecurity/Activation/mail.html.twig')->end()
+                                ->scalarNode('template_new_token')->defaultValue('@FSiAdminSecurity/Activation/mailNewToken.html.twig')->end()
                                 ->scalarNode('reply_to')->defaultNull()->end()
                             ->end()
                         ->end()

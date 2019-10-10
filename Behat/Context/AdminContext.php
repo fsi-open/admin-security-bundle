@@ -28,7 +28,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageExce
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class AdminContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
+final class AdminContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
 {
     /**
      * @var Mink
@@ -215,7 +215,7 @@ class AdminContext extends PageObjectContext implements KernelAwareContext, Mink
     }
 
     /**
-     * @Then /^i should see (\d+) error$/
+     * @Then /^I should see (\d+) error$/
      */
     public function iShouldSeeHttpError($httpStatusCode)
     {
