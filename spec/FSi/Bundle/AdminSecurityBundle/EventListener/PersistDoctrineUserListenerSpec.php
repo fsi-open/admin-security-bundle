@@ -39,6 +39,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
+            AdminSecurityEvents::RESEND_ACTIVATION_TOKEN => 'onActivationResend',
             AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
             AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
@@ -84,6 +85,19 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onActivation($event);
+    }
+
+    function it_flushes_om_after_resending_activation_token(
+        ActivationEvent $event,
+        ObjectManager $objectManager,
+        User $user
+    ) {
+        $event->getUser()->willReturn($user);
+
+        $objectManager->persist($user)->shouldBeCalled();
+        $objectManager->flush()->shouldBeCalled();
+
+        $this->onActivationResend($event);
     }
 
     function it_flushes_om_after_deactivation(
