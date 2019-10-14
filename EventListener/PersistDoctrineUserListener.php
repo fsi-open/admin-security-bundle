@@ -40,6 +40,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
             AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
             AdminSecurityEvents::ACTIVATION => 'onActivation',
+            AdminSecurityEvents::RESEND_ACTIVATION_TOKEN => 'onActivationResend',
             AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
             AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
@@ -49,6 +50,11 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
     }
 
     public function onActivation(ActivationEvent $event): void
+    {
+        $this->flushUserObjectManager($event->getUser());
+    }
+
+    public function onActivationResend(ActivationEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }
