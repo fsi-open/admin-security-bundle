@@ -55,7 +55,7 @@ class PrepareUserListener implements EventSubscriberInterface
 
         $entity->setEnabled(false);
         $entity->enforcePasswordChange(true);
-        $entity->setPlainPassword(random_bytes(32));
+        $entity->setPlainPassword(bin2hex(random_bytes(32)));
 
         $this->eventDispatcher->dispatch(
             AdminSecurityEvents::USER_CREATED,
