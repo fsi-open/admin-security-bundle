@@ -13,7 +13,6 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
-use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,7 +88,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
             return;
         }
 
@@ -98,20 +97,22 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->isConfiguredFirewall($event->getRequest())) {
+        if (false === $this->isConfiguredFirewall($event->getRequest())) {
             return;
         }
 
-        if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if (false === $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             return;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+        if (true === $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
             return;
         }
 
         $user = $token->getUser();
-        if (!($user instanceof EnforceablePasswordChangeInterface) || !$user->isForcedToChangePassword()) {
+        if (false === $user instanceof EnforceablePasswordChangeInterface
+            || false === $user->isForcedToChangePassword()
+        ) {
             return;
         }
 
@@ -120,8 +121,13 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
 
     private function isConfiguredFirewall(Request $request): bool
     {
-        if (method_exists($this->firewallMap, 'getFirewallConfig')) {
-            $firewallName = $this->firewallMap->getFirewallConfig($request)->getName();
+        if (true === method_exists($this->firewallMap, 'getFirewallConfig')) {
+            $config = $this->firewallMap->getFirewallConfig($request);
+            if (null === $config) {
+                return false;
+            }
+
+            $firewallName = $config->getName();
         } else {
             $firewallName = $this->firewallMapper->getFirewallName($request);
         }
