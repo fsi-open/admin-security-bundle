@@ -112,7 +112,7 @@ class ActivationController
                 $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
             );
         } else {
-            $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
+            $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::ACTIVATION);
 
             $response = $this->addFlashAndRedirect('success', 'admin.activation.message.success');
         }
@@ -136,8 +136,8 @@ class ActivationController
 
         $form->handleRequest($request);
         if (true === $form->isSubmitted() && true === $form->isValid()) {
-            $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
-            $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
+            $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::ACTIVATION);
+            $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
 
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
