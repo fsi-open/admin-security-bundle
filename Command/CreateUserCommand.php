@@ -96,7 +96,7 @@ EOT
         if (true === $input->getOption('enforce-password-change')) {
             $user->enforcePasswordChange(true);
         }
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::USER_CREATED, new UserEvent($user));
+        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::USER_CREATED);
 
         $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
 

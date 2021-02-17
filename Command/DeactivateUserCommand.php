@@ -73,7 +73,7 @@ EOT
         if (false === $user instanceof ActivableInterface) {
             throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::DEACTIVATION, new ActivationEvent($user));
+        $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::DEACTIVATION);
 
         $output->writeln(sprintf('User <comment>%s</comment> has been deactivated', $email));
 

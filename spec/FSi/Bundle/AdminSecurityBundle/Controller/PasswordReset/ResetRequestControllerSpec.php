@@ -80,11 +80,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
         FlashMessages $flashMessages
     ): void {
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
             Argument::allOf(
                 Argument::type(ResetPasswordRequestEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST
         )->shouldBeCalled();
 
         $flashMessages->info(
@@ -109,11 +109,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $user->isEnabled()->willReturn(false);
 
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
             Argument::allOf(
                 Argument::type(ResetPasswordRequestEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST
         )->shouldNotBeCalled();
 
         $flashMessages->info(

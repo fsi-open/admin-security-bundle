@@ -163,11 +163,11 @@ class ActivationControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');
 
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::ACTIVATION,
             Argument::allOf(
                 Argument::type(ActivationEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::ACTIVATION
         )->shouldBeCalled();
 
         $flashMessages->success('admin.activation.message.success', [], 'FSiAdminSecurity')->shouldBeCalled();
@@ -248,18 +248,18 @@ class ActivationControllerSpec extends ObjectBehavior
 
         $form->handleRequest($request)->shouldBeCalled();
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::ACTIVATION,
             Argument::allOf(
                 Argument::type(ActivationEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::ACTIVATION
         )->shouldBeCalled();
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::CHANGE_PASSWORD,
             Argument::allOf(
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::CHANGE_PASSWORD
         )->shouldBeCalled();
 
         $flashMessages->success(

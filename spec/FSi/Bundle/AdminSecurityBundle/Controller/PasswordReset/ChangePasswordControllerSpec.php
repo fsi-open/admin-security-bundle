@@ -83,11 +83,11 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
         $user->removePasswordResetToken()->shouldBeCalled();
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::CHANGE_PASSWORD,
             Argument::allOf(
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            )
+            ),
+            AdminSecurityEvents::CHANGE_PASSWORD,
         )->shouldBeCalled();
 
         $flashMessages->success(

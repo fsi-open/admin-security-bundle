@@ -13,7 +13,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use PhpSpec\ObjectBehavior;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {

@@ -47,10 +47,8 @@ class PasswordResetBatchElementSpec extends ObjectBehavior
         EventDispatcherInterface $eventDispatcher
     ): void {
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
-            Argument::allOf(
-                Argument::type(ResetPasswordRequestEvent::class)
-            )
+            Argument::type(ResetPasswordRequestEvent::class),
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST
         )->shouldBeCalled();
 
         $this->apply($user);
