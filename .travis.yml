@@ -31,7 +31,9 @@ before_script:
   - features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web
 
 script:
+  - vendor/bin/phpcs
   - vendor/bin/phpspec run -f pretty
+  - vendor/bin/phpstan analyze -c phpstan.neon
   - vendor/bin/behat --no-snippets --profile=travis
 
 after_failure:

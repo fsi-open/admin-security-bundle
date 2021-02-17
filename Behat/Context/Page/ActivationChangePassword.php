@@ -20,7 +20,7 @@ class ActivationChangePassword extends Page
 
     public function verifyPage(): void
     {
-        if (!$this->has('css', 'form[name="admin_password_reset_change_password"]')) {
+        if (false === $this->has('css', 'form[name="admin_password_reset_change_password"]')) {
             throw new UnexpectedPageException(sprintf("Page %s is not an Activation Request", $this->path));
         }
         $this->verifyResponse();

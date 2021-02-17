@@ -44,7 +44,7 @@ class PrepareUserListener implements EventSubscriberInterface
     {
         $entity = $event->getForm()->getData();
 
-        if (!$entity instanceof UserInterface) {
+        if (false === $entity instanceof UserInterface) {
             return;
         }
 
@@ -57,9 +57,6 @@ class PrepareUserListener implements EventSubscriberInterface
         $entity->enforcePasswordChange(true);
         $entity->setPlainPassword(bin2hex(random_bytes(32)));
 
-        $this->eventDispatcher->dispatch(
-            AdminSecurityEvents::USER_CREATED,
-            new UserEvent($entity)
-        );
+        $this->eventDispatcher->dispatch(AdminSecurityEvents::USER_CREATED, new UserEvent($entity));
     }
 }

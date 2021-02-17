@@ -18,6 +18,7 @@ use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
+
 use function expect;
 
 final class MailContext implements KernelAwareContext
@@ -35,7 +36,7 @@ final class MailContext implements KernelAwareContext
     /**
      * @BeforeScenario @email
      */
-    public function cleanEmailSpool()
+    public function cleanEmailSpool(): void
     {
         $filesystem = new Filesystem();
         if (false === $filesystem->exists($this->getSpoolDir())) {
@@ -48,7 +49,7 @@ final class MailContext implements KernelAwareContext
     /**
      * @Given /^no emails were sent$/
      */
-    public function thereShouldBeNoEmailSent()
+    public function thereShouldBeNoEmailSent(): void
     {
         $files = $this->getSpoolFiles();
 
@@ -59,7 +60,7 @@ final class MailContext implements KernelAwareContext
      * @Given I should receive email:
      * @Then an email should be sent:
      */
-    public function iShouldReceiveEmail(TableNode $table)
+    public function iShouldReceiveEmail(TableNode $table): void
     {
         $files = $this->getSpoolFiles();
         $files->sortByModifiedTime();

@@ -21,27 +21,27 @@ use PhpSpec\ObjectBehavior;
 
 class SendPasswordResetMailListenerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         MailerInterface $mailer,
         TokenFactoryInterface $tokenFactory
-    ) {
+    ): void {
         $this->beConstructedWith($mailer, $tokenFactory);
     }
 
-    function it_subscribes_user_created_event()
+    public function it_subscribes_user_created_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
         ]);
     }
 
-    function it_sends_email(
+    public function it_sends_email(
         MailerInterface $mailer,
         TokenFactoryInterface $tokenFactory,
         TokenInterface $token,
         ResetPasswordRequestEvent $event,
         ResettablePasswordInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $tokenFactory->createToken()->willReturn($token);
 

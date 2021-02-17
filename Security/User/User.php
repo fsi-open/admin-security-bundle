@@ -57,7 +57,7 @@ abstract class User implements UserInterface
     /**
      * Plain password. Used for model validation. Must not be persisted.
      *
-     * @var string
+     * @var string|null
      */
     protected $plainPassword;
 
@@ -67,12 +67,12 @@ abstract class User implements UserInterface
     protected $lastLogin;
 
     /**
-     * @var TokenInterface
+     * @var TokenInterface|null
      */
     protected $activationToken;
 
     /**
-     * @var TokenInterface
+     * @var TokenInterface|null
      */
     protected $passwordResetToken;
 

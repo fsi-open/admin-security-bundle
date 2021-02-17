@@ -27,6 +27,7 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
+
 use function expect;
 
 final class ActivationContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
@@ -90,7 +91,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @Given /^user "([^"]*)" has activation token "([^"]*)"$/
      */
-    public function userHasActivationToken($username, $activationToken)
+    public function userHasActivationToken(string $username, string $activationToken): void
     {
         $user = $this->getUserByUsername($username);
         $user->setActivationToken($this->createToken($activationToken, new DateInterval('PT3600S')));
@@ -101,7 +102,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @Given /^user "([^"]*)" should still have activation token "([^"]*)"$/
      */
-    public function userShouldStillHaveActivationToken($username, $expectedActivationToken)
+    public function userShouldStillHaveActivationToken(string $username, $expectedActivationToken): void
     {
         $user = $this->getUserByUsername($username);
 
@@ -111,7 +112,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @Given /^user "([^"]*)" has expired activation token "([^"]*)"$/
      */
-    public function userHasActivationTokenWithTtl($username, $activationToken)
+    public function userHasActivationTokenWithTtl(string $username, string $activationToken): void
     {
         $ttl = new DateInterval('P1D');
         $ttl->invert = true;
@@ -124,7 +125,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @When /^I try open activation page with token "([^"]*)"$/
      */
-    public function iTryOpenActivationPageWithToken($activationToken)
+    public function iTryOpenActivationPageWithToken(string $activationToken): void
     {
         $this->activationChangePasswordPage->openWithoutVerification(['activationToken' => $activationToken]);
     }
@@ -132,7 +133,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @When /^I open activation page with token "([^"]*)"$/
      */
-    public function iOpenActivationPageWithToken($activationToken)
+    public function iOpenActivationPageWithToken(string $activationToken): void
     {
         $this->activationPage->openWithoutVerification(['activationToken' => $activationToken]);
     }
@@ -140,7 +141,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @When /^I open activation page with token received by user "([^"]*)" in the email$/
      */
-    public function iOpenActivationPageWithTokenReceivedByUserInTheEmail($email)
+    public function iOpenActivationPageWithTokenReceivedByUserInTheEmail(string $email): void
     {
         $user = $this->getUserByEmail($email);
         $this->activationPage->openWithoutVerification([
@@ -151,7 +152,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @Given /^I fill in new password with confirmation$/
      */
-    public function iFillInNewPasswordWithConfirmation()
+    public function iFillInNewPasswordWithConfirmation(): void
     {
         $this->activationChangePasswordPage->fillForm();
     }
@@ -159,7 +160,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     /**
      * @Given /^I fill in new password with invalid confirmation$/
      */
-    public function iFillInNewPasswordWithInvalidConfirmation()
+    public function iFillInNewPasswordWithInvalidConfirmation(): void
     {
         $this->activationChangePasswordPage->fillFormWithInvalidData();
     }

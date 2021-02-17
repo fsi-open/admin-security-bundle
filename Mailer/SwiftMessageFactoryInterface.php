@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use Swift_Message;
+
 interface SwiftMessageFactoryInterface
 {
-    public function createMessage(string $email, string $template, array $data): \Swift_Message;
+    public function createMessage(string $email, string $template, array $data): Swift_Message;
 }

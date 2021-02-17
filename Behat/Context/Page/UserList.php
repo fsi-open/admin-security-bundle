@@ -26,7 +26,7 @@ class UserList extends Page
 
     public function verifyPage(): void
     {
-        if (!$this->hasElement('table')) {
+        if (false === $this->hasElement('table')) {
             throw new UnexpectedPageException('Unable to find users table');
         }
         $this->verifyResponse();
@@ -48,15 +48,12 @@ class UserList extends Page
     {
         $options = $this->getElement('batch actions')->findAll('css', 'option');
 
-        $options = array_map(function(NodeElement $item) {
+        $options = array_map(static function (NodeElement $item): string {
             return $item->getText();
         }, $options);
 
-        return array_filter($options, function($item) {
-            if ($item === 'Select action') {
-                return false;
-            }
-            return true;
+        return array_filter($options, static function (string $item): bool {
+            return 'Select action' !== $item;
         });
     }
 }

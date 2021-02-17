@@ -30,19 +30,19 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ChangePasswordControllerSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable(): void
     {
         $this->shouldHaveType(ChangePasswordController::class);
     }
 
-    function let(
+    public function let(
         EngineInterface $templating,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $this->beConstructedWith(
             $templating,
             'template-name',
@@ -56,7 +56,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         );
     }
 
-    function it_changes_password(
+    public function it_changes_password(
         Request $request,
         UserRepositoryInterface $userRepository,
         UserInterface $user,
@@ -66,7 +66,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $form->handleRequest($request)->willReturn($form);
         $form->isSubmitted()->willReturn(true);
         $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);

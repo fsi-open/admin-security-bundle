@@ -27,13 +27,13 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class PersistDoctrineUserListenerSpec extends ObjectBehavior
 {
-    function let(Registry $registry, ObjectManager $objectManager)
+    public function let(Registry $registry, ObjectManager $objectManager): void
     {
         $this->beConstructedWith($registry);
         $registry->getManagerForClass(Argument::any())->willReturn($objectManager);
     }
 
-    function it_subscribes_all_events()
+    public function it_subscribes_all_events(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
@@ -44,15 +44,15 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
             AdminSecurityEvents::USER_CREATED => 'onUserCreated',
             AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
             AdminSecurityEvents::DEMOTE_USER => 'onDemoteUser',
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
         ]);
     }
 
-    function it_flushes_om_after_changing_password(
+    public function it_flushes_om_after_changing_password(
         ChangePasswordEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -61,11 +61,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    function it_flushes_om_after_requesting_change_of_password(
+    public function it_flushes_om_after_requesting_change_of_password(
         ResetPasswordRequestEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -74,11 +74,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onResetPasswordRequest($event);
     }
 
-    function it_flushes_om_after_activation(
+    public function it_flushes_om_after_activation(
         ActivationEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -87,11 +87,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onActivation($event);
     }
 
-    function it_flushes_om_after_resending_activation_token(
+    public function it_flushes_om_after_resending_activation_token(
         ActivationEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -100,11 +100,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onActivationResend($event);
     }
 
-    function it_flushes_om_after_deactivation(
+    public function it_flushes_om_after_deactivation(
         ActivationEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -113,11 +113,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDeactivation($event);
     }
 
-    function it_flushes_om_after_user_creation(
+    public function it_flushes_om_after_user_creation(
         UserEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -126,11 +126,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onUserCreated($event);
     }
 
-    function it_flushes_om_after_promote_user(
+    public function it_flushes_om_after_promote_user(
         UserEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -139,11 +139,11 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onPromoteUser($event);
     }
 
-    function it_flushes_om_after_demote_user(
+    public function it_flushes_om_after_demote_user(
         UserEvent $event,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
 
         $objectManager->persist($user)->shouldBeCalled();
@@ -152,12 +152,12 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDemoteUser($event);
     }
 
-    function it_flushes_om_after_user_logged_in(
+    public function it_flushes_om_after_user_logged_in(
         InteractiveLoginEvent $event,
         TokenInterface $token,
         ObjectManager $objectManager,
         User $user
-    ) {
+    ): void {
         $token->getUser()->willReturn($user);
         $event->getAuthenticationToken()->willReturn($token);
 

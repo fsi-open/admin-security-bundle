@@ -27,6 +27,7 @@ use FSi\FixturesBundle\Entity\User;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Symfony\Component\HttpKernel\KernelInterface;
+
 use function expect;
 
 final class PasswordResetContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
@@ -92,7 +93,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^user "([^"]*)" has confirmation token "([^"]*)"$/
      */
-    public function userHasConfirmationToken($username, $confirmationToken)
+    public function userHasConfirmationToken(string $username, string $confirmationToken): void
     {
         $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
@@ -104,7 +105,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^user "([^"]*)" should still have confirmation token "([^"]*)"$/
      */
-    public function userShouldStillHaveConfirmationToken($username, $expectedConfirmationToken)
+    public function userShouldStillHaveConfirmationToken(string $username, string $expectedConfirmationToken): void
     {
         $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
@@ -114,7 +115,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^user "([^"]*)" has expired confirmation token "([^"]*)"$/
      */
-    public function userHasConfirmationTokenWithTtl($username, $confirmationToken)
+    public function userHasConfirmationTokenWithTtl(string $username, string $confirmationToken): void
     {
         $user = $this->getUserRepository()->findOneBy(['username' => $username]);
 
@@ -129,7 +130,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @When /^I fill form with non-existent email address$/
      */
-    public function iFillFormWithNonExistentEmailAddress()
+    public function iFillFormWithNonExistentEmailAddress(): void
     {
         $this->passwordResetRequestPage->fillField('Email', 'nonexistent@fsi.pl');
     }
@@ -137,7 +138,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^I should be on the "([^"]*)" page$/
      */
-    public function iShouldBeOnThePage($pageName)
+    public function iShouldBeOnThePage(string $pageName): void
     {
         /** @var Page $page */
         $page = $this->getPage($pageName);
@@ -147,7 +148,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @When /^I fill form with correct email address$/
      */
-    public function iFillFormWithCorrectEmailAddress()
+    public function iFillFormWithCorrectEmailAddress(): void
     {
         $this->passwordResetRequestPage->fillField('Email', 'admin@fsi.pl');
     }
@@ -155,7 +156,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @When /^I try open password change page with token "([^"]*)"$/
      */
-    public function iTryOpenPasswordChangePageWithToken($confirmationToken)
+    public function iTryOpenPasswordChangePageWithToken(string $confirmationToken): void
     {
         $this->passwordResetChangePage->openWithoutVerification(['confirmationToken' => $confirmationToken]);
     }
@@ -163,7 +164,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @When /^I open password change page with token "([^"]*)"$/
      */
-    public function iOpenPasswordChangePageWithToken($confirmationToken)
+    public function iOpenPasswordChangePageWithToken(string $confirmationToken): void
     {
         $this->passwordResetChangePage->open(['confirmationToken' => $confirmationToken]);
     }
@@ -171,7 +172,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^I fill in new password with confirmation$/
      */
-    public function iFillInNewPasswordWithConfirmation()
+    public function iFillInNewPasswordWithConfirmation(): void
     {
         $this->passwordResetChangePage->fillForm();
     }
@@ -179,7 +180,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
     /**
      * @Given /^I fill in new password with invalid confirmation$/
      */
-    public function iFillInNewPasswordWithInvalidConfirmation()
+    public function iFillInNewPasswordWithInvalidConfirmation(): void
     {
         $this->passwordResetChangePage->fillFormWithInvalidData();
     }
@@ -199,12 +200,7 @@ final class PasswordResetContext extends PageObjectContext implements KernelAwar
         return $this->getDoctrine()->getRepository(User::class);
     }
 
-    /**
-     * @param string $confirmationToken
-     * @param \DateInterval $ttl
-     * @return Token
-     */
-    private function createToken($confirmationToken, DateInterval $ttl)
+    private function createToken(string $confirmationToken, DateInterval $ttl): Token
     {
         return new Token($confirmationToken, new DateTime(), $ttl);
     }

@@ -29,12 +29,12 @@ use Prophecy\Argument;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable(): void
     {
         $this->shouldHaveType(ResetRequestController::class);
     }
 
-    function let(
+    public function let(
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
@@ -45,7 +45,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         FormInterface $form,
         FormInterface $form2,
         UserInterface $user
-    ) {
+    ): void {
         $user->isEnabled()->willReturn(true);
         $formFactory->create('form_type')->willReturn($form);
         $form->handleRequest($request)->willReturn($form);
@@ -72,13 +72,13 @@ class ResetRequestControllerSpec extends ObjectBehavior
         );
     }
 
-    function it_updates_confirmation_token_and_dispatches_event(
+    public function it_updates_confirmation_token_and_dispatches_event(
         Request $request,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher,
         RouterInterface $router,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $eventDispatcher->dispatch(
             AdminSecurityEvents::RESET_PASSWORD_REQUEST,
             Argument::allOf(
@@ -99,13 +99,13 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $response->shouldHaveType(RedirectResponse::class);
     }
 
-    function it_does_not_dispatch_event_and_displays_warning_when_user_disabled(
+    public function it_does_not_dispatch_event_and_displays_warning_when_user_disabled(
         Request $request,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher,
         RouterInterface $router,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $user->isEnabled()->willReturn(false);
 
         $eventDispatcher->dispatch(

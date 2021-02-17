@@ -17,7 +17,7 @@ use PhpSpec\ObjectBehavior;
 
 class TwigSwiftMailerSpec extends ObjectBehavior
 {
-    function let(\Swift_Mailer $mailer, SwiftMessageFactoryInterface $messageFactory)
+    public function let(\Swift_Mailer $mailer, SwiftMessageFactoryInterface $messageFactory): void
     {
         $this->beConstructedWith(
             $mailer,
@@ -28,12 +28,12 @@ class TwigSwiftMailerSpec extends ObjectBehavior
         );
     }
 
-    function it_sends_message_throught_swift_mailer(
+    public function it_sends_message_throught_swift_mailer(
         EmailableInterface $receiver,
         \Swift_Mailer $mailer,
         SwiftMessageFactoryInterface $messageFactory,
         \Swift_Message $message
-    ) {
+    ): void {
         $receiver->getEmail()->willReturn('receiver@example.com');
 
         $messageFactory->createMessage(

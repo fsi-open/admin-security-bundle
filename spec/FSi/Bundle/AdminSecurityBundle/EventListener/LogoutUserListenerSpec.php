@@ -23,13 +23,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class LogoutUserListenerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
         Request $masterRequest,
         SessionInterface $session
-    ) {
+    ): void {
         $tokenStorage->getToken()->willReturn($token);
         $requestStack->getMasterRequest()->willReturn($masterRequest);
         $masterRequest->getSession()->willReturn($session);
@@ -37,20 +37,20 @@ class LogoutUserListenerSpec extends ObjectBehavior
         $this->beConstructedWith($requestStack, $tokenStorage);
     }
 
-    function it_subscribes_to_change_password_event()
+    public function it_subscribes_to_change_password_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
+            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
         ]);
     }
 
-    function it_logouts_the_user(
+    public function it_logouts_the_user(
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
         SessionInterface $session,
         ChangePasswordEvent $event,
         UserInterface $user
-    ) {
+    ): void {
         $token->getUser()->willReturn($user);
         $event->getUser()->willReturn($user);
 
@@ -60,14 +60,14 @@ class LogoutUserListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    function it_does_not_logout_the_user_if_it_is_not_currently_logged(
+    public function it_does_not_logout_the_user_if_it_is_not_currently_logged(
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
         SessionInterface $session,
         ChangePasswordEvent $event,
         UserInterface $currentUser,
         UserInterface $changedUser
-    ) {
+    ): void {
         $token->getUser()->willReturn($currentUser);
         $event->getUser()->willReturn($changedUser);
 

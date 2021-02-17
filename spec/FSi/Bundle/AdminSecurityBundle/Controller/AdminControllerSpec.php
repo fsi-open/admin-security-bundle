@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class AdminControllerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
@@ -40,7 +40,7 @@ class AdminControllerSpec extends ObjectBehavior
         FlashMessages $flashMessages,
         FormInterface $form,
         Request $request
-    ) {
+    ): void {
         $form->handleRequest($request)->willReturn($form);
         $form->isSubmitted()->willReturn(true);
         $this->beConstructedWith(
@@ -56,7 +56,7 @@ class AdminControllerSpec extends ObjectBehavior
         );
     }
 
-    function it_render_template_with_change_password_form(
+    public function it_render_template_with_change_password_form(
         EngineInterface $templating,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
@@ -66,7 +66,7 @@ class AdminControllerSpec extends ObjectBehavior
         FormView $formView,
         Request $request,
         Response $response
-    ) {
+    ): void {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
@@ -79,14 +79,17 @@ class AdminControllerSpec extends ObjectBehavior
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
 
-        $templating->renderResponse('@FSiAdminSecurity/Admin/change_password.html.twig', [
-            'form' => $formView
-        ])->shouldBeCalled()->willReturn($response);
+        $templating->renderResponse(
+            '@FSiAdminSecurity/Admin/change_password.html.twig',
+            [
+                'form' => $formView,
+            ]
+        )->shouldBeCalled()->willReturn($response);
 
         $this->changePasswordAction($request)->shouldReturn($response);
     }
 
-    function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
+    public function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
@@ -96,7 +99,7 @@ class AdminControllerSpec extends ObjectBehavior
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 

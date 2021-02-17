@@ -17,6 +17,10 @@ interface UserRepositoryInterface
 {
     public function findUserByPasswordResetToken(string $confirmationToken): ?ResettablePasswordInterface;
 
+    /**
+     * @param string $activationToken
+     * @return (ActivableInterface&ChangeablePasswordInterface)|null
+     */
     public function findUserByActivationToken(string $activationToken): ?ActivableInterface;
 
     public function findUserByEmail(string $email): ?SymfonyUserInterface;

@@ -23,11 +23,11 @@ class Datagrid extends Element
      * @param int $number
      * @return NodeElement
      */
-    public function getRow($number)
+    public function getRow(int $number): NodeElement
     {
         $row = $this->find('xpath', '//tbody/tr[' . $number . ']');
 
-        if (!isset($row)) {
+        if (null === $row) {
             throw new UnexpectedPageException(sprintf('Row "%s" does not exist in DataGrid', $number));
         }
 
@@ -44,10 +44,10 @@ class Datagrid extends Element
     public function checkCellCheckbox(int $rowNum, int $columnNum = 1): void
     {
         $row = $this->getRow($rowNum);
-        $cell = $row->find('xpath', '//td['. $columnNum .']');
+        $cell = $row->find('xpath', '//td[' . $columnNum . ']');
         $checkbox = $cell->find('css', 'input[type="checkbox"]');
 
-        if (!isset($checkbox)) {
+        if (null === $checkbox) {
             throw new UnexpectedPageException(sprintf(
                 'Can\'t find checkbox in %d column of %d row',
                 $columnNum,
@@ -63,7 +63,7 @@ class Datagrid extends Element
         $row = $this->getRow($rowNum);
         $pos = $this->getColumnPosition($columnName);
 
-        return $row->find('xpath', '//td['. $pos .']');
+        return $row->find('xpath', '//td[' . $pos . ']');
     }
 
     private function getColumnPosition(string $columnHeader, bool $throwIfNotFound = true): ?int
@@ -73,12 +73,12 @@ class Datagrid extends Element
         foreach ($columns as $index => $columnElement) {
             /** @var NodeElement $columnElement */
             $title = $columnElement->find('xpath', '/span[contains(text(),"' . $columnHeader . '")]');
-            if (isset($title)) {
+            if (null !== $title) {
                 return $index + 1;
             }
         }
 
-        if ($throwIfNotFound) {
+        if (true === $throwIfNotFound) {
             throw new UnexpectedPageException(sprintf(
                 'Column with title "%s" does not exist in DataGrid at page "%s".',
                 $columnHeader,

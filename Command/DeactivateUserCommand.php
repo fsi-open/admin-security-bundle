@@ -65,7 +65,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
 
@@ -76,11 +76,13 @@ EOT
         $this->eventDispatcher->dispatch(AdminSecurityEvents::DEACTIVATION, new ActivationEvent($user));
 
         $output->writeln(sprintf('User <comment>%s</comment> has been deactivated', $email));
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (!$input->getArgument('email')) {
+        if (null === $input->getArgument('email')) {
             $this->askEmail($input, $output);
         }
     }
@@ -89,7 +91,7 @@ EOT
     {
         $question = new Question('Please choose an email:');
         $question->setValidator(function (string $email): string {
-            if (empty($email)) {
+            if ('' === $email) {
                 throw new Exception('Email can not be empty');
             }
 

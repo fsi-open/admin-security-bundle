@@ -30,7 +30,7 @@ class SetLastLoginListener implements EventSubscriberInterface
     {
         $user = $event->getAuthenticationToken()->getUser();
 
-        if ($user instanceof UserInterface) {
+        if (true === $user instanceof UserInterface) {
             $user->setLastLogin(new DateTime());
         }
     }

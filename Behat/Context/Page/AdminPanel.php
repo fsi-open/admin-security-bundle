@@ -21,7 +21,7 @@ class AdminPanel extends Page
 
     public function verifyPage(): void
     {
-        if (!$this->has('css', 'h1#welcome')) {
+        if (false === $this->has('css', 'h1#welcome')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Admin panel page", $this->path));
         }
         $this->verifyResponse();
@@ -30,13 +30,13 @@ class AdminPanel extends Page
     public function getDropdownOptions(string $dropdownText): array
     {
         $link = $this->find('css', sprintf('li#account a:contains("%s")', $dropdownText));
-        if (!isset($link)) {
-            return null;
+        if (null === $link) {
+            return [];
         }
 
         $linkNodes = $this->findAll('css', 'li#account > ul > li');
 
-        return array_filter(array_map(function($element) {
+        return array_filter(array_map(static function (NodeElement $element): string {
             return $element->getText();
         }, $linkNodes));
     }
@@ -44,7 +44,7 @@ class AdminPanel extends Page
     public function getDropdown(string $dropdownText): ?NodeElement
     {
         $link = $this->find('css', sprintf('li#account a:contains("%s")', $dropdownText));
-        if (!isset($link)) {
+        if (null === $link) {
             return null;
         }
 
@@ -59,7 +59,6 @@ class AdminPanel extends Page
     public function hasAnyMenuElements(): bool
     {
         $elements = $this->find('css', '#top-menu a');
-        return null !== $elements && count($elements) !== 0;
+        return null !== $elements && 0 !== count($elements);
     }
 }
-

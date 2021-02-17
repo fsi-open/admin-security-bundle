@@ -16,6 +16,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -100,7 +101,7 @@ class ActivationController
     {
         $user = $this->tryFindUserByActivationToken($token);
 
-        if ($this->isUserEnforcedToChangePassword($user)) {
+        if (true === $this->isUserEnforcedToChangePassword($user)) {
             $this->flashMessages->info(
                 'admin.activation.message.change_password',
                 [],
@@ -110,21 +111,18 @@ class ActivationController
             return new RedirectResponse(
                 $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
             );
-        } else {
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::ACTIVATION,
-                new ActivationEvent($user)
-            );
-
-            return $this->addFlashAndRedirect('success', 'admin.activation.message.success');
         }
+
+        $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
+
+        return $this->addFlashAndRedirect('success', 'admin.activation.message.success');
     }
 
     public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
 
-        if (!$this->isUserEnforcedToChangePassword($user)) {
+        if (false === $this->isUserEnforcedToChangePassword($user)) {
             throw new NotFoundHttpException();
         }
 
@@ -134,16 +132,10 @@ class ActivationController
             ['validation_groups' => $this->changePasswordFormValidationGroups]
         );
 
-        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::ACTIVATION,
-                new ActivationEvent($user)
-            );
-
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user)
-            );
+        $form->handleRequest($request);
+        if (true === $form->isSubmitted() && true === $form->isValid()) {
+            $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
+            $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
 
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
@@ -154,6 +146,10 @@ class ActivationController
         );
     }
 
+    /**
+     * @param string $token
+     * @return ActivableInterface&ChangeablePasswordInterface
+     */
     private function tryFindUserByActivationToken(string $token): ActivableInterface
     {
         $user = $this->userRepository->findUserByActivationToken($token);
@@ -162,18 +158,18 @@ class ActivationController
             throw new NotFoundHttpException();
         }
 
-        if ($user->isEnabled()) {
+        if (true === $user->isEnabled()) {
             throw new NotFoundHttpException();
         }
 
-        if (!$user->getActivationToken()->isNonExpired()) {
+        if (false === $user->getActivationToken()->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 
         return $user;
     }
 
-    private function addFlashAndRedirect(string $type,string $message): RedirectResponse
+    private function addFlashAndRedirect(string $type, string $message): RedirectResponse
     {
         $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
 
@@ -182,6 +178,8 @@ class ActivationController
 
     private function isUserEnforcedToChangePassword(ActivableInterface $user): bool
     {
-        return ($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword();
+        return true === $user instanceof EnforceablePasswordChangeInterface
+            && true === $user->isForcedToChangePassword()
+        ;
     }
 }

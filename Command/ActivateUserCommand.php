@@ -65,7 +65,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $user = $this->userRepository->findUserByEmail($email);
@@ -75,11 +75,13 @@ EOT
 
         $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
         $output->writeln(sprintf('User <comment>%s</comment> has been activated', $email));
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (!$input->getArgument('email')) {
+        if (null === $input->getArgument('email')) {
             $this->askEmail($input, $output);
         }
     }

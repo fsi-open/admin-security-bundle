@@ -21,11 +21,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityControllerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         EngineInterface $templating,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $this->beConstructedWith(
             $templating,
             $authenticationUtils,
@@ -34,13 +34,13 @@ class SecurityControllerSpec extends ObjectBehavior
         );
     }
 
-    function it_render_login_template_in_login_action(
+    public function it_render_login_template_in_login_action(
         EngineInterface $templating,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
         AuthenticationException $exception,
         Response $response
-    ) {
+    ): void {
         $error = new \Exception('message');
         $authenticationUtils->getLastAuthenticationError()->willReturn($error);
         $exception->getMessageKey()->willReturn('error');

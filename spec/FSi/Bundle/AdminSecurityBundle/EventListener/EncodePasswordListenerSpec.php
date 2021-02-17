@@ -23,23 +23,23 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class EncodePasswordListenerSpec extends ObjectBehavior
 {
-    function let(EncoderFactoryInterface $encoderFactory)
+    public function let(EncoderFactoryInterface $encoderFactory): void
     {
         $this->beConstructedWith($encoderFactory);
     }
 
-    function it_subscribes_change_password_event()
+    public function it_subscribes_change_password_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
             AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
         ]);
     }
 
-    function it_does_nothing_if_plain_password_is_not_set(
+    public function it_does_nothing_if_plain_password_is_not_set(
         ChangePasswordEvent $event,
         ChangeablePasswordInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn(null);
 
@@ -48,12 +48,12 @@ class EncodePasswordListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    function it_encodes_password_for_user(
+    public function it_encodes_password_for_user(
         EncoderFactoryInterface $encoderFactory,
         PasswordEncoderInterface $encoder,
         ChangePasswordEvent $event,
         UserInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
         $encoderFactory->getEncoder($user)->willReturn($encoder);
@@ -66,12 +66,12 @@ class EncodePasswordListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    function it_encodes_password_for_new_user(
+    public function it_encodes_password_for_new_user(
         EncoderFactoryInterface $encoderFactory,
         PasswordEncoderInterface $encoder,
         UserEvent $event,
         UserInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
         $encoderFactory->getEncoder($user)->willReturn($encoder);

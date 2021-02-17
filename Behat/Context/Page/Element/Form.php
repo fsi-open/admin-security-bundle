@@ -23,7 +23,7 @@ class Form extends Element
     {
         $field = $this->findField($locator);
 
-        if (!isset($field)) {
+        if (null === $field) {
             throw new ElementNotFoundException(sprintf('Form "%s" field', $locator));
         }
 
@@ -39,7 +39,7 @@ class Form extends Element
 
         $errors = $this->findAll('css', $errorSelector);
 
-        return implode(' ', array_map(function (NodeElement $item) {
+        return implode(' ', array_map(static function (NodeElement $item): string {
             return $item->getText();
         }, $errors));
     }

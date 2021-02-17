@@ -44,7 +44,7 @@ final class ResendActvationMailListener implements EventSubscriberInterface
     public function resendActivationMail(ActivationEvent $event): void
     {
         $user = $event->getUser();
-        if (false === $user instanceof ActivableInterface || true === $user->isEnabled()) {
+        if (true === $user->isEnabled()) {
             return;
         }
 

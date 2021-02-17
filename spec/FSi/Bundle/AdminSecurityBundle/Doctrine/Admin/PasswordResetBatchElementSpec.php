@@ -22,33 +22,36 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PasswordResetBatchElementSpec extends ObjectBehavior
 {
-    function let(EventDispatcherInterface $eventDispatcher)
+    public function let(EventDispatcherInterface $eventDispatcher): void
     {
         $this->beConstructedWith([], User::class, $eventDispatcher);
     }
 
-    function it_is_batch_element()
+    public function it_is_batch_element(): void
     {
         $this->shouldHaveType(BatchElement::class);
     }
 
-    function it_should_return_class_name()
+    public function it_should_return_class_name(): void
     {
         $this->getClassName()->shouldReturn(User::class);
     }
 
-    function it_should_return_id()
+    public function it_should_return_id(): void
     {
         $this->getId()->shouldReturn('admin_security_password_reset');
     }
 
-    function it_should_dispatch_password_reset_event(
+    public function it_should_dispatch_password_reset_event(
         ResettablePasswordInterface $user,
         EventDispatcherInterface $eventDispatcher
-    ) {
-        $eventDispatcher->dispatch(AdminSecurityEvents::RESET_PASSWORD_REQUEST, Argument::allOf(
-            Argument::type(ResetPasswordRequestEvent::class)
-        ))->shouldBeCalled();
+    ): void {
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
+            Argument::allOf(
+                Argument::type(ResetPasswordRequestEvent::class)
+            )
+        )->shouldBeCalled();
 
         $this->apply($user);
     }

@@ -102,7 +102,7 @@ class ChangePasswordController
             throw new NotFoundHttpException();
         }
 
-        if (!$user->getPasswordResetToken()->isNonExpired()) {
+        if (false === $user->getPasswordResetToken()->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 
@@ -112,13 +112,11 @@ class ChangePasswordController
             ['validation_groups' => $this->formValidationGroups]
         );
 
-        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+        $form->handleRequest($request);
+        if (true === $form->isSubmitted() && true === $form->isValid()) {
             $user->removePasswordResetToken();
 
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user)
-            );
+            $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
 
             $this->flashMessages->success(
                 'admin.password_reset.change_password.message.success',
