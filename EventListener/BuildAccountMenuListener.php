@@ -38,13 +38,13 @@ class BuildAccountMenuListener
 
     public function createAccountMenu(MenuEvent $event): Item
     {
-        if (!$this->hasUserLoggedIn()) {
+        if (false === $this->hasUserLoggedIn()) {
             return $event->getMenu();
         }
 
         $rootItem = $this->createRootItem();
 
-        if ($this->canChangeUserPassword()) {
+        if (true === $this->canChangeUserPassword()) {
             $changePasswordItem = new RoutableItem('account.change-password', 'fsi_admin_change_password');
             $changePasswordItem->setLabel($this->translator->trans('admin.change_password', [], 'FSiAdminSecurity'));
             $rootItem->addChild($changePasswordItem);

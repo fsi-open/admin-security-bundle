@@ -20,7 +20,7 @@ class PasswordResetChangePassword extends Page
 
     public function verifyPage(): void
     {
-        if (!$this->has('css', 'form[name="change_password"]')) {
+        if (false === $this->has('css', 'form[name="change_password"]')) {
             throw new UnexpectedPageException(
                 sprintf("Page %s does not have a Password Reset Change form", $this->path)
             );

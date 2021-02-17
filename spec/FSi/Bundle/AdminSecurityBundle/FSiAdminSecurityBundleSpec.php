@@ -13,40 +13,41 @@ namespace spec\FSi\Bundle\AdminSecurityBundle;
 
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\NonFSiUserRepository;
+use LogicException;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
 
 class FSiAdminSecurityBundleSpec extends ObjectBehavior
 {
-    function it_is_bundle()
+    public function it_is_bundle(): void
     {
-        $this->shouldHaveType('Symfony\Component\HttpKernel\Bundle\Bundle');
+        $this->shouldHaveType(Bundle::class);
     }
 
-    function it_has_custom_extension()
+    public function it_has_custom_extension(): void
     {
-        $this->getContainerExtension()->shouldReturnAnInstanceOf(
-            'FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension'
-        );
+        $this->getContainerExtension()->shouldReturnAnInstanceOf(FSIAdminSecurityExtension::class);
     }
 
-    function it_does_not_throw_exception_when_correct_user_model_repository_class(
+    public function it_does_not_throw_exception_when_correct_user_model_repository_class(
         ContainerInterface $container,
         UserRepository $correctRepository
-    ) {
+    ): void {
         $container->get('admin_security.repository.user')->willReturn($correctRepository);
         $this->setContainer($container);
 
         $this->boot();
     }
 
-    function it_throws_exception_when_incorrect_user_model_repository_class(
+    public function it_throws_exception_when_incorrect_user_model_repository_class(
         ContainerInterface $container,
         NonFSiUserRepository $incorrectRepository
-    ) {
+    ): void {
         $container->get('admin_security.repository.user')->willReturn($incorrectRepository);
         $this->setContainer($container);
 
-        $this->shouldThrow('\LogicException')->during('boot');
+        $this->shouldThrow(LogicException::class)->during('boot');
     }
 }

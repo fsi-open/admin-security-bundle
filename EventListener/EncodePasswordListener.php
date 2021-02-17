@@ -16,9 +16,12 @@ use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+
+use function get_class;
 
 class EncodePasswordListener implements EventSubscriberInterface
 {
@@ -45,13 +48,10 @@ class EncodePasswordListener implements EventSubscriberInterface
         $this->updateUserPassword($event->getUser());
     }
 
-    /**
-     * @param UserEvent $event
-     */
     public function onUserCreated(UserEvent $event)
     {
         $user = $event->getUser();
-        if ($user instanceof ChangeablePasswordInterface) {
+        if (true === $user instanceof ChangeablePasswordInterface) {
             $this->updateUserPassword($user);
         }
     }
@@ -60,6 +60,15 @@ class EncodePasswordListener implements EventSubscriberInterface
     {
         $password = $user->getPlainPassword();
         if (null !== $password) {
+            if (false === $user instanceof UserInterface) {
+                throw new RuntimeException(
+                    sprintf(
+                        "Expected to get instance of %s but got instance of %s",
+                        UserInterface::class,
+                        get_class($user)
+                    )
+                );
+            }
             $encoder = $this->getEncoder($user);
             $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
             $user->eraseCredentials();

@@ -97,7 +97,7 @@ class AdminController
     public function changePasswordAction(Request $request): Response
     {
         $user = $this->tokenStorage->getToken()->getUser();
-        if (!($user instanceof ChangeablePasswordInterface)) {
+        if (false === $user instanceof ChangeablePasswordInterface) {
             throw new NotFoundHttpException();
         }
 
@@ -107,12 +107,9 @@ class AdminController
             ['validation_groups' => $this->changePasswordFormValidationGroups]
         );
 
-        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-
-            $this->eventDispatcher->dispatch(
-                AdminSecurityEvents::CHANGE_PASSWORD,
-                new ChangePasswordEvent($user)
-            );
+        $form->handleRequest($request);
+        if (true === $form->isSubmitted() && true === $form->isValid()) {
+            $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
 
             $this->flashMessages->success(
                 'admin.change_password_message.success',

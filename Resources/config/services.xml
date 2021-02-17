@@ -30,7 +30,6 @@
         <parameter key="admin_security.listener.prevent_deleting_current_user.class">FSi\Bundle\AdminSecurityBundle\EventListener\PreventDeletingCurrentUser</parameter>
         <parameter key="admin_security.token_factory.activation.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
         <parameter key="admin_security.token_factory.password_reset.class">FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory</parameter>
-        <parameter key="admin_security.firewall_mapper.class">FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper</parameter>
         <parameter key="admin_security.admin.user.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement</parameter>
         <parameter key="admin_security.admin.password_reset.class">FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\PasswordResetBatchElement</parameter>
         <parameter key="admin_security.manager.class">FSi\Bundle\AdminSecurityBundle\Admin\SecuredManager</parameter>
@@ -147,7 +146,6 @@
         </service>
 
         <service id="admin_security.listener.enforce_password_change" class="%admin_security.listener.enforce_password_change.class%">
-            <argument type="service" id="admin_security.firewall_mapper"/>
             <argument type="service" id="security.firewall.map"/>
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="security.token_storage"/>
@@ -222,11 +220,6 @@
             <argument type="service" id="admin_security.manager.inner" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authorization_checker"/>
-        </service>
-
-        <!-- Security -->
-        <service id="admin_security.firewall_mapper" class="%admin_security.firewall_mapper.class%">
-            <argument type="collection"/>
         </service>
 
         <!-- Admin elements -->

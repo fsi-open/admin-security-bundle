@@ -20,18 +20,18 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class SetLastLoginListenerSpec extends ObjectBehavior
 {
-    function it_subscribes_for_interactive_login_event()
+    public function it_subscribes_for_interactive_login_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-                SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
+            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
         ]);
     }
 
-    function it_sets_last_login(
+    public function it_sets_last_login(
         InteractiveLoginEvent $event,
         TokenInterface $token,
         UserInterface $user
-    ) {
+    ): void {
         $event->getAuthenticationToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 

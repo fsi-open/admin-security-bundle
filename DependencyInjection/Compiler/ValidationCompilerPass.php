@@ -18,11 +18,11 @@ class ValidationCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('admin_security.storage')) {
+        if (false === $container->hasParameter('admin_security.storage')) {
             return;
         }
 
-        if (!$container->hasDefinition('validator.builder')) {
+        if (false === $container->hasDefinition('validator.builder')) {
             return;
         }
 
@@ -30,7 +30,6 @@ class ValidationCompilerPass implements CompilerPassInterface
 
         $validationFile = __DIR__ . '/../../Resources/config/storage-validation/' . $storage . '.xml';
 
-        $container->getDefinition('validator.builder')
-            ->addMethodCall('addXmlMapping', [$validationFile]);
+        $container->getDefinition('validator.builder')->addMethodCall('addXmlMapping', [$validationFile]);
     }
 }

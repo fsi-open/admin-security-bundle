@@ -28,7 +28,7 @@ class SecuredManagerSpec extends ObjectBehavior
     private const INSECURE_ID = 'insecure';
     private const SECURE_ID = 'secure';
 
-    function let(
+    public function let(
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
@@ -36,7 +36,7 @@ class SecuredManagerSpec extends ObjectBehavior
         ManagerInterface $manager,
         Element $insecureElement,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $insecureElement->getId()->willReturn(self::INSECURE_ID);
         $securedElement->getId()->willReturn(self::SECURE_ID);
         $manager->hasElement(self::INSECURE_ID)->willReturn(true);
@@ -51,17 +51,17 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->beConstructedWith($manager, $tokenStorage, $authorizationChecker);
     }
 
-    function it_implements_manager_interface()
+    public function it_implements_manager_interface(): void
     {
-        $this->beAnInstanceOf('\FSi\Bundle\AdminBundle\Admin\ManagerInterface');
+        $this->beAnInstanceOf(ManagerInterface::class);
     }
 
-    function it_adds_element_regardless_of_access(
+    public function it_adds_element_regardless_of_access(
         ManagerInterface $manager,
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $manager->addElement($insecureElement)->shouldBeCalled();
         $this->addElement($insecureElement);
 
@@ -74,11 +74,11 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->addElement($securedElement);
     }
 
-    function it_removes_element_by_id_regardless_of_access(
+    public function it_removes_element_by_id_regardless_of_access(
         ManagerInterface $manager,
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $manager->removeElement(self::INSECURE_ID)->shouldBeCalled();
         $this->removeElement(self::INSECURE_ID);
 
@@ -91,41 +91,41 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->removeElement(self::SECURE_ID);
     }
 
-    function it_returns_true_for_has_element_if_access_allowed(
+    public function it_returns_true_for_has_element_if_access_allowed(
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $this->hasElement(self::INSECURE_ID)->shouldReturn(true);
 
         $securedElement->isAllowed($authorizationChecker)->willReturn(true);
         $this->hasElement(self::SECURE_ID)->shouldReturn(true);
     }
 
-    function it_returns_false_for_has_element_if_access_restricted(
+    public function it_returns_false_for_has_element_if_access_restricted(
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $this->hasElement(self::INSECURE_ID)->shouldReturn(true);
 
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
         $this->hasElement(self::SECURE_ID)->shouldReturn(false);
     }
 
-    function it_throws_exception_when_trying_to_get_a_restricted_element(
+    public function it_throws_exception_when_trying_to_get_a_restricted_element(
         AuthorizationCheckerInterface $authorizationChecker,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
 
         $this->shouldThrow(AccessDeniedException::class)->during('getElement', [self::SECURE_ID]);
     }
 
-    function it_returns_only_allowed_elements(
+    public function it_returns_only_allowed_elements(
         ManagerInterface $manager,
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
 
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
@@ -135,13 +135,13 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->getElements()->shouldReturn([$insecureElement, $securedElement]);
     }
 
-    function it_returns_no_elements_when_not_behind_a_firewall(
+    public function it_returns_no_elements_when_not_behind_a_firewall(
         ManagerInterface $manager,
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $tokenStorage->getToken()->willReturn(null);
         $securedElement->isAllowed($authorizationChecker)->shouldNotBeCalled();
@@ -149,12 +149,12 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->getElements()->shouldReturn([]);
     }
 
-    function it_does_not_check_if_user_forced_to_change_password_when_not_fully_authenticated(
+    public function it_does_not_check_if_user_forced_to_change_password_when_not_fully_authenticated(
         ManagerInterface $manager,
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement
-    ) {
+    ): void {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $securedElement->isAllowed($authorizationChecker)->willReturn(false);
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
@@ -162,14 +162,14 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->getElements()->shouldReturn([$insecureElement]);
     }
 
-    function it_returns_no_elements_when_user_forced_to_change_password(
+    public function it_returns_no_elements_when_user_forced_to_change_password(
         ManagerInterface $manager,
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement,
         TokenInterface $token,
         EnforceablePasswordChangeInterface $user
-    ) {
+    ): void {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);
         $user->isForcedToChangePassword()->willReturn(true);
         $token->getUser()->willReturn($user);
@@ -178,7 +178,7 @@ class SecuredManagerSpec extends ObjectBehavior
         $this->getElements()->shouldReturn([]);
     }
 
-    function it_accepts_visitors(Visitor $visitor)
+    public function it_accepts_visitors(Visitor $visitor): void
     {
         $visitor->visitManager($this)->shouldBeCalled();
         $this->accept($visitor);

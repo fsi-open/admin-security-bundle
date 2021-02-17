@@ -17,17 +17,17 @@ use PhpSpec\ObjectBehavior;
 
 class UserElementSpec extends ObjectBehavior
 {
-    function let()
+    public function let(): void
     {
         $this->beConstructedWith([], User::class, UserType::class);
     }
 
-    function it_has_id()
+    public function it_has_id(): void
     {
         $this->getId()->shouldReturn('admin_security_user');
     }
 
-    function it_return_correct_class_name()
+    public function it_return_correct_class_name(): void
     {
         $this->getClassName()->shouldReturn(User::class);
     }

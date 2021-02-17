@@ -15,6 +15,7 @@ use Behat\Gherkin\Node\TableNode;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Datagrid;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+
 use function expect;
 
 final class AdminUserManagementContext extends PageObjectContext
@@ -32,14 +33,13 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @Then I should see following table:
      */
-    public function iShouldSeeTable(TableNode $table)
+    public function iShouldSeeTable(TableNode $table): void
     {
         $datagrid = $this->getDatagrid();
 
         expect($datagrid->getRowCount())->toBe(count($table->getHash()));
 
         foreach ($table->getHash() as $rowIndex => $row) {
-
             foreach ($row as $key => $value) {
                 $cell = $datagrid->getCellByColumnName($key, $rowIndex + 1);
                 expect($cell->getText())->toBe($value);
@@ -50,7 +50,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @Then I should have following list batch actions:
      */
-    public function iShouldHaveFollowingListBatchActions(TableNode $table)
+    public function iShouldHaveFollowingListBatchActions(TableNode $table): void
     {
         expect(array_values($this->userListPage->getBatchActions()))->toBe(array_keys($table->getRowsHash()));
     }
@@ -58,7 +58,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @When I delete second user on the list
      */
-    public function iDeleteSecondUserOnTheList()
+    public function iDeleteSecondUserOnTheList(): void
     {
         $this->performBatchAction('Delete', 2);
     }
@@ -66,7 +66,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @When I reset password for the second user on the list
      */
-    public function iResetPasswordForTheSecondUserOnTheList()
+    public function iResetPasswordForTheSecondUserOnTheList(): void
     {
         $this->performBatchAction('Reset password', 2);
     }
@@ -74,7 +74,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @When I resend activation token to the second user on the list
      */
-    public function iResendActivationTokenToTheFirstUserOnTheList()
+    public function iResendActivationTokenToTheFirstUserOnTheList(): void
     {
         $this->performBatchAction('Resend activation token', 2);
     }
@@ -82,7 +82,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @When I click :name link
      */
-    public function iPressLink($name)
+    public function iPressLink(string $name): void
     {
         $this->userListPage->clickLink($name);
     }
@@ -90,7 +90,7 @@ final class AdminUserManagementContext extends PageObjectContext
     /**
      * @Then I fill form with valid user data
      */
-    public function iFillFormWithValidUserData()
+    public function iFillFormWithValidUserData(): void
     {
         $this->userListPage->fillField('Email', 'new-user@fsi.pl');
         $this->userListPage->checkField('ROLE_ADMIN');

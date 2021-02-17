@@ -15,7 +15,9 @@ use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -25,7 +27,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+
+use function get_class;
 
 class ResetRequestController
 {
@@ -94,17 +97,14 @@ class ResetRequestController
         $form = $this->formFactory->create($this->formType);
 
         $form->handleRequest($request);
-        if (!$form->isSubmitted() || !$form->isValid()) {
+        if (false === $form->isSubmitted() || false === $form->isValid()) {
             return $this->templating->renderResponse($this->requestActionTemplate, ['form' => $form->createView()]);
         }
 
         $user = $this->getUser($form);
-        $redirectResponse = $this->addFlashAndRedirect(
-            'info',
-            'admin.password_reset.request.mail_sent_if_correct'
-        );
+        $redirectResponse = $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
 
-        if (!$this->isUserEligibleForResettingPassword($user)) {
+        if (false === $this->isUserEligibleForResettingPassword($user)) {
             return $redirectResponse;
         }
 
@@ -125,24 +125,35 @@ class ResetRequestController
 
     private function getUser(FormInterface $form): ?UserInterface
     {
-        return $this->userRepository->findUserByEmail($form->get('email')->getData());
+        $user = $this->userRepository->findUserByEmail($form->get('email')->getData());
+        if (null === $user) {
+            return null;
+        }
+
+        if (false === $user instanceof UserInterface) {
+            throw new RuntimeException(
+                sprintf('Expected instance of %s but got instance of %s', UserInterface::class, get_class($user))
+            );
+        }
+
+        return $user;
     }
 
     private function isUserEligibleForResettingPassword($user): bool
     {
-        if (!($user instanceof ResettablePasswordInterface)) {
+        if (false === $user instanceof ResettablePasswordInterface) {
             return false;
         }
 
-        if (($user instanceof AdvancedUserInterface) && !$user->isEnabled()) {
+        if (true === $user instanceof AdvancedUserInterface && false === $user->isEnabled()) {
             return false;
         }
 
-        if ($this->hasNonExpiredPasswordResetToken($user)) {
+        if (true === $this->hasNonExpiredPasswordResetToken($user)) {
             return false;
         }
 
-        if (($user instanceof AdvancedUserInterface) && !$user->isAccountNonLocked()) {
+        if (true === $user instanceof AdvancedUserInterface && false === $user->isAccountNonLocked()) {
             return false;
         }
 

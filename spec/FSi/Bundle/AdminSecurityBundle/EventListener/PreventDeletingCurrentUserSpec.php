@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class PreventDeletingCurrentUserSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
         FormEvent $event,
@@ -37,7 +37,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         Request $request,
         DataIndexerInterface $dataIndexer,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $event->getElement()->willReturn($userElement);
         $tokenStorage->getToken()->willReturn($token);
         $event->getRequest()->willReturn($request);
@@ -47,51 +47,53 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $this->beConstructedWith($tokenStorage, $router, $flashMessages);
     }
 
-    function it_is_event_subscriber()
+    public function it_is_event_subscriber(): void
     {
         $this->shouldHaveType(EventSubscriberInterface::class);
     }
 
-    function it_should_subscribe_events()
+    public function it_should_subscribe_events(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser'
+            BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser',
         ]);
     }
 
-    function it_should_prevent_deleting_current_user(
+    public function it_should_prevent_deleting_current_user(
         FormEvent $event,
         TokenInterface $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         FlashMessages $flashMessages,
         UserInterface $user
-    ) {
+    ): void {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldBeCalled();
-        $event->setResponse(Argument::allOf(
-            Argument::type(RedirectResponse::class),
-            Argument::which('getTargetUrl', 'list_url')
-        ))->shouldBeCalled();
+        $event->setResponse(
+            Argument::allOf(
+                Argument::type(RedirectResponse::class),
+                Argument::which('getTargetUrl', 'list_url')
+            )
+        )->shouldBeCalled();
         $flashMessages->error(Argument::cetera())->shouldBeCalled();
 
         $this->preventDeletingCurrentUser($event);
     }
 
-    function it_should_allow_deleting_other_users(
+    public function it_should_allow_deleting_other_users(
         FormEvent $event,
         TokenInterface $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         UserInterface $user,
         UserInterface $currentUser
-    ) {
+    ): void {
         $token->getUser()->willReturn($currentUser);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldNotBeCalled();
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -99,7 +101,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $this->preventDeletingCurrentUser($event);
     }
 
-    function it_should_redirect_to_element_when_there_is_no_redirect_uri(
+    public function it_should_redirect_to_element_when_there_is_no_redirect_uri(
         RouterInterface $router,
         FormEvent $event,
         UserElement $userElement,
@@ -107,10 +109,10 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         Request $request,
         DataIndexerInterface $dataIndexer,
         UserInterface $user
-    ) {
+    ): void {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $request->get('redirect_uri')->willReturn(null);
 
@@ -120,10 +122,12 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $router->generate('route_name', [1, 2, 3])->willReturn('http://example.com/1,2,3');
 
         $event->stopPropagation()->shouldBeCalled();
-        $event->setResponse(Argument::allOf(
-            Argument::type(RedirectResponse::class),
-            Argument::which('getTargetUrl', 'http://example.com/1,2,3')
-        ))->shouldBeCalled();
+        $event->setResponse(
+            Argument::allOf(
+                Argument::type(RedirectResponse::class),
+                Argument::which('getTargetUrl', 'http://example.com/1,2,3')
+            )
+        )->shouldBeCalled();
 
         $this->preventDeletingCurrentUser($event);
     }

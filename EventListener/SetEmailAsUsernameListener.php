@@ -28,7 +28,7 @@ class SetEmailAsUsernameListener implements EventSubscriberInterface
     public function setEmailAsUsername(UserEvent $event): void
     {
         $user = $event->getUser();
-        if (!$user instanceof UserInterface) {
+        if (false === $user instanceof UserInterface) {
             return;
         }
 

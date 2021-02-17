@@ -18,25 +18,27 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 
 class PrepareUserListenerSpec extends ObjectBehavior
 {
-    function let(EventDispatcherInterface $eventDispatcher)
+    public function let(EventDispatcherInterface $eventDispatcher): void
     {
         $this->beConstructedWith($eventDispatcher);
     }
 
-    function it_is_event_subscriber()
+    public function it_is_event_subscriber(): void
     {
-        $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');
+        $this->shouldHaveType(EventSubscriberInterface::class);
     }
 
-    function it_should_prepare_new_user_and_dispatch_user_created(
+    public function it_should_prepare_new_user_and_dispatch_user_created(
         FormEvent $event,
         FormInterface $form,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    ): void {
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 
@@ -48,20 +50,18 @@ class PrepareUserListenerSpec extends ObjectBehavior
 
         $eventDispatcher->dispatch(
             AdminSecurityEvents::USER_CREATED,
-            Argument::allOf(
-                Argument::type('\FSi\Bundle\AdminSecurityBundle\Event\UserEvent')
-            )
+            Argument::type(UserEvent::class)
         )->shouldBeCalled();
 
         $this->prepareAndDispatchUserCreated($event);
     }
 
-    function it_should_do_not_set_random_password_when_user_already_exists(
+    public function it_should_do_not_set_random_password_when_user_already_exists(
         FormEvent $event,
         FormInterface $form,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher
-    ) {
+    ): void {
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 

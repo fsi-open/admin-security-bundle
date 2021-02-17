@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use Swift_Message;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig_Environment;
+use Twig_Template;
 
 class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
 {
@@ -32,7 +34,7 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
         $this->requestStack = $requestStack;
     }
 
-    public function createMessage(string $email, string $template, array $data): \Swift_Message
+    public function createMessage(string $email, string $template, array $data): Swift_Message
     {
         $masterRequest = $this->requestStack->getMasterRequest();
 
@@ -42,14 +44,14 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
 
         $templateContext = $this->twig->mergeGlobals($data);
 
-        /** @var \Twig_Template $template */
+        /** @var Twig_Template $template */
         $template = $this->twig->loadTemplate($template);
         $subject = $template->renderBlock('subject', $templateContext);
         $htmlBody = $template->renderBlock('body_html', $templateContext);
-        $message = new \Swift_Message($subject);
+        $message = new Swift_Message($subject);
         $message->setTo($email);
 
-        if (!empty($htmlBody)) {
+        if ('' !== $htmlBody) {
             $message->setBody($htmlBody, 'text/html');
         }
 

@@ -19,17 +19,19 @@ use Prophecy\Argument;
 
 class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 {
-    function it_subscribes_change_password_event()
+    public function it_subscribes_change_password_event(): void
     {
-        $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::CHANGE_PASSWORD=> 'onChangePassword'
-        ]);
+        $this->getSubscribedEvents()->shouldReturn(
+            [
+                AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+            ]
+        );
     }
 
-    function it_does_nothing_if_has_not_enforced_password_change(
+    public function it_does_nothing_if_has_not_enforced_password_change(
         ChangePasswordEvent $event,
         EnforceablePasswordChangeInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(false);
 
@@ -38,10 +40,10 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
         $this->onChangePassword($event);
     }
 
-    function it_ceases_enforced_password_change(
+    public function it_ceases_enforced_password_change(
         ChangePasswordEvent $event,
         EnforceablePasswordChangeInterface $user
-    ) {
+    ): void {
         $event->getUser()->willReturn($user);
         $user->isForcedToChangePassword()->willReturn(true);
 

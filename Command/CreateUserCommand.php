@@ -57,7 +57,12 @@ class CreateUserCommand extends Command
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
                 new InputArgument('role', InputArgument::REQUIRED, 'Role'),
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
-                new InputOption('enforce-password-change', null, InputOption::VALUE_NONE, 'Enforce user to change password during next login'),
+                new InputOption(
+                    'enforce-password-change',
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Enforce user to change password during next login'
+                ),
             ])
             ->setHelp(<<<EOT
 The <info>fsi:user:create</info> command creates a user:
@@ -74,7 +79,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
@@ -85,28 +90,30 @@ EOT
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->addRole($role);
-        if (!$input->getOption('inactive')) {
+        if (false === $input->getOption('inactive')) {
             $user->setEnabled(true);
         }
-        if ($input->getOption('enforce-password-change')) {
+        if (true === $input->getOption('enforce-password-change')) {
             $user->enforcePasswordChange(true);
         }
         $this->eventDispatcher->dispatch(AdminSecurityEvents::USER_CREATED, new UserEvent($user));
 
         $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (!$input->getArgument('email')) {
+        if (null === $input->getArgument('email')) {
             $this->askEmail($input, $output);
         }
 
-        if (!$input->getArgument('password')) {
+        if (null === $input->getArgument('password')) {
             $this->askPassword($input, $output);
         }
 
-        if (!$input->getArgument('role')) {
+        if (null === $input->getArgument('role')) {
             $this->askRole($input, $output);
         }
     }
@@ -115,7 +122,7 @@ EOT
     {
         $question = new Question('Please choose an email:');
         $question->setValidator(function (string $email): string {
-            if (empty($email)) {
+            if ('' === $email) {
                 throw new Exception('Email can not be empty');
             }
 
@@ -145,7 +152,7 @@ EOT
     {
         $question = new Question('Please choose a role:');
         $question->setValidator(function (string $password): string {
-            if (empty($password)) {
+            if ('' === $password) {
                 throw new Exception('Role can not be empty');
             }
 

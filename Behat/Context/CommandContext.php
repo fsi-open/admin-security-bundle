@@ -50,7 +50,7 @@ final class CommandContext implements KernelAwareContext
     /**
      * @Given I create disabled user with email address :email and enforced password change
      */
-    public function iCreateDisabledUserWithEmailAddressAndEnforcedPasswordChange($email)
+    public function iCreateDisabledUserWithEmailAddressAndEnforcedPasswordChange(string $email): void
     {
         $command = $this->application->find('fsi:user:create');
 
@@ -68,7 +68,7 @@ final class CommandContext implements KernelAwareContext
     /**
      * @Given I create disabled user with email address :email
      */
-    public function iCreateDisabledUserWithEmailAddress($email)
+    public function iCreateDisabledUserWithEmailAddress(string $email): void
     {
         $command = $this->application->find('fsi:user:create');
 
