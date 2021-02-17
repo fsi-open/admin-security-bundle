@@ -68,8 +68,8 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $user
     ) {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::allOf(
@@ -90,8 +90,8 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $currentUser
     ) {
         $token->getUser()->willReturn($currentUser);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldNotBeCalled();
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -109,8 +109,8 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $user
     ) {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn([1]);
-        $dataIndexer->getData(1)->willReturn($user);
+        $request->get('indexes', [])->willReturn(['1']);
+        $dataIndexer->getData('1')->willReturn($user);
 
         $request->get('redirect_uri')->willReturn(null);
 

@@ -40,6 +40,9 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iMLoggedInAsAdmin()
     {
+        if (false === $this->loginPage->getSession()->isStarted()) {
+            $this->loginPage->getSession()->start();
+        }
         $this->loginPage->open();
         $this->iFillFormWithValidAdminLoginAndPassword();
         $this->iPressButton('Login');
