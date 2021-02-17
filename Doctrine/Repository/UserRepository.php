@@ -32,10 +32,10 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
         if (false === $user instanceof ActivableInterface || false === $user instanceof ChangeablePasswordInterface) {
             throw new RuntimeException(
                 sprintf(
-                    "Expected to get instance of %s and %s but got instance of %s",
+                    'Class "%s" does not implement both "%s" and "%s"',
+                    get_class($user),
                     ActivableInterface::class,
-                    ChangeablePasswordInterface::class,
-                    get_class($user)
+                    ChangeablePasswordInterface::class
                 )
             );
         }

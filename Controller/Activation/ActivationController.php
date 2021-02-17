@@ -108,14 +108,16 @@ class ActivationController
                 'FSiAdminSecurity'
             );
 
-            return new RedirectResponse(
+            $response = new RedirectResponse(
                 $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
             );
+        } else {
+            $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
+
+            $response = $this->addFlashAndRedirect('success', 'admin.activation.message.success');
         }
 
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, new ActivationEvent($user));
-
-        return $this->addFlashAndRedirect('success', 'admin.activation.message.success');
+        return $response;
     }
 
     public function changePasswordAction(Request $request, string $token): Response
