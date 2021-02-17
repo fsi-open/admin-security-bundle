@@ -17,7 +17,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -29,11 +28,12 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Twig\Environment;
 
 class AdminControllerSpec extends ObjectBehavior
 {
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
@@ -45,7 +45,7 @@ class AdminControllerSpec extends ObjectBehavior
         $form->handleRequest($request)->willReturn($form);
         $form->isSubmitted()->willReturn(true);
         $this->beConstructedWith(
-            $templating,
+            $twig,
             $formFactory,
             $tokenStorage,
             $router,
@@ -58,15 +58,14 @@ class AdminControllerSpec extends ObjectBehavior
     }
 
     public function it_render_template_with_change_password_form(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         AbstractToken $token,
         ChangeablePasswordInterface $user,
         FormInterface $form,
         FormView $formView,
-        Request $request,
-        Response $response
+        Request $request
     ): void {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
@@ -80,14 +79,12 @@ class AdminControllerSpec extends ObjectBehavior
         $form->isValid()->shouldBeCalled()->willReturn(false);
         $form->createView()->shouldBeCalled()->willReturn($formView);
 
-        $templating->renderResponse(
+        $twig->render(
             '@FSiAdminSecurity/Admin/change_password.html.twig',
-            [
-                'form' => $formView,
-            ]
-        )->shouldBeCalled()->willReturn($response);
+            ['form' => $formView]
+        )->shouldBeCalled()->willReturn('response');
 
-        $this->changePasswordAction($request)->shouldReturn($response);
+        $this->changePasswordAction($request)->getContent()->shouldReturn('response');
     }
 
     public function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(

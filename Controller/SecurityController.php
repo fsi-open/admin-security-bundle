@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Twig\Environment;
 
 class SecurityController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var AuthenticationUtils
@@ -39,12 +39,12 @@ class SecurityController
     private $loginActionTemplate;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
         string $loginActionTemplate
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->authenticationUtils = $authenticationUtils;
         $this->flashMessages = $flashMessages;
         $this->loginActionTemplate = $loginActionTemplate;
@@ -57,9 +57,9 @@ class SecurityController
             $this->flashMessages->error($error->getMessageKey(), $error->getMessageData(), 'security');
         }
 
-        return $this->templating->renderResponse(
+        return new Response($this->twig->render(
             $this->loginActionTemplate,
             ['last_username' => $this->authenticationUtils->getLastUsername()]
-        );
+        ));
     }
 }

@@ -17,7 +17,6 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -26,16 +25,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Twig\Environment;
 
 class ResetRequestControllerSpec extends ObjectBehavior
 {
-    public function it_is_initializable(): void
-    {
-        $this->shouldHaveType(ResetRequestController::class);
-    }
-
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
@@ -61,7 +56,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $user->isAccountNonLocked()->willReturn(true);
 
         $this->beConstructedWith(
-            $templating,
+            $twig,
             'template_path',
             $formFactory,
             $router,
@@ -70,6 +65,11 @@ class ResetRequestControllerSpec extends ObjectBehavior
             $flashMessages,
             'form_type'
         );
+    }
+
+    public function it_is_initializable(): void
+    {
+        $this->shouldHaveType(ResetRequestController::class);
     }
 
     public function it_updates_confirmation_token_and_dispatches_event(

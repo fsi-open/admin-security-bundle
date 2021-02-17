@@ -19,7 +19,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -32,11 +31,12 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use Twig\Environment;
 
 class ActivationControllerSpec extends ObjectBehavior
 {
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -57,7 +57,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $form->isSubmitted()->willReturn(true);
 
         $this->beConstructedWith(
-            $templating,
+            $twig,
             'change-password.html.twig',
             $userRepository,
             $router,
@@ -194,7 +194,7 @@ class ActivationControllerSpec extends ObjectBehavior
     }
 
     public function it_renders_form_to_change_password(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         FormFactoryInterface $formFactory,
         FormInterface $form,
@@ -215,11 +215,11 @@ class ActivationControllerSpec extends ObjectBehavior
             ['validation_groups' => ['validation_group']]
         )->willReturn($form);
         $form->isValid()->willReturn(false);
-        $templating->renderResponse('change-password.html.twig', ['form' => $formView])->willReturn($response);
+        $twig->render('change-password.html.twig', ['form' => $formView])->willReturn('response');
 
         $form->handleRequest($request)->shouldBeCalled();
 
-        $this->changePasswordAction($request, 'activation-token')->shouldReturn($response);
+        $this->changePasswordAction($request, 'activation-token')->getContent()->shouldReturn('response');
     }
 
     public function it_handles_change_password_form(

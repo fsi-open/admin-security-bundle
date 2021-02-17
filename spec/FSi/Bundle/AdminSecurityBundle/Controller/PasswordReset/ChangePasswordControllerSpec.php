@@ -20,23 +20,18 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class ChangePasswordControllerSpec extends ObjectBehavior
 {
-    public function it_is_initializable(): void
-    {
-        $this->shouldHaveType(ChangePasswordController::class);
-    }
-
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -44,7 +39,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         FlashMessages $flashMessages
     ): void {
         $this->beConstructedWith(
-            $templating,
+            $twig,
             'template-name',
             $userRepository,
             $router,
@@ -54,6 +49,11 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             'form_type',
             ['validation_group']
         );
+    }
+
+    public function it_is_initializable(): void
+    {
+        $this->shouldHaveType(ChangePasswordController::class);
     }
 
     public function it_changes_password(

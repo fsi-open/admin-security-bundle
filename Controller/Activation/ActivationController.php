@@ -19,7 +19,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,13 +26,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class ActivationController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -76,8 +76,8 @@ class ActivationController
     private $changePasswordFormValidationGroups;
 
     public function __construct(
-        EngineInterface $templating,
-        $changePasswordActionTemplate,
+        Environment $twig,
+        string $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -86,7 +86,7 @@ class ActivationController
         string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
@@ -142,10 +142,10 @@ class ActivationController
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
 
-        return $this->templating->renderResponse(
+        return new Response($this->twig->render(
             $this->changePasswordActionTemplate,
             ['form' => $form->createView()]
-        );
+        ));
     }
 
     /**

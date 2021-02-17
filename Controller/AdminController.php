@@ -15,7 +15,6 @@ use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Twig\Environment;
 
 class AdminController
 {
@@ -43,9 +43,9 @@ class AdminController
     private $eventDispatcher;
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var FormFactoryInterface
@@ -73,7 +73,7 @@ class AdminController
     private $changePasswordFormValidationGroups;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
@@ -83,7 +83,7 @@ class AdminController
         string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
@@ -120,9 +120,9 @@ class AdminController
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
-        return $this->templating->renderResponse(
+        return new Response($this->twig->render(
             $this->changePasswordActionTemplate,
             ['form' => $form->createView()]
-        );
+        ));
     }
 }

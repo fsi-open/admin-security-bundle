@@ -18,7 +18,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -27,15 +26,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Twig\Environment;
 
 use function get_class;
 
 class ResetRequestController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -73,7 +73,7 @@ class ResetRequestController
     private $formType;
 
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         $requestActionTemplate,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
@@ -82,7 +82,7 @@ class ResetRequestController
         FlashMessages $flashMessages,
         $formType
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->requestActionTemplate = $requestActionTemplate;
         $this->formFactory = $formFactory;
         $this->router = $router;
@@ -98,7 +98,7 @@ class ResetRequestController
 
         $form->handleRequest($request);
         if (false === $form->isSubmitted() || false === $form->isValid()) {
-            return $this->templating->renderResponse($this->requestActionTemplate, ['form' => $form->createView()]);
+            return new Response($this->twig->render($this->requestActionTemplate, ['form' => $form->createView()]));
         }
 
         $user = $this->getUser($form);
