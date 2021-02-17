@@ -13,13 +13,13 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallConfig;
-use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap as FixuresFirewallMap;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap as FixturesFirewallMap;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
@@ -34,8 +34,8 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 
     public function let(
         Request $request,
-        GetResponseEvent $event,
-        FixuresFirewallMap $firewallMap,
+        RequestEvent $event,
+        FixturesFirewallMap $firewallMap,
         FirewallConfig $firewallConfig,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
@@ -70,7 +70,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_if_not_master_request(
-        GetResponseEvent $event,
+        RequestEvent $event,
         TokenStorageInterface $tokenStorage
     ): void {
         $event->getRequestType()->willReturn(HttpKernelInterface::SUB_REQUEST);
@@ -83,7 +83,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_if_there_is_no_current_firewall(
-        GetResponseEvent $event,
+        RequestEvent $event,
         FirewallMap $firewallMap,
         Request $request
     ): void {
@@ -96,7 +96,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_if_there_is_no_token(
-        GetResponseEvent $event,
+        RequestEvent $event,
         TokenStorageInterface $tokenStorage
     ): void {
         $tokenStorage->getToken()->willReturn(null);
@@ -108,7 +108,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_if_there_current_firewall_is_not_configured_in_this_listener(
-        GetResponseEvent $event,
+        RequestEvent $event,
         FirewallConfig $firewallConfig
     ): void {
         $firewallConfig->getName()->willReturn(self::USER_FIREWALL);
@@ -120,7 +120,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_when_user_is_not_logged_in(
-        GetResponseEvent $event,
+        RequestEvent $event,
         AuthorizationCheckerInterface $authorizationChecker
     ): void {
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(false);
@@ -132,7 +132,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_when_user_is_impersonated(
-        GetResponseEvent $event,
+        RequestEvent $event,
         AuthorizationCheckerInterface $authorizationChecker
     ): void {
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
@@ -145,7 +145,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_does_nothing_when_user_has_not_enforce_password_change(
-        GetResponseEvent $event,
+        RequestEvent $event,
         EnforceablePasswordChangeInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(false);
@@ -157,7 +157,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_stops_event_propagation_when_already_on_change_password_page(
-        GetResponseEvent $event,
+        RequestEvent $event,
         Request $request,
         EnforceablePasswordChangeInterface $user
     ): void {
@@ -171,7 +171,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     }
 
     public function it_redirects_to_change_password(
-        GetResponseEvent $event,
+        RequestEvent $event,
         Request $request,
         RouterInterface $router,
         EnforceablePasswordChangeInterface $user

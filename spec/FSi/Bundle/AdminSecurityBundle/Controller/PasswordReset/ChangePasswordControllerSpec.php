@@ -87,7 +87,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
             ),
-            AdminSecurityEvents::CHANGE_PASSWORD,
+            AdminSecurityEvents::CHANGE_PASSWORD
         )->shouldBeCalled();
 
         $flashMessages->success(
