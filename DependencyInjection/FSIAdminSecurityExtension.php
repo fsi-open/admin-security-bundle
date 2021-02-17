@@ -32,7 +32,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $this->setPasswordResetParameters($container, $config['password_reset']);
         $this->setChangePasswordParameters($container, $config['change_password']);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
         $loader->load(sprintf('%s.xml', $config['storage']));
         $loader->load('forms.xml');
@@ -71,7 +71,10 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         $container->setParameter('admin_security.activation.token_ttl', $model['token_ttl']);
         $container->setParameter('admin_security.activation.token_length', $model['token_length']);
         $container->setParameter('admin_security.activation.mailer.template', $model['mailer']['template']);
-        $container->setParameter('admin_security.activation.mailer.template_new_token', $model['mailer']['template_new_token']);
+        $container->setParameter(
+            'admin_security.activation.mailer.template_new_token',
+            $model['mailer']['template_new_token']
+        );
         $container->setParameter('admin_security.activation.mailer.from', $model['mailer']['from']);
         $container->setParameter('admin_security.activation.mailer.reply_to', $model['mailer']['reply_to']);
         $container->setParameter(

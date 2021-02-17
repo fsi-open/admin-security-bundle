@@ -20,16 +20,16 @@ use Twig_Environment;
 
 class TwigSwiftMessageFactorySpec extends ObjectBehavior
 {
-    function let(Twig_Environment $twig, RequestStack $requestStack)
+    public function let(Twig_Environment $twig, RequestStack $requestStack): void
     {
         $this->beConstructedWith($twig, $requestStack);
     }
 
-    function it_should_render_template(
+    public function it_should_render_template(
         Twig_Environment $twig,
         Template $template,
         RequestStack $requestStack
-    ) {
+    ): void {
         $request = new Request(
             [],
             [],

@@ -20,7 +20,7 @@ class Login extends Page
 
     public function verifyPage(): void
     {
-        if (!$this->has('css', 'form.form-signin')) {
+        if (false === $this->has('css', 'form.form-signin')) {
             throw new UnexpectedPageException(sprintf("Page %s is not a Login page", $this->path));
         }
         $this->verifyResponse();

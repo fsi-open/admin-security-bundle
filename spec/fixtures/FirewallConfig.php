@@ -13,7 +13,8 @@ namespace FSi\Bundle\AdminSecurityBundle\spec\fixtures;
 
 class FirewallConfig
 {
-    public function getName()
+    public function getName(): string
     {
+        return 'firewall';
     }
 }

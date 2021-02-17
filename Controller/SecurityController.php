@@ -53,12 +53,8 @@ class SecurityController
     public function loginAction(): Response
     {
         $error = $this->authenticationUtils->getLastAuthenticationError();
-        if ($error) {
-            $this->flashMessages->error(
-                $error->getMessageKey(),
-                $error->getMessageData(),
-                'security'
-            );
+        if (null !== $error) {
+            $this->flashMessages->error($error->getMessageKey(), $error->getMessageData(), 'security');
         }
 
         return $this->templating->renderResponse(

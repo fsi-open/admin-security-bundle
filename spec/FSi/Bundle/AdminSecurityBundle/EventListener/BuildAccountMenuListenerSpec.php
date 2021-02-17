@@ -21,12 +21,12 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class BuildAccountMenuListenerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         TranslatorInterface $translator,
         TokenStorageInterface $tokenStorage,
         TokenInterface $token,
         UserInterface $user
-    ) {
+    ): void {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
         $token->getUsername()->willReturn('some user');
@@ -39,7 +39,7 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
         $this->beConstructedWith($translator, $tokenStorage);
     }
 
-    function it_builds_account_menu()
+    public function it_builds_account_menu(): void
     {
         $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItem('account', false);
         $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild(
@@ -57,20 +57,22 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
     public function getMatchers(): array
     {
         return [
-            'haveItem' => function(Item $menu, $itemName, $route = false) {
+            'haveItem' => function (Item $menu, $itemName, $route = false) {
                 $items = $menu->getChildren();
                 foreach ($items as $item) {
                     if ($item->getName() === $itemName) {
                         if (!$route) {
                             return true;
                         }
+
                         /** @var ElementItem $item */
                         return $item->getRoute() === $route;
                     }
                 }
+
                 return false;
             },
-            'haveItemThatHaveChild' => function(Item $menu, $itemName, $childName, $route = false) {
+            'haveItemThatHaveChild' => function (Item $menu, $itemName, $childName, $route = false) {
                 foreach ($menu->getChildren() as $item) {
                     if ($item->getName() === $itemName && $item->hasChildren()) {
                         foreach ($item->getChildren() as $child) {
@@ -78,14 +80,16 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
                                 if (!$route) {
                                     return true;
                                 }
+
                                 /** @var ElementItem $child */
                                 return $child->getRoute() === $route;
                             }
                         }
                     }
                 }
+
                 return false;
-            }
+            },
         ];
     }
 }

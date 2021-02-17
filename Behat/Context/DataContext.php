@@ -24,9 +24,13 @@ use RuntimeException;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 use function expect;
 
-final class DataContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext, SnippetAcceptingContext
+final class DataContext extends PageObjectContext implements
+    KernelAwareContext,
+    MinkAwareContext,
+    SnippetAcceptingContext
 {
     /**
      * @var Mink
@@ -66,7 +70,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @BeforeScenario
      */
-    public function createDatabase()
+    public function createDatabase(): void
     {
         $this->deleteDatabaseIfExist();
         $metadata = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
@@ -77,7 +81,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @Given /^there is "([^"]*)" user with role "([^"]*)" and password "([^"]*)"$/
      */
-    public function thereIsUserWithRoleAndPassword($email, $role, $password)
+    public function thereIsUserWithRoleAndPassword(string $email, string $role, string $password): void
     {
         $user = new User();
         $user->setUsername($email);
@@ -100,7 +104,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @Given there are following users:
      */
-    public function thereAreFollowingUsers(TableNode $table)
+    public function thereAreFollowingUsers(TableNode $table): void
     {
         $manager = $this->getDoctrine()->getManagerForClass('FSiFixturesBundle:User');
 
@@ -119,10 +123,15 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     }
 
     /**
+     * @phpcs:disable
      * @Given /^there is "([^"]*)" user with role "([^"]*)" and password "([^"]*)" which is enforced to change password$/
+     * @phpcs:enable
      */
-    public function thereIsUserWithRoleAndPasswordWhichIsEnforcedToChangePassword($nick, $role, $password)
-    {
+    public function thereIsUserWithRoleAndPasswordWhichIsEnforcedToChangePassword(
+        string $nick,
+        string $role,
+        string $password
+    ): void {
         $this->thereIsUserWithRoleAndPassword($nick, $role, $password);
 
         $manager = $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User');
@@ -135,7 +144,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @Then /^user password should be changed$/
      */
-    public function userPasswordShouldBeChanged()
+    public function userPasswordShouldBeChanged(): void
     {
         $user = $this->findUserByUsername('admin');
 
@@ -148,7 +157,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @Then /^user "([^"]*)" should have changed password$/
      */
-    public function userShouldHaveChangedPassword($userEmail)
+    public function userShouldHaveChangedPassword(string $userEmail): void
     {
         $user = $this->findUserByEmail($userEmail);
 
@@ -160,7 +169,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @Then /^user "([^"]*)" should be enabled$/
      */
-    public function userShouldBeEnabled($userEmail)
+    public function userShouldBeEnabled(string $userEmail): void
     {
         $user = $this->findUserByEmail($userEmail);
 
@@ -170,7 +179,7 @@ final class DataContext extends PageObjectContext implements KernelAwareContext,
     /**
      * @AfterScenario
      */
-    public function deleteDatabaseIfExist()
+    public function deleteDatabaseIfExist(): void
     {
         $dbFilePath = $this->kernel->getRootDir() . '/data.sqlite';
 

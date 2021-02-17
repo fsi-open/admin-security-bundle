@@ -18,12 +18,12 @@ use PhpSpec\ObjectBehavior;
 
 class SetEmailAsUsernameListenerSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable(): void
     {
         $this->shouldHaveType(SetEmailAsUsernameListener::class);
     }
 
-    function it_should_set_email_as_username(UserEvent $event, UserInterface $user)
+    public function it_should_set_email_as_username(UserEvent $event, UserInterface $user): void
     {
         $event->getUser()->willReturn($user);
 

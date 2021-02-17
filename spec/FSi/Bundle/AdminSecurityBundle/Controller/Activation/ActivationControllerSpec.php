@@ -30,10 +30,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 
 class ActivationControllerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         EngineInterface $templating,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
@@ -44,7 +46,7 @@ class ActivationControllerSpec extends ObjectBehavior
         UserInterface $user,
         FlashMessages $flashMessages,
         Request $request
-    ) {
+    ): void {
         $formFactory->create(
             'form_type',
             $user,
@@ -67,10 +69,10 @@ class ActivationControllerSpec extends ObjectBehavior
         );
     }
 
-    function it_throws_http_not_found_when_token_does_not_exists(
+    public function it_throws_http_not_found_when_token_does_not_exists(
         UserRepositoryInterface $userRepository,
         Request $request
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('non-existing-token')->willReturn(null);
 
         $this->shouldThrow(NotFoundHttpException::class)
@@ -79,11 +81,11 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'non-existing-token']);
     }
 
-    function it_throws_type_error_when_user_is_not_supported(
+    public function it_throws_type_error_when_user_is_not_supported(
         UserRepositoryInterface $userRepository,
         Request $request,
         SymfonyUserInterface $symfonyUser
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
         $this->shouldThrow(\TypeError::class)
@@ -92,11 +94,11 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
-    function it_throws_http_not_found_when_user_is_enabled(
+    public function it_throws_http_not_found_when_user_is_enabled(
         UserRepositoryInterface $userRepository,
         Request $request,
         ActivableInterface $user
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(true);
 
@@ -106,12 +108,12 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
-    function it_throws_http_not_found_when_activation_token_expired(
+    public function it_throws_http_not_found_when_activation_token_expired(
         UserRepositoryInterface $userRepository,
         Request $request,
         UserInterface $user,
         TokenInterface $token
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -123,13 +125,13 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
-    function it_redirects_to_change_password_if_user_has_enforced_password_change(
+    public function it_redirects_to_change_password_if_user_has_enforced_password_change(
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         UserInterface $user,
         TokenInterface $token,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -145,14 +147,14 @@ class ActivationControllerSpec extends ObjectBehavior
         $response->getTargetUrl()->shouldReturn('change_password_url');
     }
 
-    function it_activates_user(
+    public function it_activates_user(
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         EventDispatcherInterface $eventDispatcher,
         UserInterface $user,
         TokenInterface $token,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -160,10 +162,13 @@ class ActivationControllerSpec extends ObjectBehavior
         $user->isForcedToChangePassword()->willReturn(false);
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');
 
-        $eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, Argument::allOf(
-            Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent'),
-            Argument::which('getUser', $user->getWrappedObject())
-        ))->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::ACTIVATION,
+            Argument::allOf(
+                Argument::type(ActivationEvent::class),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
 
         $flashMessages->success('admin.activation.message.success', [], 'FSiAdminSecurity')->shouldBeCalled();
 
@@ -172,12 +177,12 @@ class ActivationControllerSpec extends ObjectBehavior
         $response->getTargetUrl()->shouldReturn('login_url');
     }
 
-    function it_throws_http_not_found_during_change_password_if_user_is_not_enforced_to_change_password(
+    public function it_throws_http_not_found_during_change_password_if_user_is_not_enforced_to_change_password(
         UserRepositoryInterface $userRepository,
         Request $request,
         UserInterface $user,
         TokenInterface $token
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -188,7 +193,7 @@ class ActivationControllerSpec extends ObjectBehavior
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
-    function it_renders_form_to_change_password(
+    public function it_renders_form_to_change_password(
         EngineInterface $templating,
         UserRepositoryInterface $userRepository,
         FormFactoryInterface $formFactory,
@@ -198,7 +203,7 @@ class ActivationControllerSpec extends ObjectBehavior
         UserInterface $user,
         TokenInterface $token,
         Response $response
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -217,7 +222,7 @@ class ActivationControllerSpec extends ObjectBehavior
         $this->changePasswordAction($request, 'activation-token')->shouldReturn($response);
     }
 
-    function it_handles_change_password_form(
+    public function it_handles_change_password_form(
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -227,7 +232,7 @@ class ActivationControllerSpec extends ObjectBehavior
         UserInterface $user,
         TokenInterface $token,
         FlashMessages $flashMessages
-    ) {
+    ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
         $user->getActivationToken()->willReturn($token);
@@ -242,14 +247,20 @@ class ActivationControllerSpec extends ObjectBehavior
         $router->generate('fsi_admin_security_user_login')->willReturn('login_url');
 
         $form->handleRequest($request)->shouldBeCalled();
-        $eventDispatcher->dispatch(AdminSecurityEvents::ACTIVATION, Argument::allOf(
-            Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent'),
-            Argument::which('getUser', $user->getWrappedObject())
-        ))->shouldBeCalled();
-        $eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, Argument::allOf(
-            Argument::type('FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent'),
-            Argument::which('getUser', $user->getWrappedObject())
-        ))->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::ACTIVATION,
+            Argument::allOf(
+                Argument::type(ActivationEvent::class),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            AdminSecurityEvents::CHANGE_PASSWORD,
+            Argument::allOf(
+                Argument::type(ChangePasswordEvent::class),
+                Argument::which('getUser', $user->getWrappedObject())
+            )
+        )->shouldBeCalled();
 
         $flashMessages->success(
             'admin.activation.message.change_password_success',

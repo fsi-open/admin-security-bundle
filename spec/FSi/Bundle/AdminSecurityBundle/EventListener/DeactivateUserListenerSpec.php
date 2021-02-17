@@ -18,14 +18,14 @@ use PhpSpec\ObjectBehavior;
 
 class DeactivateUserListenerSpec extends ObjectBehavior
 {
-    function it_subscribes_deactivation_event()
+    public function it_subscribes_deactivation_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::DEACTIVATION => 'onDeactivation'
+            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
         ]);
     }
 
-    function it_activates_user(ActivationEvent $event, ActivableInterface $user)
+    public function it_activates_user(ActivationEvent $event, ActivableInterface $user): void
     {
         $event->getUser()->willReturn($user);
 

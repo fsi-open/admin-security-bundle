@@ -72,7 +72,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
@@ -85,15 +85,17 @@ EOT
         $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
 
         $output->writeln(sprintf('Changed password of user <comment>%s</comment>', $email));
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (!$input->getArgument('email')) {
+        if (null === $input->getArgument('email')) {
             $this->askEmail($input, $output);
         }
 
-        if (!$input->getArgument('password')) {
+        if (null === $input->getArgument('password')) {
             $this->askPassword($input, $output);
         }
     }
@@ -102,7 +104,7 @@ EOT
     {
         $question = new Question('Please choose an email:');
         $question->setValidator(function (string $email): string {
-            if (empty($email)) {
+            if ('' === $email) {
                 throw new Exception('Email can not be empty');
             }
 
@@ -117,7 +119,7 @@ EOT
     {
         $question = new Question('Please choose a password:');
         $question->setValidator(function (string $password): string {
-            if (empty($password)) {
+            if ('' === $password) {
                 throw new Exception('Password can not be empty');
             }
 

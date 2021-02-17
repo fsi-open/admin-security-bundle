@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
+use Serializable;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 interface UserInterface extends
@@ -18,7 +19,7 @@ interface UserInterface extends
     ResettablePasswordInterface,
     EnforceablePasswordChangeInterface,
     ActivableInterface,
-    \Serializable
+    Serializable
 {
     public function setUsername(string $username): void;
 

@@ -29,7 +29,10 @@ class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
     {
         $user = $event->getUser();
 
-        if (($user instanceof EnforceablePasswordChangeInterface) && $user->isForcedToChangePassword()) {
+        if (
+            true === $user instanceof EnforceablePasswordChangeInterface
+            && true === $user->isForcedToChangePassword()
+        ) {
             $user->enforcePasswordChange(false);
         }
     }

@@ -85,21 +85,15 @@ class SecuredManager implements ManagerInterface
         return $element;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeElement(string $id): void
     {
         $this->manager->removeElement($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getElements(): array
     {
-        return array_filter((array) $this->manager->getElements(), function (Element $element) {
-            return !$this->isAccessToElementRestricted($element);
+        return array_filter($this->manager->getElements(), function (Element $element): bool {
+            return false === $this->isAccessToElementRestricted($element);
         });
     }
 
@@ -113,7 +107,7 @@ class SecuredManager implements ManagerInterface
 
     private function isAccessToElementRestricted(Element $element): bool
     {
-        if (!$this->tokenStorage->getToken()) {
+        if (null === $this->tokenStorage->getToken()) {
             // The request is not behind a firewall, so all elements are restricted
             return true;
         }
@@ -122,17 +116,18 @@ class SecuredManager implements ManagerInterface
             return true;
         }
 
-        return $element instanceof SecuredElementInterface && !$element->isAllowed($this->authorizationChecker);
+        return true === $element instanceof SecuredElementInterface
+            && false === $element->isAllowed($this->authorizationChecker);
     }
 
     private function isUserForcedToChangePassword(): bool
     {
-        if (!$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if (false === $this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             return false;
         }
 
         $user = $this->tokenStorage->getToken()->getUser();
-        if (!($user instanceof EnforceablePasswordChangeInterface)) {
+        if (false === $user instanceof EnforceablePasswordChangeInterface) {
             return false;
         }
 

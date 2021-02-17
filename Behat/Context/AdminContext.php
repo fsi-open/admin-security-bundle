@@ -107,7 +107,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^I am on the "([^"]*)" page$/
      */
-    public function iAmOnThePage($pageName)
+    public function iAmOnThePage(string $pageName): void
     {
         $this->getPage($pageName)->open();
     }
@@ -116,10 +116,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^I\'m not logged in$/
      */
-    public function iMNotLoggedIn()
+    public function iMNotLoggedIn(): void
     {
         $token = $this->kernel->getContainer()->get('security.token_storage')->getToken();
-        if (!is_null($token)) {
+        if (null !== $token) {
             throw new Exception('User is logged in, though he is not suppose to be!');
         }
     }
@@ -127,7 +127,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @When I impersonate user :user
      */
-    public function iImpersonateUser($user)
+    public function iImpersonateUser(string $user): void
     {
         $this->getMink()->getSession()->visit(
             sprintf('%s/admin/?_switch_user=%s', $this->minkParameters['base_url'], $user)
@@ -137,7 +137,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then I should be logged in as :user
      */
-    public function iShouldBeLoggedInAs($user)
+    public function iShouldBeLoggedInAs(string $user): void
     {
         expect($this->kernel->getContainer()->get('security.token_storage')->getToken()->getUsername())->toBe($user);
     }
@@ -145,7 +145,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @When /^I open "([^"]*)" page$/
      */
-    public function iOpenPage($pageName)
+    public function iOpenPage(string $pageName): void
     {
         $this->getPage($pageName)->open();
     }
@@ -153,7 +153,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @When /^I try to open "([^"]*)" page$/
      */
-    public function iTryToOpenPage($pageName)
+    public function iTryToOpenPage(string $pageName): void
     {
         try {
             $this->iOpenPage($pageName);
@@ -165,7 +165,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then /^I should be redirected to "([^"]*)" page$/
      */
-    public function iShouldBeRedirectedToPage($pageName)
+    public function iShouldBeRedirectedToPage(string $pageName): void
     {
         expect($this->getPage($pageName)->isOpen())->toBe(true);
     }
@@ -173,7 +173,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^I should see message:$/
      */
-    public function iShouldSeeMessage(PyStringNode $message)
+    public function iShouldSeeMessage(PyStringNode $message): void
     {
         expect($this->getElement('FlashMessage')->getText())->toBe($message->getRaw());
     }
@@ -181,7 +181,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then /^I should see dropdown button in navigation bar "([^"]*)"$/
      */
-    public function iShouldSeeDropdownButtonInNavigationBar($buttonText)
+    public function iShouldSeeDropdownButtonInNavigationBar(string $buttonText): void
     {
         expect($this->adminPanelPage->hasLink($buttonText))->toBe(true);
     }
@@ -189,7 +189,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^"([^"]*)" dropdown button should have following links$/
      */
-    public function dropdownButtonShouldHaveFollowingLinks($button, TableNode $dropdownLinks)
+    public function dropdownButtonShouldHaveFollowingLinks(string $button, TableNode $dropdownLinks): void
     {
         $links = $this->adminPanelPage->getDropdownOptions($button);
 
@@ -201,7 +201,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @When /^I click "([^"]*)" link from "([^"]*)" dropdown button$/
      */
-    public function iClickLinkFromDropdownButton($link, $dropdown)
+    public function iClickLinkFromDropdownButton(string $link, string $dropdown): void
     {
         $this->adminPanelPage->getDropdown($dropdown)->clickLink($link);
     }
@@ -209,7 +209,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then /^I should be logged off$/
      */
-    public function iShouldBeLoggedOff()
+    public function iShouldBeLoggedOff(): void
     {
         expect($this->kernel->getContainer()->get('security.token_storage')->getToken())->toBe(null);
     }
@@ -217,15 +217,15 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then /^I should see (\d+) error$/
      */
-    public function iShouldSeeHttpError($httpStatusCode)
+    public function iShouldSeeHttpError(string $httpStatusCode): void
     {
-        expect($this->mink->getSession()->getStatusCode())->toBe(intval($httpStatusCode));
+        expect($this->mink->getSession()->getStatusCode())->toBe((int) $httpStatusCode);
     }
 
     /**
      * @Then /^I should see page header with "([^"]*)" content$/
      */
-    public function iShouldSeePageHeaderWithContent($headerText)
+    public function iShouldSeePageHeaderWithContent(string $headerText): void
     {
         expect($this->getElement('Page Header')->getText())->toBe($headerText);
     }
@@ -233,9 +233,9 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Then /^I should see navigation menu with following elements$/
      */
-    public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu)
+    public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu): void
     {
-        foreach($menu->getHash() as $elementData) {
+        foreach ($menu->getHash() as $elementData) {
             expect($this->adminPanelPage->hasElementInTopMenu($elementData['Element']))->toBe(true);
         }
     }
@@ -243,7 +243,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^I should not see "([^"]*)" position in menu$/
      */
-    public function iShouldNotSeePositionInMenu($elementName)
+    public function iShouldNotSeePositionInMenu(string $elementName): void
     {
         expect($this->adminPanelPage->hasElementInTopMenu($elementName))->toBe(false);
     }
@@ -251,7 +251,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     /**
      * @Given /^I should not see any menu elements$/
      */
-    public function iShouldNotSeeAnyElementsInMenu()
+    public function iShouldNotSeeAnyElementsInMenu(): void
     {
         expect($this->adminPanelPage->hasAnyMenuElements())->toBe(false);
     }

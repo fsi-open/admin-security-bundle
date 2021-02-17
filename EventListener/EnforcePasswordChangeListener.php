@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Security\Firewall\FirewallMapper;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
+use RuntimeException;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +25,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Http\FirewallMapInterface;
 
+use function get_class;
+use function method_exists;
+
 class EnforcePasswordChangeListener implements EventSubscriberInterface
 {
-    /**
-     * @var FirewallMapper
-     */
-    private $firewallMapper;
-
     /**
      * @var FirewallMapInterface
      */
@@ -62,7 +61,6 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
     private $router;
 
     public function __construct(
-        FirewallMapper $firewallMapper,
         FirewallMapInterface $firewallMap,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
@@ -70,7 +68,6 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         string $firewallName,
         string $changePasswordRoute
     ) {
-        $this->firewallMapper = $firewallMapper;
         $this->firewallMap = $firewallMap;
         $this->authorizationChecker = $authorizationChecker;
         $this->firewallName = $firewallName;
@@ -110,7 +107,8 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         }
 
         $user = $token->getUser();
-        if (false === $user instanceof EnforceablePasswordChangeInterface
+        if (
+            false === $user instanceof EnforceablePasswordChangeInterface
             || false === $user->isForcedToChangePassword()
         ) {
             return;
@@ -121,18 +119,23 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
 
     private function isConfiguredFirewall(Request $request): bool
     {
-        if (true === method_exists($this->firewallMap, 'getFirewallConfig')) {
-            $config = $this->firewallMap->getFirewallConfig($request);
-            if (null === $config) {
-                return false;
-            }
-
-            $firewallName = $config->getName();
-        } else {
-            $firewallName = $this->firewallMapper->getFirewallName($request);
+        if (false === method_exists($this->firewallMap, 'getFirewallConfig')) {
+            throw new RuntimeException(
+                sprintf(
+                    "Got instance of %s which is an incompatible implementation of %s, expected i.e instance of %s",
+                    get_class($this->firewallMap),
+                    FirewallMapInterface::class,
+                    FirewallMap::class
+                )
+            );
         }
 
-        return $firewallName === $this->firewallName;
+        $config = $this->firewallMap->getFirewallConfig($request);
+        if (null === $config) {
+            return false;
+        }
+
+        return $config->getName() === $this->firewallName;
     }
 
     private function redirectToChangePassword(GetResponseEvent $event): void

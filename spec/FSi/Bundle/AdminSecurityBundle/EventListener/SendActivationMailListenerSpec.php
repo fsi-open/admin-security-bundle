@@ -22,25 +22,25 @@ use Prophecy\Argument;
 
 class SendActivationMailListenerSpec extends ObjectBehavior
 {
-    function let(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
+    public function let(MailerInterface $mailer, TokenFactoryInterface $tokenFactory): void
     {
         $this->beConstructedWith($mailer, $tokenFactory);
     }
 
-    function it_subscribes_user_created_event()
+    public function it_subscribes_user_created_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
         ]);
     }
 
-    function it_sends_email_if_user_is_not_enabled(
+    public function it_sends_email_if_user_is_not_enabled(
         MailerInterface $mailer,
         TokenFactoryInterface $tokenFactory,
         TokenInterface $token,
         UserEvent $event,
         User $user
-    ) {
+    ): void {
         $user->isEnabled()->willReturn(false);
         $event->getUser()->willReturn($user);
         $tokenFactory->createToken()->willReturn($token);
@@ -51,11 +51,11 @@ class SendActivationMailListenerSpec extends ObjectBehavior
         $this->onUserCreated($event);
     }
 
-    function it_does_not_send_email_if_user_is_enabled(
+    public function it_does_not_send_email_if_user_is_enabled(
         MailerInterface $mailer,
         UserEvent $event,
         User $user
-    ) {
+    ): void {
         $user->isEnabled()->willReturn(true);
         $event->getUser()->willReturn($user);
 

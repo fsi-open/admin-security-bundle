@@ -18,14 +18,16 @@ use PhpSpec\ObjectBehavior;
 
 class ActivateUserListenerSpec extends ObjectBehavior
 {
-    function it_subscribes_activation_event()
+    public function it_subscribes_activation_event(): void
     {
-        $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::ACTIVATION => 'onActivation'
-        ]);
+        $this->getSubscribedEvents()->shouldReturn(
+            [
+                AdminSecurityEvents::ACTIVATION => 'onActivation',
+            ]
+        );
     }
 
-    function it_activates_user(ActivationEvent $event, ActivableInterface $user)
+    public function it_activates_user(ActivationEvent $event, ActivableInterface $user): void
     {
         $event->getUser()->willReturn($user);
 

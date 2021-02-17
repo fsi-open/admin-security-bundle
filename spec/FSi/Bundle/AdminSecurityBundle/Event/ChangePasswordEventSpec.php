@@ -17,17 +17,17 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ChangePasswordEventSpec extends ObjectBehavior
 {
-    function let(ChangeablePasswordInterface $user)
+    public function let(ChangeablePasswordInterface $user): void
     {
         $this->beConstructedWith($user);
     }
 
-    function it_is_event()
+    public function it_is_event(): void
     {
         $this->shouldHaveType(Event::class);
     }
 
-    function it_returns_user(ChangeablePasswordInterface $user)
+    public function it_returns_user(ChangeablePasswordInterface $user): void
     {
         $this->getUser()->shouldReturn($user);
     }

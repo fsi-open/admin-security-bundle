@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FSIAdminSecurityExtensionSpec extends ObjectBehavior
 {
-    function it_is_extension()
+    public function it_is_extension(): void
     {
         $this->shouldHaveType(Extension::class);
     }

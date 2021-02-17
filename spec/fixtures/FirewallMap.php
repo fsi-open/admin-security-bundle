@@ -16,11 +16,13 @@ use Symfony\Component\Security\Http\FirewallMapInterface;
 
 class FirewallMap implements FirewallMapInterface
 {
-    public function getListeners(Request $request)
+    public function getListeners(Request $request): array
     {
+        return [];
     }
 
-    public function getFirewallConfig(Request $request)
+    public function getFirewallConfig(Request $request): ?FirewallConfig
     {
+        return null;
     }
 }

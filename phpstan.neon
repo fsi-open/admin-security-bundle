@@ -1,0 +1,17 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    level: 5
+    paths:
+        - .
+    excludes_analyse:
+        - DependencyInjection/Configuration
+        - '%rootDir%/../../../Behat'
+        - '%rootDir%/../../../docker'
+        - '%rootDir%/../../../features'
+        - '%rootDir%/../../../spec'
+        - '%rootDir%/../../../var'
+        - '%rootDir%/../../../vendor'
+    ignoreErrors:
+        - '#Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.#'
+        - '#Parameter \#1 \$event of method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) expects object, string given\.#'
