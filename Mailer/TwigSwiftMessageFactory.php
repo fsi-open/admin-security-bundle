@@ -13,13 +13,13 @@ namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
 use Swift_Message;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Twig_Environment;
-use Twig_Template;
+use Twig\Environment;
+use Twig\Template;
 
 class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
 {
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -28,7 +28,7 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
      */
     private $requestStack;
 
-    public function __construct(Twig_Environment $twig, RequestStack $requestStack)
+    public function __construct(Environment $twig, RequestStack $requestStack)
     {
         $this->twig = $twig;
         $this->requestStack = $requestStack;
@@ -44,7 +44,7 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
 
         $templateContext = $this->twig->mergeGlobals($data);
 
-        /** @var Twig_Template $template */
+        /** @var Template $template */
         $template = $this->twig->loadTemplate($template);
         $subject = $template->renderBlock('subject', $templateContext);
         $htmlBody = $template->renderBlock('body_html', $templateContext);

@@ -16,8 +16,8 @@ use FSi\Bundle\AdminBundle\Menu\Item\ElementItem;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BuildAccountMenuListenerSpec extends ObjectBehavior
@@ -25,7 +25,7 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
     public function let(
         TranslatorInterface $translator,
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         UserInterface $user
     ): void {
         $tokenStorage->getToken()->willReturn($token);

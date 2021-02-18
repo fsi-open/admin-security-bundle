@@ -18,7 +18,7 @@ use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class LogoutUserListenerSpec extends ObjectBehavior
@@ -26,7 +26,7 @@ class LogoutUserListenerSpec extends ObjectBehavior
     public function let(
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         Request $masterRequest,
         SessionInterface $session
     ): void {
@@ -46,7 +46,7 @@ class LogoutUserListenerSpec extends ObjectBehavior
 
     public function it_logouts_the_user(
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         SessionInterface $session,
         ChangePasswordEvent $event,
         UserInterface $user
@@ -62,7 +62,7 @@ class LogoutUserListenerSpec extends ObjectBehavior
 
     public function it_does_not_logout_the_user_if_it_is_not_currently_logged(
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         SessionInterface $session,
         ChangePasswordEvent $event,
         UserInterface $currentUser,
