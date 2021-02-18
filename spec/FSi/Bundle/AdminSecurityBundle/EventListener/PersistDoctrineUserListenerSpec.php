@@ -21,7 +21,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
@@ -154,7 +154,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
 
     public function it_flushes_om_after_user_logged_in(
         InteractiveLoginEvent $event,
-        TokenInterface $token,
+        AbstractToken $token,
         ObjectManager $objectManager,
         User $user
     ): void {

@@ -23,8 +23,8 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnforcePasswordChangeListenerSpec extends ObjectBehavior
@@ -39,7 +39,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         FirewallConfig $firewallConfig,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         EnforceablePasswordChangeInterface $user,
         RouterInterface $router
     ): void {
