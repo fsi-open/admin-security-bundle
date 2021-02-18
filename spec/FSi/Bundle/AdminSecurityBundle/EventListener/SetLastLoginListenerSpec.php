@@ -14,7 +14,7 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
@@ -29,7 +29,7 @@ class SetLastLoginListenerSpec extends ObjectBehavior
 
     public function it_sets_last_login(
         InteractiveLoginEvent $event,
-        TokenInterface $token,
+        AbstractToken $token,
         UserInterface $user
     ): void {
         $event->getAuthenticationToken()->willReturn($token);

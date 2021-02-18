@@ -18,8 +18,8 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterf
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\SecuredElement;
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -31,7 +31,7 @@ class SecuredManagerSpec extends ObjectBehavior
     public function let(
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        TokenInterface $token,
+        AbstractToken $token,
         UserInterface $user,
         ManagerInterface $manager,
         Element $insecureElement,
@@ -167,7 +167,7 @@ class SecuredManagerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         Element $insecureElement,
         SecuredElement $securedElement,
-        TokenInterface $token,
+        AbstractToken $token,
         EnforceablePasswordChangeInterface $user
     ): void {
         $manager->getElements()->willReturn([$insecureElement, $securedElement]);

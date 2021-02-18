@@ -38,54 +38,54 @@
     <services>
         <!-- Controllers -->
         <service id="admin_security.controller.security" class="%admin_security.controller.security.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="service" id="security.authentication_utils" />
-            <argument type="service" id="admin.messages.flash" />
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
             <argument type="string">%admin_security.templates.login%</argument>
         </service>
 
         <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="admin.messages.flash" />
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
             <argument type="string">%admin_security.activation.change_password_form.type%</argument>
             <argument type="string">%admin_security.activation.change_password_form.validation_groups%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.request" class="%admin_security.controller.password_reset.request.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="admin.messages.flash" />
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
             <argument type="string">%admin_security.password_reset.request_form.type%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="admin.messages.flash" />
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
             <argument type="string">%admin_security.password_reset.change_password_form.type%</argument>
             <argument type="string">%admin_security.password_reset.change_password_form.validation_groups%</argument>
         </service>
 
         <service id="admin_security.controller.admin" class="%admin_security.controller.admin.class%" public="true">
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="router" />
             <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="admin.messages.flash" />
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
             <argument type="string">%admin_security.templates.change_password%</argument>
             <argument type="string">%admin_security.change_password.form.type%</argument>
             <argument type="string">%admin_security.change_password.form.validation_groups%</argument>
@@ -200,7 +200,7 @@
         <service id="admin_security.listener.prevent_deleting_current_user" class="%admin_security.listener.prevent_deleting_current_user.class%">
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="router"/>
-            <argument type="service" id="admin.messages.flash"/>
+            <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -216,7 +216,7 @@
         </service>
 
         <!-- Manager -->
-        <service id="admin_security.manager" class="%admin_security.manager.class%" decorates="admin.manager" public="false">
+        <service id="admin_security.manager" class="%admin_security.manager.class%" decorates="FSi\Bundle\AdminBundle\Admin\Manager" public="false">
             <argument type="service" id="admin_security.manager.inner" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="security.authorization_checker"/>

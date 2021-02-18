@@ -20,11 +20,9 @@ class ActivateUserListenerSpec extends ObjectBehavior
 {
     public function it_subscribes_activation_event(): void
     {
-        $this->getSubscribedEvents()->shouldReturn(
-            [
-                AdminSecurityEvents::ACTIVATION => 'onActivation',
-            ]
-        );
+        $this->getSubscribedEvents()->shouldReturn([
+            AdminSecurityEvents::ACTIVATION => 'onActivation',
+        ]);
     }
 
     public function it_activates_user(ActivationEvent $event, ActivableInterface $user): void

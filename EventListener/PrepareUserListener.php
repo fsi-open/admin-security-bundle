@@ -34,9 +34,7 @@ class PrepareUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            FormEvents::FORM_DATA_PRE_SAVE => [
-                'prepareAndDispatchUserCreated',
-            ]
+            FormEvents::FORM_DATA_PRE_SAVE => 'prepareAndDispatchUserCreated'
         ];
     }
 
@@ -57,6 +55,6 @@ class PrepareUserListener implements EventSubscriberInterface
         $entity->enforcePasswordChange(true);
         $entity->setPlainPassword(bin2hex(random_bytes(32)));
 
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::USER_CREATED, new UserEvent($entity));
+        $this->eventDispatcher->dispatch(new UserEvent($entity), AdminSecurityEvents::USER_CREATED);
     }
 }

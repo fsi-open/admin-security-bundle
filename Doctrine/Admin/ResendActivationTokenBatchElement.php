@@ -65,9 +65,6 @@ final class ResendActivationTokenBatchElement extends BatchElement
             return;
         }
 
-        $this->eventDispatcher->dispatch(
-            AdminSecurityEvents::RESEND_ACTIVATION_TOKEN,
-            new ActivationEvent($object)
-        );
+        $this->eventDispatcher->dispatch(new ActivationEvent($object), AdminSecurityEvents::RESEND_ACTIVATION_TOKEN);
     }
 }

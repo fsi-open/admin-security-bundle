@@ -21,11 +21,9 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
 {
     public function it_subscribes_change_password_event(): void
     {
-        $this->getSubscribedEvents()->shouldReturn(
-            [
-                AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            ]
-        );
+        $this->getSubscribedEvents()->shouldReturn([
+            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+        ]);
     }
 
     public function it_does_nothing_if_has_not_enforced_password_change(
