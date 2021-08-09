@@ -80,7 +80,7 @@ class ChangePasswordController
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType,
+        string $formType,
         array $formValidationGroups
     ) {
         $this->templating = $templating;
