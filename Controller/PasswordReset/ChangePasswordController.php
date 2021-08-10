@@ -80,7 +80,7 @@ class ChangePasswordController
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType,
+        string $formType,
         array $formValidationGroups
     ) {
         $this->templating = $templating;
@@ -116,7 +116,7 @@ class ChangePasswordController
         if (true === $form->isSubmitted() && true === $form->isValid()) {
             $user->removePasswordResetToken();
 
-            $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
+            $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
 
             $this->flashMessages->success(
                 'admin.password_reset.change_password.message.success',

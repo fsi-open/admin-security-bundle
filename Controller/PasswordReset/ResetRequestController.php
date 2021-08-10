@@ -109,8 +109,8 @@ class ResetRequestController
         }
 
         $this->eventDispatcher->dispatch(
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
-            new ResetPasswordRequestEvent($user)
+            new ResetPasswordRequestEvent($user),
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST
         );
 
         return $redirectResponse;

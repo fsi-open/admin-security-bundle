@@ -42,8 +42,10 @@ default: &default
             kernel:
                 env: test
                 debug: true
-                path: features/fixtures/project/app/AppKernel.php
-                bootstrap: features/fixtures/project/app/bootstrap.php
+                bootstrap: vendor/autoload.php
+                class: FSi\FixturesBundle\Kernel
+        Caciobanu\Behat\DeprecationExtension:
+            mode: weak
         SensioLabs\Behat\PageObjectExtension:
             namespaces:
                 page: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page
@@ -53,7 +55,7 @@ travis:
     <<: *default
     extensions:
         Behat\MinkExtension:
-            base_url: "http://localhost:8080/app_test.php"
+            base_url: "http://localhost:8080/index.php"
             sessions:
                 javascript:
                     selenium2:

@@ -17,7 +17,7 @@ use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
@@ -83,7 +83,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
             return;
@@ -138,7 +138,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         return $config->getName() === $this->firewallName;
     }
 
-    private function redirectToChangePassword(GetResponseEvent $event): void
+    private function redirectToChangePassword(RequestEvent $event): void
     {
         if ($event->getRequest()->get('_route') !== $this->changePasswordRoute) {
             $event->setResponse(new RedirectResponse($this->router->generate($this->changePasswordRoute)));

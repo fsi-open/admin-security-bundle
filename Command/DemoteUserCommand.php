@@ -77,7 +77,7 @@ EOT
         }
 
         $user->removeRole($role);
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::DEMOTE_USER, new UserEvent($user));
+        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::DEMOTE_USER);
 
         $output->writeln(sprintf('User <comment>%s</comment> has been demoted', $email));
 

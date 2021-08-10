@@ -1,0 +1,19 @@
+fsi_admin_security:
+    storage: orm
+    firewall_name: admin_panel
+    mailer:
+        reply_to: "do-not-reply@example.com"
+    model:
+        user: FSi\FixturesBundle\Entity\User
+    activation:
+        mailer:
+            from: "activation@fsi.pl"
+    password_reset:
+        mailer:
+            from: "from-admin@fsi.pl"
+    templates:
+        activation:
+            change_password: "activation.html.twig"
+        password_reset:
+            request: "request.html.twig"
+            change_password: "change_password.html.twig"

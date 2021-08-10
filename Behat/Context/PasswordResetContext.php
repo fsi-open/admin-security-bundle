@@ -17,7 +17,7 @@ use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use DateInterval;
 use DateTime;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;

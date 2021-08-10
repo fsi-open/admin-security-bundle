@@ -77,7 +77,7 @@ EOT
         }
 
         $user->addRole($role);
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::PROMOTE_USER, new UserEvent($user));
+        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::PROMOTE_USER);
 
         $output->writeln(sprintf('User <comment>%s</comment> has been promoted', $email));
 
