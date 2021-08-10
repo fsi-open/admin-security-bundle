@@ -44,6 +44,8 @@ default: &default
                 debug: true
                 path: features/fixtures/project/app/AppKernel.php
                 bootstrap: features/fixtures/project/app/bootstrap.php
+        Caciobanu\Behat\DeprecationExtension:
+            mode: weak
         SensioLabs\Behat\PageObjectExtension:
             namespaces:
                 page: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page
