@@ -25,10 +25,10 @@ before_install:
   - wget --no-clobber -O vendor/bin/selenium.jar http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar || true
 
 before_script:
-  - nohup php -S localhost:8080 -t features/fixtures/project/web > /tmp/server.log 2>&1 &
+  - nohup php -S localhost:8080 -t features/fixtures/project/public > /tmp/server.log 2>&1 &
   - java -jar vendor/bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
-  - features/fixtures/project/app/console assets:install --symlink features/fixtures/project/web
+  - features/fixtures/project/bin/console assets:install --symlink features/fixtures/project/public
 
 script:
   - vendor/bin/phpcs
