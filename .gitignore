@@ -1,8 +1,11 @@
 /vendor
-/bin
-composer.lock
-features/fixtures/project/app/cache/
-features/fixtures/project/app/logs/
-features/fixtures/project/web/bundles/
+/composer.lock
+/features/fixtures/project/public/bundles
+/features/fixtures/project/public/uploaded
+/features/fixtures/project/var/cache/*
+/features/fixtures/project/var/logs/*
+/features/fixtures/project/var/mysql/*
+!/features/fixtures/project/var/.gitkeep
+/features/fixtures/project/config/parameters.yaml
 *.sqlite
 .phpcs-cache

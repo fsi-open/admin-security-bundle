@@ -181,7 +181,7 @@ final class DataContext extends PageObjectContext implements
      */
     public function deleteDatabaseIfExist(): void
     {
-        $dbFilePath = $this->kernel->getRootDir() . '/data.sqlite';
+        $dbFilePath = $this->kernel->getProjectDir() . '/var/data.sqlite';
 
         if (file_exists($dbFilePath)) {
             unlink($dbFilePath);

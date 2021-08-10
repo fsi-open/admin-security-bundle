@@ -1,4 +1,4 @@
-DirectoryIndex app_test.php
+DirectoryIndex index.php
 
 SetEnvIf Server_Addr ^10\.0\.0\.200 development=on
 SetEnvIf Server_Addr ^172\. development=on
@@ -26,7 +26,7 @@ SetEnvIf Server_Addr ^172\. development=on
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule .? - [L]
 
-    RewriteRule .? %{ENV:BASE}/app_test.php [L]
+    RewriteRule .? %{ENV:BASE}/index.php [L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
@@ -34,7 +34,7 @@ SetEnvIf Server_Addr ^172\. development=on
         # When mod_rewrite is not available, we instruct a temporary redirect of
         # the start page to the front controller explicitly so that the website
         # and the generated links can still be used.
-        RedirectMatch 302 ^/$ /app_test.php/
+        RedirectMatch 302 ^/$ /index.php/
         # RedirectTemp cannot be used instead
     </IfModule>
 </IfModule>

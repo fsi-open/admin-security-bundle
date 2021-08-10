@@ -1,0 +1,2 @@
+fsi_admin:
+    menu_config_path: "%kernel.project_dir%/config/admin_menu.yml"

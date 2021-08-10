@@ -1,0 +1,9 @@
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        user:     admin
+        charset:  UTF8
+        path: "%kernel.project_dir%/var/data.sqlite"
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
