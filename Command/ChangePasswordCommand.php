@@ -82,7 +82,7 @@ EOT
             throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
         }
         $user->setPlainPassword($password);
-        $this->eventDispatcher->dispatch(AdminSecurityEvents::CHANGE_PASSWORD, new ChangePasswordEvent($user));
+        $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
 
         $output->writeln(sprintf('Changed password of user <comment>%s</comment>', $email));
 

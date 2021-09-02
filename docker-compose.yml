@@ -10,7 +10,7 @@ services:
             - 443:443
         environment:
             PHP_IDE_CONFIG: 'serverName=localhost'
-            DOCROOT: /var/www/application/features/fixtures/project/web
+            DOCROOT: /var/www/application/features/fixtures/project/public
             HOST_UID: 1000
             HOST_GID: 1000
         volumes:

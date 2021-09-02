@@ -23,8 +23,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class PreventDeletingCurrentUserSpec extends ObjectBehavior
 {
@@ -33,7 +33,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         RouterInterface $router,
         FormEvent $event,
         UserElement $userElement,
-        TokenInterface $token,
+        AbstractToken $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         FlashMessages $flashMessages
@@ -61,7 +61,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
     public function it_should_prevent_deleting_current_user(
         FormEvent $event,
-        TokenInterface $token,
+        AbstractToken $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         FlashMessages $flashMessages,
@@ -85,7 +85,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
 
     public function it_should_allow_deleting_other_users(
         FormEvent $event,
-        TokenInterface $token,
+        AbstractToken $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         UserInterface $user,
@@ -105,7 +105,7 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         RouterInterface $router,
         FormEvent $event,
         UserElement $userElement,
-        TokenInterface $token,
+        AbstractToken $token,
         Request $request,
         DataIndexerInterface $dataIndexer,
         UserInterface $user

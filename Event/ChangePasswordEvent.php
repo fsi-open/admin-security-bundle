@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ChangePasswordEvent extends Event
 {

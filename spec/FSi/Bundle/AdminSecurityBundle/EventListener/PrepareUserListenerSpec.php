@@ -49,8 +49,8 @@ class PrepareUserListenerSpec extends ObjectBehavior
         $user->enforcePasswordChange(true)->shouldBeCalled();
 
         $eventDispatcher->dispatch(
-            AdminSecurityEvents::USER_CREATED,
-            Argument::type(UserEvent::class)
+            Argument::type(UserEvent::class),
+            AdminSecurityEvents::USER_CREATED
         )->shouldBeCalled();
 
         $this->prepareAndDispatchUserCreated($event);

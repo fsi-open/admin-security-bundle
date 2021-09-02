@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class UserEvent extends Event
 {

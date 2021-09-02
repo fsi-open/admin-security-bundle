@@ -16,7 +16,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Mink;
 use Behat\MinkExtension\Context\MinkAwareContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\SchemaTool;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
@@ -181,7 +181,7 @@ final class DataContext extends PageObjectContext implements
      */
     public function deleteDatabaseIfExist(): void
     {
-        $dbFilePath = $this->kernel->getRootDir() . '/data.sqlite';
+        $dbFilePath = $this->kernel->getProjectDir() . '/var/data.sqlite';
 
         if (file_exists($dbFilePath)) {
             unlink($dbFilePath);

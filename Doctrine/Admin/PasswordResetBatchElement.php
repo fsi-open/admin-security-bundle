@@ -43,8 +43,8 @@ class PasswordResetBatchElement extends BatchElement
     public function apply($object): void
     {
         $this->eventDispatcher->dispatch(
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST,
-            new ResetPasswordRequestEvent($object)
+            new ResetPasswordRequestEvent($object),
+            AdminSecurityEvents::RESET_PASSWORD_REQUEST
         );
     }
 
