@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
-use FSi\Bundle\AdminBundle\Event\BatchEvents;
+use FSi\Bundle\AdminBundle\Event\BatchObjectsPreApplyEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
@@ -53,7 +53,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser',
+            BatchObjectsPreApplyEvent::class => 'preventDeletingCurrentUser',
         ];
     }
 

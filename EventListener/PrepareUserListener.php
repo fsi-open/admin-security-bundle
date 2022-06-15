@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminBundle\Event\FormDataPreSaveEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
-use FSi\Bundle\AdminBundle\Event\FormEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -34,7 +34,7 @@ class PrepareUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            FormEvents::FORM_DATA_PRE_SAVE => 'prepareAndDispatchUserCreated'
+            FormDataPreSaveEvent::class => 'prepareAndDispatchUserCreated'
         ];
     }
 

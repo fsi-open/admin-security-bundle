@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\MenuEvent;
+use FSi\Bundle\AdminBundle\Event\MenuToolsEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminBundle\Menu\Item\RoutableItem;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
@@ -36,7 +37,7 @@ class BuildAccountMenuListener
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function createAccountMenu(MenuEvent $event): Item
+    public function createAccountMenu(MenuToolsEvent $event): Item
     {
         if (false === $this->hasUserLoggedIn()) {
             return $event->getMenu();
