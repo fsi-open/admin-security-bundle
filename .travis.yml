@@ -5,6 +5,8 @@ cache:
     - $HOME/.composer/cache
     - vendor
 
+dist: focal
+
 sudo: required
 
 addons:
