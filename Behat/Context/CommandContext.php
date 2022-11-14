@@ -11,40 +11,33 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behat\Mink\Session;
+use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\Bundle\AdminSecurityBundle\Command\CreateUserCommand;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-final class CommandContext implements KernelAwareContext
+final class CommandContext extends AbstractContext
 {
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
+    private KernelInterface $kernel;
+    private ?Application $application;
+    private ?CommandTester $tester;
 
-    /**
-     * @var Application
-     */
-    private $application;
-
-    /**
-     * @var CommandTester
-     */
-    private $tester;
-
-    public function setKernel(KernelInterface $kernel): void
-    {
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        KernelInterface $kernel
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
         $this->kernel = $kernel;
-        $container = $kernel->getContainer();
-        $this->application = new Application($kernel);
-        $this->application->add(
-            new CreateUserCommand(
-                $container->get('event_dispatcher'),
-                $container->getParameter('admin_security.model.user')
-            )
-        );
+        $this->application = null;
+        $this->tester = null;
     }
 
     /**
@@ -52,17 +45,17 @@ final class CommandContext implements KernelAwareContext
      */
     public function iCreateDisabledUserWithEmailAddressAndEnforcedPasswordChange(string $email): void
     {
-        $command = $this->application->find('fsi:user:create');
-
-        $this->tester = new CommandTester($command);
-        $this->tester->execute([
-            'command' => $command->getName(),
-            'email' => $email,
-            'password' => 'admin',
-            'role' => 'ROLE_ADMIN',
-            '--inactive' => true,
-            '--enforce-password-change' => true
-        ]);
+        $this->runCommand(
+            'fsi:user:create',
+            [
+                'command' => 'fsi:user:create',
+                'email' => $email,
+                'password' => 'admin',
+                'role' => 'ROLE_ADMIN',
+                '--inactive' => true,
+                '--enforce-password-change' => true
+            ]
+        );
     }
 
     /**
@@ -70,15 +63,57 @@ final class CommandContext implements KernelAwareContext
      */
     public function iCreateDisabledUserWithEmailAddress(string $email): void
     {
-        $command = $this->application->find('fsi:user:create');
+        $this->runCommand(
+            'fsi:user:create',
+            [
+                'command' => 'fsi:user:create',
+                'email' => $email,
+                'password' => 'admin',
+                'role' => 'ROLE_ADMIN',
+                '--inactive' => true
+            ]
+        );
+    }
 
-        $this->tester = new CommandTester($command);
-        $this->tester->execute([
-            'command' => $command->getName(),
-            'email' => $email,
-            'password' => 'admin',
-            'role' => 'ROLE_ADMIN',
-            '--inactive' => true
-        ]);
+    private function getApplication(): Application
+    {
+        if (null === $this->application) {
+            $container = $this->kernel->getContainer();
+
+            /** @var EventDispatcherInterface $eventDispatcher */
+            $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+            /** @var string|int|null $userClass */
+            $userClass = $container->getParameter('admin_security.model.user');
+            if (false === is_string($userClass)) {
+                throw new Exception('"admin_security.model.user" parameter is not a string!');
+            }
+
+            if (false === is_subclass_of($userClass, UserInterface::class)) {
+                throw new Exception(sprintf(
+                    '"admin_security.model.user" parameter is not a class string implementing "%s"!',
+                    UserInterface::class
+                ));
+            }
+
+            $this->application = new Application($this->kernel);
+            $this->application->add(new CreateUserCommand($eventDispatcher, $userClass));
+        }
+
+        return $this->application;
+    }
+
+    /**
+     * @param array<string, string|bool|null> $arguments
+     * @return void
+     */
+    private function runCommand(string $name, array $arguments): void
+    {
+        if (null === $this->tester) {
+            $command = $this->getApplication()->find($name);
+            $this->tester = new CommandTester($command);
+        }
+
+        $this->tester->execute($arguments);
     }
 }

@@ -11,60 +11,32 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Behat\Context\SnippetAcceptingContext;
+use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Mink;
-use Behat\MinkExtension\Context\MinkAwareContext;
-use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Doctrine\Persistence\ManagerRegistry;
+use Behat\Mink\Session;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
-use RuntimeException;
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-
 use function expect;
 
-final class DataContext extends PageObjectContext implements
-    KernelAwareContext,
-    MinkAwareContext,
-    SnippetAcceptingContext
+final class DataContext extends AbstractContext
 {
-    /**
-     * @var Mink
-     */
-    private $mink;
+    private UserPasswordEncoderInterface $passwordEncoder;
+    private string $dbFilePath;
 
-    /**
-     * @var array
-     */
-    private $minkParameters;
-
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
-
-    public function setKernel(KernelInterface $kernel): void
-    {
-        $this->kernel = $kernel;
-    }
-
-    public function setMink(Mink $mink): void
-    {
-        $this->mink = $mink;
-    }
-
-    public function getMink(): Mink
-    {
-        return $this->mink;
-    }
-
-    public function setMinkParameters(array $parameters): void
-    {
-        $this->minkParameters = $parameters;
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder,
+        string $projectDirectory
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->passwordEncoder = $passwordEncoder;
+        $this->dbFilePath = "{$projectDirectory}/var/data.sqlite";
     }
 
     /**
@@ -73,9 +45,20 @@ final class DataContext extends PageObjectContext implements
     public function createDatabase(): void
     {
         $this->deleteDatabaseIfExist();
-        $metadata = $this->getDoctrine()->getManager()->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($this->getDoctrine()->getManager());
+        $manager = $this->getEntityManager();
+        $metadata = $manager->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($manager);
         $tool->createSchema($metadata);
+    }
+
+    /**
+     * @AfterScenario
+     */
+    public function deleteDatabaseIfExist(): void
+    {
+        if (true === file_exists($this->dbFilePath)) {
+            unlink($this->dbFilePath);
+        }
     }
 
     /**
@@ -90,13 +73,12 @@ final class DataContext extends PageObjectContext implements
         $user->setPlainPassword($password);
         $user->setEnabled(true);
 
-        if (0 !== strlen($password = $user->getPlainPassword())) {
-            $encoder = $this->kernel->getContainer()->get('test.security.encoder_factory')->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
+        if (0 !== strlen($password)) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
             $user->eraseCredentials();
         }
 
-        $manager = $this->getDoctrine()->getManagerForClass(get_class($user));
+        $manager = $this->getEntityManager();
         $manager->persist($user);
         $manager->flush();
     }
@@ -106,7 +88,7 @@ final class DataContext extends PageObjectContext implements
      */
     public function thereAreFollowingUsers(TableNode $table): void
     {
-        $manager = $this->getDoctrine()->getManagerForClass('FSiFixturesBundle:User');
+        $manager = $this->getEntityManager();
 
         foreach ($table->getHash() as $userInfo) {
             $user = new User();
@@ -128,17 +110,15 @@ final class DataContext extends PageObjectContext implements
      * @phpcs:enable
      */
     public function thereIsUserWithRoleAndPasswordWhichIsEnforcedToChangePassword(
-        string $nick,
+        string $username,
         string $role,
         string $password
     ): void {
-        $this->thereIsUserWithRoleAndPassword($nick, $role, $password);
+        $this->thereIsUserWithRoleAndPassword($username, $role, $password);
 
-        $manager = $this->kernel->getContainer()->get('doctrine')->getManagerForClass('FSiFixturesBundle:User');
-        $userRepository = $manager->getRepository('FSiFixturesBundle:User');
-        $user = $userRepository->findOneBy(['username' => $nick]);
+        $user = $this->findUserByUsername($username);
         $user->enforcePasswordChange(true);
-        $manager->flush();
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -148,10 +128,10 @@ final class DataContext extends PageObjectContext implements
     {
         $user = $this->findUserByUsername('admin');
 
-        /** @var UserPasswordEncoderInterface $encoder */
-        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
-
-        expect($user->getPassword())->toBe($encoder->encodePassword($user, 'admin-new'));
+        Assertion::same(
+            $user->getPassword(),
+            $this->passwordEncoder->encodePassword($user, 'admin-new')
+        );
     }
 
     /**
@@ -161,9 +141,10 @@ final class DataContext extends PageObjectContext implements
     {
         $user = $this->findUserByEmail($userEmail);
 
-        $encoder = $this->kernel->getContainer()->get('security.password_encoder');
-
-        expect($user->getPassword())->toBe($encoder->encodePassword($user, 'admin-new'));
+        Assertion::same(
+            $user->getPassword(),
+            $this->passwordEncoder->encodePassword($user, 'admin-new')
+        );
     }
 
     /**
@@ -173,43 +154,22 @@ final class DataContext extends PageObjectContext implements
     {
         $user = $this->findUserByEmail($userEmail);
 
-        expect($user->isEnabled())->toBe(true);
+        Assertion::true($user->isEnabled(), "User \"{$userEmail}\" is not enabled.");
     }
 
-    /**
-     * @AfterScenario
-     */
-    public function deleteDatabaseIfExist(): void
+    private function findUserByUsername(string $userName): User
     {
-        $dbFilePath = $this->kernel->getProjectDir() . '/var/data.sqlite';
+        $user = $this->getRepository(User::class)->findOneBy(['username' => $userName]);
+        Assertion::notNull($user, "No user for username \"{$userName}\".");
 
-        if (file_exists($dbFilePath)) {
-            unlink($dbFilePath);
-        }
-    }
-
-    protected function getDoctrine(): ManagerRegistry
-    {
-        $doctrine = $this->kernel->getContainer()->get('doctrine');
-        if (false === $doctrine instanceof ManagerRegistry) {
-            throw new RuntimeException('Doctrine not found!');
-        }
-
-        return $doctrine;
-    }
-
-    private function getUserRepository(): UserRepositoryInterface
-    {
-        return $this->getDoctrine()->getRepository(User::class);
-    }
-
-    private function findUserByUsername(string $username): User
-    {
-        return $this->getUserRepository()->findOneBy(['username' => $username]);
+        return $user;
     }
 
     private function findUserByEmail(string $userEmail): User
     {
-        return $this->getUserRepository()->findOneBy(['email' => $userEmail]);
+        $user = $this->getRepository(User::class)->findOneBy(['email' => $userEmail]);
+        Assertion::notNull($user, "No user for email \"{$userEmail}\".");
+
+        return $user;
     }
 }

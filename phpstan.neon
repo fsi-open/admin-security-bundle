@@ -1,12 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-beberlei-assert/extension.neon
 parameters:
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
-    level: 8
+    level: 7
     paths:
         - .
     excludePaths:
         - DependencyInjection/Configuration
-        - '%rootDir%/../../../Behat'
         - '%rootDir%/../../../docker'
         - '%rootDir%/../../../features'
         - '%rootDir%/../../../spec'

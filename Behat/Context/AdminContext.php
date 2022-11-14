@@ -11,97 +11,38 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
+use Assert\Assertion;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Mink;
-use Behat\MinkExtension\Context\MinkAwareContext;
-use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behat\Mink\Session;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminChangePassword;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminPanel;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Login;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\PasswordResetRequest;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
+use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
+use FSi\Bundle\AdminSecurityBundle\Behat\Element\FlashMessage;
+use FSi\Bundle\AdminSecurityBundle\Behat\Element\PageHeader;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminPanel;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\Page;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 use InvalidArgumentException;
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-final class AdminContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
+use function sprintf;
+
+final class AdminContext extends AbstractContext
 {
-    /**
-     * @var Mink
-     */
-    private $mink;
-
-    /**
-     * @var array
-     */
-    private $minkParameters;
-
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
-
-    /**
-     * @var Login
-     */
-    private $loginPage;
-
-    /**
-     * @var AdminPanel
-     */
-    private $adminPanelPage;
-
-    /**
-     * @var AdminChangePassword
-     */
-    private $changePasswordPage;
-
-    /**
-     * @var PasswordResetRequest
-     */
-    private $passwordResetRequestPage;
-
-    /**
-     * @var UserList
-     */
-    private $userListPage;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(
-        Login $loginPage,
-        AdminPanel $adminPanelPage,
-        AdminChangePassword $changePasswordPage,
-        PasswordResetRequest $passwordResetRequestPage,
-        UserList $userListPage
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        TokenStorageInterface $tokenStorage
     ) {
-        $this->loginPage = $loginPage;
-        $this->adminPanelPage = $adminPanelPage;
-        $this->changePasswordPage = $changePasswordPage;
-        $this->passwordResetRequestPage = $passwordResetRequestPage;
-        $this->userListPage = $userListPage;
-    }
-
-    public function setKernel(KernelInterface $kernel): void
-    {
-        $this->kernel = $kernel;
-    }
-
-    public function setMink(Mink $mink): void
-    {
-        $this->mink = $mink;
-    }
-
-    public function getMink(): Mink
-    {
-        return $this->mink;
-    }
-
-    public function setMinkParameters(array $parameters): void
-    {
-        $this->minkParameters = $parameters;
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -112,14 +53,22 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
         $this->getPage($pageName)->open();
     }
 
+    /**
+     * @Given /^I should be on the "([^"]*)" page$/
+     */
+    public function iShouldBeOnThePage(string $pageName): void
+    {
+        /** @var Page $page */
+        $page = $this->getPage($pageName);
+        Assertion::true($page->isOpen(), "Page \"{$pageName}\" is not open.");
+    }
 
     /**
      * @Given /^I\'m not logged in$/
      */
-    public function iMNotLoggedIn(): void
+    public function iAmNotLoggedIn(): void
     {
-        $token = $this->kernel->getContainer()->get('security.token_storage')->getToken();
-        if (null !== $token) {
+        if (null !== $this->tokenStorage->getToken()) {
             throw new Exception('User is logged in, though he is not suppose to be!');
         }
     }
@@ -129,8 +78,8 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iImpersonateUser(string $user): void
     {
-        $this->getMink()->getSession()->visit(
-            sprintf('%s/admin/?_switch_user=%s', $this->minkParameters['base_url'], $user)
+        $this->getSession()->visit(
+            sprintf('%s/admin/?_switch_user=%s', $this->getBaseUrl(), $user)
         );
     }
 
@@ -139,7 +88,9 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldBeLoggedInAs(string $user): void
     {
-        expect($this->kernel->getContainer()->get('security.token_storage')->getToken()->getUsername())->toBe($user);
+        $token = $this->tokenStorage->getToken();
+        Assertion::notNull($token);
+        Assertion::same($token->getUsername(), $user);
     }
 
     /**
@@ -167,7 +118,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldBeRedirectedToPage(string $pageName): void
     {
-        expect($this->getPage($pageName)->isOpen())->toBe(true);
+        Assertion::true(
+            $this->getPage($pageName)->isOpen(),
+            "Page \"{$pageName}\" is not open."
+        );
     }
 
     /**
@@ -175,7 +129,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldSeeMessage(PyStringNode $message): void
     {
-        expect($this->getElement('FlashMessage')->getText())->toBe($message->getRaw());
+        Assertion::same(
+            $this->getElement(FlashMessage::class)->getText(),
+            $message->getRaw()
+        );
     }
 
     /**
@@ -183,7 +140,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldSeeDropdownButtonInNavigationBar(string $buttonText): void
     {
-        expect($this->adminPanelPage->hasLink($buttonText))->toBe(true);
+        Assertion::true(
+            $this->getPageObject(AdminPanel::class)->hasLink($buttonText),
+            "There is no \"{$buttonText}\" on page."
+        );
     }
 
     /**
@@ -191,10 +151,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function dropdownButtonShouldHaveFollowingLinks(string $button, TableNode $dropdownLinks): void
     {
-        $links = $this->adminPanelPage->getDropdownOptions($button);
+        $links = $this->getPageObject(AdminPanel::class)->getDropdownOptions($button);
 
         foreach ($dropdownLinks->getHash() as $link) {
-            expect($links)->toContain($link['Link']);
+            Assertion::contains($links, $link['Link']);
         }
     }
 
@@ -203,7 +163,7 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iClickLinkFromDropdownButton(string $link, string $dropdown): void
     {
-        $this->adminPanelPage->getDropdown($dropdown)->clickLink($link);
+        $this->getPageObject(AdminPanel::class)->getDropdown($dropdown)->clickLink($link);
     }
 
     /**
@@ -211,7 +171,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldBeLoggedOff(): void
     {
-        expect($this->kernel->getContainer()->get('security.token_storage')->getToken())->toBe(null);
+        Assertion::null(
+            $this->tokenStorage->getToken(),
+            "User should have been logged out."
+        );
     }
 
     /**
@@ -219,7 +182,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldSeeHttpError(string $httpStatusCode): void
     {
-        expect($this->mink->getSession()->getStatusCode())->toBe((int) $httpStatusCode);
+        Assertion::same(
+            $this->getSession()->getStatusCode(),
+            (int) $httpStatusCode
+        );
     }
 
     /**
@@ -227,7 +193,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldSeePageHeaderWithContent(string $headerText): void
     {
-        expect($this->getElement('Page Header')->getText())->toBe($headerText);
+        Assertion::same(
+            $this->getElement(PageHeader::class)->getText(),
+            $headerText
+        );
     }
 
     /**
@@ -236,7 +205,11 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
     public function iShouldSeeNavigationMenuWithFollowingElements(TableNode $menu): void
     {
         foreach ($menu->getHash() as $elementData) {
-            expect($this->adminPanelPage->hasElementInTopMenu($elementData['Element']))->toBe(true);
+            $elementName = $elementData['Element'];
+            Assertion::true(
+                $this->getPageObject(AdminPanel::class)->hasElementInTopMenu($elementName),
+                "No \"{$elementName}\" element in top menu."
+            );
         }
     }
 
@@ -245,7 +218,10 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldNotSeePositionInMenu(string $elementName): void
     {
-        expect($this->adminPanelPage->hasElementInTopMenu($elementName))->toBe(false);
+        Assertion::false(
+            $this->getPageObject(AdminPanel::class)->hasElementInTopMenu($elementName),
+            "Element \"{$elementName}\" should not be in top menu."
+        );
     }
 
     /**
@@ -253,27 +229,36 @@ final class AdminContext extends PageObjectContext implements KernelAwareContext
      */
     public function iShouldNotSeeAnyElementsInMenu(): void
     {
-        expect($this->adminPanelPage->hasAnyMenuElements())->toBe(false);
+        Assertion::false(
+            $this->getPageObject(AdminPanel::class)->hasAnyMenuElements(),
+            "Top menu should not have any element."
+        );
     }
 
-    public function getPage($name): Page
+    public function getPage(string $name): Page
     {
         switch ($name) {
             case 'Login':
-                return $this->loginPage;
+                $page = $this->getPageObject(Login::class);
+                break;
             case 'Admin panel':
-                return $this->adminPanelPage;
+                $page = $this->getPageObject(AdminPanel::class);
+                break;
             case 'Admin change password':
-                return $this->changePasswordPage;
+                $page = $this->getPageObject(AdminChangePassword::class);
+                break;
             case 'User list':
-                return $this->userListPage;
+                $page = $this->getPageObject(UserList::class);
+                break;
             case 'Password reset request':
-                return $this->passwordResetRequestPage;
+                $page = $this->getPageObject(AdminChangePassword::class);
+                break;
             default:
-                throw new InvalidArgumentException(sprintf(
-                    'Could not cast "%s" to a page object',
-                    $name
-                ));
+                throw new InvalidArgumentException(
+                    "Could not cast \"{$name}\" to a page object."
+                );
         }
+
+        return $page;
     }
 }

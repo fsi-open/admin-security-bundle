@@ -11,26 +11,31 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
+use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behat\Mink\Session;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\KernelInterface;
+use function count;
+use function file_get_contents;
+use function unserialize;
 
-use function expect;
-
-final class MailContext implements KernelAwareContext
+final class MailContext extends AbstractContext
 {
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
+    private string $spoolDirectory;
 
-    public function setKernel(KernelInterface $kernel): void
-    {
-        $this->kernel = $kernel;
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        string $spoolDirectory
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->spoolDirectory = $spoolDirectory;
     }
 
     /**
@@ -39,7 +44,7 @@ final class MailContext implements KernelAwareContext
     public function cleanEmailSpool(): void
     {
         $filesystem = new Filesystem();
-        if (false === $filesystem->exists($this->getSpoolDir())) {
+        if (false === $filesystem->exists($this->spoolDirectory)) {
             return;
         }
 
@@ -52,8 +57,7 @@ final class MailContext implements KernelAwareContext
     public function thereShouldBeNoEmailSent(): void
     {
         $files = $this->getSpoolFiles();
-
-        expect($files->count())->toBe(0);
+        Assertion::count($files, 0, 'There were "%s" emails sent, where none should.');
     }
 
     /**
@@ -65,7 +69,7 @@ final class MailContext implements KernelAwareContext
         $files = $this->getSpoolFiles();
         $files->sortByModifiedTime();
 
-        if (0 === $files->count()) {
+        if (0 === count($files)) {
             throw new Exception("There should be at least 1 email");
         }
 
@@ -75,9 +79,9 @@ final class MailContext implements KernelAwareContext
             throw new Exception(sprintf('There is no email with "%s" subject', $expected['subject']));
         }
 
-        expect(key($email->getFrom()))->toBe($expected['from']);
-        expect(key($email->getTo()))->toBe($expected['to']);
-        expect(key($email->getReplyTo()))->toBe($expected['reply_to']);
+        Assertion::same(key($email->getFrom()), $expected['from']);
+        Assertion::same(key($email->getTo()), $expected['to']);
+        Assertion::same($email->getReplyTo(), $expected['reply_to']);
     }
 
     /**
@@ -89,14 +93,16 @@ final class MailContext implements KernelAwareContext
         $this->thereShouldBeNoEmailSent();
     }
 
-    private function fetchEmail($subject): ?Swift_Message
+    private function fetchEmail(string $subject): ?Swift_Message
     {
         $files = $this->getSpoolFiles();
         foreach ($files as $file) {
-            /** @var Swift_Message $message */
-            $message = unserialize(file_get_contents((string) $file));
+            $fileContents = file_get_contents((string) $file);
+            Assertion::string($fileContents, 'Unable to parse file contents');
 
-            if ($subject === $message->getSubject()) {
+            /** @var Swift_Message $message */
+            $message = unserialize($fileContents);
+            if ($message->getSubject() === $subject) {
                 unlink((string) $file);
                 return $message;
             }
@@ -108,13 +114,8 @@ final class MailContext implements KernelAwareContext
     private function getSpoolFiles(): Finder
     {
         $finder = new Finder();
-        $finder->in($this->getSpoolDir())->ignoreDotFiles(true)->files();
+        $finder->in($this->spoolDirectory)->ignoreDotFiles(true)->files();
 
         return $finder;
-    }
-
-    private function getSpoolDir(): string
-    {
-        return $this->kernel->getContainer()->getParameter('swiftmailer.spool.default.file.path');
     }
 }

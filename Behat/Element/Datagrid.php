@@ -9,26 +9,25 @@
 
 declare(strict_types=1);
 
-namespace FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element;
+namespace FSi\Bundle\AdminSecurityBundle\Behat\Element;
 
 use Behat\Mink\Element\NodeElement;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\UnexpectedPageException;
+use FriendsOfBehat\PageObjectExtension\Element\Element;
+use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 
-class Datagrid extends Element
+use function count;
+
+final class Datagrid extends Element
 {
-    protected $selector = '.table-datagrid';
-
     /**
      * @param int $number
      * @return NodeElement
      */
     public function getRow(int $number): NodeElement
     {
-        $row = $this->find('xpath', '//tbody/tr[' . $number . ']');
-
+        $row = $this->getElement('datagrid')->find('xpath', "//tbody/tr[{$number}]");
         if (null === $row) {
-            throw new UnexpectedPageException(sprintf('Row "%s" does not exist in DataGrid', $number));
+            throw new UnexpectedPageException("Row \"{$number}\" does not exist in DataGrid");
         }
 
         return $row;
@@ -36,8 +35,7 @@ class Datagrid extends Element
 
     public function getRowCount(): int
     {
-        $records = $this->findAll('css', 'tbody > tr');
-
+        $records = $this->getElement('datagrid')->findAll('css', 'tbody > tr');
         return count($records);
     }
 
@@ -66,13 +64,23 @@ class Datagrid extends Element
         return $row->find('xpath', '//td[' . $pos . ']');
     }
 
+    /**
+     * @return array<string, string>
+     */
+    protected function getDefinedElements(): array
+    {
+        return [
+            'datagrid' => '.table-datagrid'
+        ];
+    }
+
     private function getColumnPosition(string $columnHeader, bool $throwIfNotFound = true): ?int
     {
-        $columns = $this->findAll('xpath', "//thead/tr/th");
+        $columns = $this->getElement('datagrid')->findAll('xpath', "//thead/tr/th");
 
+        /** @var NodeElement $columnElement */
         foreach ($columns as $index => $columnElement) {
-            /** @var NodeElement $columnElement */
-            $title = $columnElement->find('xpath', '/span[contains(text(),"' . $columnHeader . '")]');
+            $title = $columnElement->find('xpath', "/span[contains(text(), \"{$columnHeader}\")]");
             if (null !== $title) {
                 return $index + 1;
             }
@@ -82,7 +90,7 @@ class Datagrid extends Element
             throw new UnexpectedPageException(sprintf(
                 'Column with title "%s" does not exist in DataGrid at page "%s".',
                 $columnHeader,
-                $this->getName()
+                $this->getDriver()->getCurrentUrl()
             ));
         }
 

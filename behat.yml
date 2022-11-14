@@ -40,16 +40,10 @@ default: &default
             javascript_session: javascript
         FriendsOfBehat\SymfonyExtension:
             kernel:
-                env: test
-                debug: true
-                bootstrap: vendor/autoload.php
+                path: features/fixtures/project/src/Kernel.php
                 class: FSi\FixturesBundle\Kernel
         Caciobanu\Behat\DeprecationExtension:
             mode: weak
-        SensioLabs\Behat\PageObjectExtension:
-            namespaces:
-                page: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page
-                element: FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element
 
 travis:
     <<: *default

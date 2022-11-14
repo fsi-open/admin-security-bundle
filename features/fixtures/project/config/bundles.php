@@ -11,7 +11,9 @@ return [
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
     FSi\Bundle\DataSourceBundle\DataSourceBundle::class => ['all' => true],
     FSi\Bundle\DataGridBundle\DataGridBundle::class => ['all' => true],
+    FSi\Bundle\ResourceRepositoryBundle\FSiResourceRepositoryBundle::class => ['all' => true],
     FSi\Bundle\AdminBundle\FSiAdminBundle::class => ['all' => true],
     FSi\FixturesBundle\FSiFixturesBundle::class => ['all' => true],
     FSi\Bundle\AdminSecurityBundle\FSiAdminSecurityBundle::class => ['all' => true],
+    FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle::class => ['all' => true]
 ];
