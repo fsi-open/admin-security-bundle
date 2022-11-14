@@ -17,6 +17,7 @@ use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,7 +65,12 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
             return;
         }
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new RuntimeException('Not logged in!');
+        }
+
+        $user = $token->getUser();
         $request = $event->getRequest();
         $indexes = $request->get('indexes', []);
 

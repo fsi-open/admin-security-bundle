@@ -46,7 +46,7 @@ class LogoutUserListener implements EventSubscriberInterface
     {
         $token = $this->tokenStorage->getToken();
         if (null !== $token && $token->getUser() === $event->getUser()) {
-            $this->requestStack->getMasterRequest()->getSession()->invalidate();
+            $this->requestStack->getSession()->invalidate();
             $this->tokenStorage->setToken(null);
         }
     }

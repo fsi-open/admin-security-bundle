@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use RuntimeException;
 use Swift_Mailer;
 
 class TwigSwiftMailer implements MailerInterface
@@ -38,28 +39,36 @@ class TwigSwiftMailer implements MailerInterface
     /**
      * @var string|null
      */
-    private $replayToEmail;
+    private $replyToEmail;
 
     public function __construct(
         Swift_Mailer $mailer,
         SwiftMessageFactoryInterface $messageFactory,
         string $templateName,
         string $fromEmail,
-        ?string $replayToEmail = null
+        ?string $replyToEmail = null
     ) {
         $this->mailer = $mailer;
         $this->messageFactory = $messageFactory;
         $this->templateName = $templateName;
         $this->fromEmail = $fromEmail;
-        $this->replayToEmail = $replayToEmail;
+        $this->replyToEmail = $replyToEmail;
     }
 
     public function send(EmailableInterface $to): int
     {
-        $message = $this->messageFactory->createMessage($to->getEmail(), $this->templateName, ['receiver' => $to]);
+        $recipient = $to->getEmail();
+        if (null === $recipient) {
+            throw new RuntimeException(sprintf(
+                'No recipient for object of class "%s"',
+                get_class($to)
+            ));
+        }
+
+        $message = $this->messageFactory->createMessage($recipient, $this->templateName, ['receiver' => $to]);
         $message->setFrom($this->fromEmail);
-        if (null !== $this->replayToEmail) {
-            $message->setReplyTo($this->replayToEmail);
+        if (null !== $this->replyToEmail) {
+            $message->setReplyTo($this->replyToEmail);
         }
 
         return $this->mailer->send($message);
