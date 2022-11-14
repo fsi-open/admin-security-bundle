@@ -17,6 +17,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,15 +63,19 @@ class ChangePasswordController
     private $flashMessages;
 
     /**
-     * @var string
+     * @var class-string<FormInterface>
      */
     private $formType;
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $formValidationGroups;
 
+    /**
+     * @param class-string<FormInterface> $formType
+     * @param array<string> $formValidationGroups
+     */
     public function __construct(
         Environment $twig,
         string $changePasswordActionTemplate,

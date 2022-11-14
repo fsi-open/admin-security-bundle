@@ -14,9 +14,13 @@ namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @extends BatchElement<UserInterface>
+ */
 class PasswordResetBatchElement extends BatchElement
 {
     /**

@@ -35,6 +35,9 @@ class EncodePasswordListener implements EventSubscriberInterface
         $this->encoderFactory = $encoderFactory;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -48,7 +51,7 @@ class EncodePasswordListener implements EventSubscriberInterface
         $this->updateUserPassword($event->getUser());
     }
 
-    public function onUserCreated(UserEvent $event)
+    public function onUserCreated(UserEvent $event): void
     {
         $user = $event->getUser();
         if (true === $user instanceof ChangeablePasswordInterface) {

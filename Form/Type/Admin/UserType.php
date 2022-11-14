@@ -26,10 +26,14 @@ class UserType extends AbstractType
     private $dataClass;
 
     /**
-     * @var array
+     * @var array<array<string>>
      */
     private $roles;
 
+    /**
+     * @param string|null $dataClass
+     * @param array<array<string>>|null $roles
+     */
     public function __construct(?string $dataClass, ?array $roles)
     {
         $this->dataClass = $dataClass;
@@ -59,6 +63,9 @@ class UserType extends AbstractType
         ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function getRoleList(): array
     {
         $roleList = [];

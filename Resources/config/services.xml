@@ -184,7 +184,7 @@
         <service id="admin_security.listener.build_account_menu" class="%admin_security.listener.build_account_menu.class%">
             <argument type="service" id="translator" />
             <argument type="service" id="security.token_storage" />
-            <tag name="kernel.event_listener" event="fsi_admin.menu.tools" method="createAccountMenu" />
+            <tag name="kernel.event_listener" event="FSi\Bundle\AdminBundle\Event\MenuToolsEvent" method="createAccountMenu" />
         </service>
 
         <service id="admin_security.listener.persist_doctrine_user" class="%admin_security.listener.persist_doctrine_user.class%">

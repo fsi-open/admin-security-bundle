@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
+use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 
 abstract class User implements UserInterface
@@ -62,7 +63,7 @@ abstract class User implements UserInterface
     protected $plainPassword;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $lastLogin;
 
@@ -87,12 +88,12 @@ abstract class User implements UserInterface
     protected $expired;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $expiresAt;
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $roles;
 
@@ -102,7 +103,7 @@ abstract class User implements UserInterface
     protected $credentialsExpired;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable
      */
     protected $credentialsExpireAt;
 
@@ -205,7 +206,7 @@ abstract class User implements UserInterface
         return $this->plainPassword;
     }
 
-    public function getLastLogin(): ?\DateTime
+    public function getLastLogin(): ?DateTimeImmutable
     {
         return $this->lastLogin;
     }
@@ -320,7 +321,7 @@ abstract class User implements UserInterface
         $this->username = $username;
     }
 
-    public function setCredentialsExpireAt(\DateTime $date): void
+    public function setCredentialsExpireAt(DateTimeImmutable $date): void
     {
         $this->credentialsExpireAt = $date;
     }
@@ -345,7 +346,7 @@ abstract class User implements UserInterface
         $this->expired = $boolean;
     }
 
-    public function setExpiresAt(\DateTime $date): void
+    public function setExpiresAt(DateTimeImmutable $date): void
     {
         $this->expiresAt = $date;
     }
@@ -360,7 +361,7 @@ abstract class User implements UserInterface
         $this->plainPassword = $password;
     }
 
-    public function setLastLogin(\DateTime $time): void
+    public function setLastLogin(DateTimeImmutable $time): void
     {
         $this->lastLogin = $time;
     }

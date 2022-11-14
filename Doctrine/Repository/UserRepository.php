@@ -21,6 +21,9 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 use function get_class;
 
+/**
+ * @extends EntityRepository<SymfonyUserInterface>
+ */
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {
     public function findUserByActivationToken(string $activationToken): ?ActivableInterface
@@ -29,6 +32,7 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
         if (null === $user) {
             return null;
         }
+
         if (false === $user instanceof ActivableInterface || false === $user instanceof ChangeablePasswordInterface) {
             throw new RuntimeException(
                 sprintf(
@@ -45,7 +49,16 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
 
     public function findUserByPasswordResetToken(string $confirmationToken): ?ResettablePasswordInterface
     {
-        return $this->findOneBy(['passwordResetToken.token' => $confirmationToken]);
+        $user = $this->findOneBy(['passwordResetToken.token' => $confirmationToken]);
+        if (null !== $user && false === $user instanceof ResettablePasswordInterface) {
+            throw new RuntimeException(sprintf(
+                'Entity of class "%s" does not implement the "%s" interface.',
+                get_class($user),
+                ResettablePasswordInterface::class
+            ));
+        }
+
+        return $user;
     }
 
     public function findUserByEmail(string $email): ?SymfonyUserInterface

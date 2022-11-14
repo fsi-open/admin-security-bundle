@@ -68,19 +68,22 @@ class ResetRequestController
     private $flashMessages;
 
     /**
-     * @var string
+     * @var class-string<FormInterface>
      */
     private $formType;
 
+    /**
+     * @param class-string<FormInterface> $formType
+     */
     public function __construct(
         Environment $twig,
-        $requestActionTemplate,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType
+        string $requestActionTemplate,
+        string $formType
     ) {
         $this->twig = $twig;
         $this->requestActionTemplate = $requestActionTemplate;
@@ -139,6 +142,10 @@ class ResetRequestController
         return $user;
     }
 
+    /**
+     * @param object $user
+     * @return bool
+     */
     private function isUserEligibleForResettingPassword($user): bool
     {
         if (false === $user instanceof ResettablePasswordInterface) {

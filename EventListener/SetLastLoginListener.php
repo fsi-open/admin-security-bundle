@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use DateTime;
+use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -19,6 +19,9 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class SetLastLoginListener implements EventSubscriberInterface
 {
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -31,7 +34,7 @@ class SetLastLoginListener implements EventSubscriberInterface
         $user = $event->getAuthenticationToken()->getUser();
 
         if (true === $user instanceof UserInterface) {
-            $user->setLastLogin(new DateTime());
+            $user->setLastLogin(new DateTimeImmutable());
         }
     }
 }

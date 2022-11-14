@@ -71,10 +71,13 @@ class ActivationController
     private $changePasswordFormType;
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $changePasswordFormValidationGroups;
 
+    /**
+     * @param array<string> $changePasswordFormValidationGroups
+     */
     public function __construct(
         Environment $twig,
         string $changePasswordActionTemplate,
