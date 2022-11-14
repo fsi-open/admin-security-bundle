@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
@@ -91,13 +93,18 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
 
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
-        $this->flushUserObjectManager($event->getAuthenticationToken()->getUser());
+        $user = $event->getAuthenticationToken()->getUser();
+        if (false === is_object($user)) {
+            throw new RuntimeException(sprintf(
+                'Expected an object, got "%s" instead.',
+                gettype($user)
+            ));
+        }
+
+        $this->flushUserObjectManager($user);
     }
 
-    /**
-     * @param object $user
-     */
-    private function flushUserObjectManager($user): void
+    private function flushUserObjectManager(object $user): void
     {
         $objectManager = $this->registry->getManagerForClass(get_class($user));
         if (false === $objectManager instanceof ObjectManager) {

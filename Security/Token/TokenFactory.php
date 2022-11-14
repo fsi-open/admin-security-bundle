@@ -22,10 +22,14 @@ class TokenFactory implements TokenFactoryInterface
     private $ttl;
 
     /**
-     * @var int
+     * @var int<1, max>
      */
     private $length;
 
+    /**
+     * @param int<1, max> $ttl
+     * @param int<1, max> $length
+     */
     public function __construct(int $ttl, int $length = 32)
     {
         $this->ttl = new DateInterval(sprintf('PT%dS', $ttl));

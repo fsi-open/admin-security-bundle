@@ -25,7 +25,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 final class ResendActivationTokenBatchElement extends BatchElement
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userModel;
 
@@ -34,6 +34,11 @@ final class ResendActivationTokenBatchElement extends BatchElement
      */
     private $eventDispatcher;
 
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param class-string<UserInterface> $userModel
+     * @param array<string, mixed> $options
+     */
     public function __construct(EventDispatcherInterface $eventDispatcher, string $userModel, array $options)
     {
         parent::__construct($options);

@@ -1,7 +1,7 @@
 parameters:
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
-    level: 6
+    level: 7
     paths:
         - .
     excludePaths:

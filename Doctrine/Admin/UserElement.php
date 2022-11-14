@@ -26,15 +26,20 @@ use Symfony\Component\Form\FormInterface;
 class UserElement extends CRUDElement
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userModel;
 
     /**
-     * @var string
+     * @var class-string<FormInterface>
      */
     private $formClass;
 
+    /**
+     * @param array<string, mixed> $options
+     * @param class-string<UserInterface> $userModel
+     * @param class-string<FormInterface> $formClass
+     */
     public function __construct(array $options, string $userModel, string $formClass)
     {
         parent::__construct($options);

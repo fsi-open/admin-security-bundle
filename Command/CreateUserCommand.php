@@ -32,14 +32,19 @@ class CreateUserCommand extends Command
     private $eventDispatcher;
 
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userClass;
 
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param class-string<UserInterface> $userClass
+     * @param string|null $name
+     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         string $userClass,
-        $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
 
@@ -85,7 +90,6 @@ EOT
         $password = $input->getArgument('password');
         $role = $input->getArgument('role');
 
-        /* @var $user UserInterface */
         $user = new $this->userClass();
         $user->setEmail($email);
         $user->setPlainPassword($password);

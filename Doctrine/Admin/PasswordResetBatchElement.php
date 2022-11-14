@@ -24,7 +24,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class PasswordResetBatchElement extends BatchElement
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userModel;
 
@@ -33,6 +33,11 @@ class PasswordResetBatchElement extends BatchElement
      */
     private $eventDispatcher;
 
+    /**
+     * @param array<string, mixed> $options
+     * @param class-string<UserInterface> $userModel
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(array $options, string $userModel, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($options);
