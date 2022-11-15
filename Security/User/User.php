@@ -119,15 +119,11 @@ abstract class User implements UserInterface
     }
 
     /**
-     * Serializes the user.
-     *
-     * The serialized data have to contain the fields used by the equals method and the username.
-     *
-     * @return string
+     * @return array<string|bool|DateTimeImmutable>
      */
-    public function serialize()
+    public function __serialize()
     {
-        return serialize([
+        return [
             $this->password,
             $this->salt,
             $this->username,
@@ -136,20 +132,17 @@ abstract class User implements UserInterface
             $this->credentialsExpired,
             $this->enabled,
             $this->id
-        ]);
+        ];
     }
 
     /**
-     * Unserializes the user.
-     *
-     * @param string $serialized
+     * @param array<string|bool|DateTimeImmutable> $serialized
      */
-    public function unserialize($serialized)
+    public function __unserialize($serialized)
     {
-        $data = unserialize($serialized);
         // add a few extra elements in the array to ensure that we have enough keys when unserializing
         // older data which does not include all properties.
-        $data = array_merge($data, array_fill(0, 2, null));
+        $data = array_merge($serialized, array_fill(0, 2, null));
 
         list(
             $this->password,
@@ -160,7 +153,7 @@ abstract class User implements UserInterface
             $this->credentialsExpired,
             $this->enabled,
             $this->id
-            ) = $data;
+        ) = $data;
     }
 
     /**

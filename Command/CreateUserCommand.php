@@ -15,6 +15,7 @@ use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,6 +24,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+use function is_string;
 
 class CreateUserCommand extends Command
 {
@@ -87,8 +90,19 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
+        if (false === is_string($email)) {
+            throw new InvalidArgumentException('Email is not a string!');
+        }
+
         $password = $input->getArgument('password');
+        if (false === is_string($password)) {
+            throw new InvalidArgumentException('Password is not a string!');
+        }
+
         $role = $input->getArgument('role');
+        if (false === is_string($role)) {
+            throw new InvalidArgumentException('Role is not a string!');
+        }
 
         $user = new $this->userClass();
         $user->setEmail($email);

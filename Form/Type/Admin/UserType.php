@@ -19,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function sprintf;
+
 class UserType extends AbstractType
 {
     /**
@@ -41,6 +43,11 @@ class UserType extends AbstractType
         $this->roles = $roles;
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('email', EmailType::class, ['label' => 'admin.admin_user.email']);

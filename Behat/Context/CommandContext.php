@@ -81,9 +81,9 @@ final class CommandContext extends AbstractContext
             $container = $this->kernel->getContainer();
 
             /** @var EventDispatcherInterface $eventDispatcher */
-            $eventDispatcher = $container->get(EventDispatcherInterface::class);
+            $eventDispatcher = $container->get('event_dispatcher');
 
-            /** @var string|int|null $userClass */
+            /** @var string|class-string<UserInterface>|int|null $userClass */
             $userClass = $container->getParameter('admin_security.model.user');
             if (false === is_string($userClass)) {
                 throw new Exception('"admin_security.model.user" parameter is not a string!');

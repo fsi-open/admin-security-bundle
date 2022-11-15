@@ -13,6 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Page;
 
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 use RuntimeException;
+
 use function sprintf;
 
 final class ActivationChangePassword extends Page

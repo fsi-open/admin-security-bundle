@@ -12,14 +12,14 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 use PhpSpec\ObjectBehavior;
 
 class TokenSpec extends ObjectBehavior
 {
     public function let(): void
     {
-        $this->beConstructedWith('abc', new DateTime(), new DateInterval('PT2M'));
+        $this->beConstructedWith('abc', new DateTimeImmutable(), new DateInterval('PT2M'));
     }
 
     public function it_returns_token(): void
@@ -34,8 +34,8 @@ class TokenSpec extends ObjectBehavior
 
     public function it_expires_token(): void
     {
-        $time3MinutesAgo = new DateTime();
-        $time3MinutesAgo->sub(new DateInterval('PT3M'));
+        $time3MinutesAgo = (new DateTimeImmutable())->sub(new DateInterval('PT3M'));
+
         $this->beConstructedWith('abc', $time3MinutesAgo, new DateInterval('PT2M'));
 
         $this->isNonExpired()->shouldReturn(false);

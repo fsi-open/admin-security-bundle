@@ -20,6 +20,7 @@ use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+
 use function count;
 use function file_get_contents;
 use function unserialize;
@@ -74,14 +75,17 @@ final class MailContext extends AbstractContext
         }
 
         $expected = $table->getRowsHash();
-        $email = $this->fetchEmail($expected['subject']);
+        $expectedSubject = $expected['subject'];
+        $email = $this->fetchEmail($expectedSubject);
         if (null === $email) {
-            throw new Exception(sprintf('There is no email with "%s" subject', $expected['subject']));
+            throw new Exception("There is no email with \"{$expectedSubject}\" subject");
         }
 
+        /** @var array<string> $replyTo */
+        $replyTo = $email->getReplyTo();
         Assertion::same(key($email->getFrom()), $expected['from']);
         Assertion::same(key($email->getTo()), $expected['to']);
-        Assertion::same($email->getReplyTo(), $expected['reply_to']);
+        Assertion::same(key($replyTo), $expected['reply_to']);
     }
 
     /**

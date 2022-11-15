@@ -14,7 +14,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 use Assert\Assertion;
 use DateInterval;
 use DateTimeImmutable;
-use FSi\Bundle\AdminSecurityBundle\Behat\Page\Page;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
@@ -85,7 +84,9 @@ final class PasswordResetContext extends AbstractContext
      */
     public function iTryOpenPasswordChangePageWithToken(string $confirmationToken): void
     {
-        $this->getPasswordResetChangePasswordPage()->openWithoutVerification(['confirmationToken' => $confirmationToken]);
+        $this->getPasswordResetChangePasswordPage()->openWithoutVerification([
+            'confirmationToken' => $confirmationToken
+        ]);
     }
 
     /**

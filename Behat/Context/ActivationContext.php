@@ -66,7 +66,9 @@ final class ActivationContext extends AbstractContext
      */
     public function iTryOpenActivationPageWithToken(string $activationToken): void
     {
-        $this->getPageObject(ActivationChangePassword::class)->openWithoutVerification(['activationToken' => $activationToken]);
+        $this->getPageObject(ActivationChangePassword::class)->openWithoutVerification([
+            'activationToken' => $activationToken
+        ]);
     }
 
     /**

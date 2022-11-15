@@ -31,14 +31,14 @@ class UserElement extends CRUDElement
     private $userModel;
 
     /**
-     * @var class-string<FormInterface>
+     * @var class-string<FormInterface<FormInterface>>
      */
     private $formClass;
 
     /**
      * @param array<string, mixed> $options
      * @param class-string<UserInterface> $userModel
-     * @param class-string<FormInterface> $formClass
+     * @param class-string<FormInterface<FormInterface>> $formClass
      */
     public function __construct(array $options, string $userModel, string $formClass)
     {

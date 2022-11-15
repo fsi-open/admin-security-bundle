@@ -35,6 +35,9 @@ class SendPasswordResetMailListener implements EventSubscriberInterface
         $this->tokenFactory = $tokenFactory;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

@@ -34,7 +34,7 @@ class Token implements TokenInterface
     public function __construct(string $token, DateTimeImmutable $createdAt, DateInterval $ttl)
     {
         $this->token = $token;
-        $this->createdAt = clone $createdAt;
+        $this->createdAt = $createdAt;
         $this->expiresAt = $createdAt->add($ttl);
     }
 

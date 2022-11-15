@@ -40,12 +40,12 @@ class ChangePasswordControllerSpec extends ObjectBehavior
     ): void {
         $this->beConstructedWith(
             $twig,
-            'template-name',
             $userRepository,
             $router,
             $formFactory,
             $eventDispatcher,
             $flashMessages,
+            'template-name',
             'form_type',
             ['validation_group']
         );

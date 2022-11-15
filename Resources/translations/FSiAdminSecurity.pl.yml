@@ -78,3 +78,8 @@ crud:
   list:
     batch:
       empty_choice: Wybierz akcję
+
+datagrid:
+  boolean:
+    yes: Tak
+    no: Nie

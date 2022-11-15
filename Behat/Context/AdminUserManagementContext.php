@@ -33,7 +33,7 @@ final class AdminUserManagementContext extends AbstractContext
                 $cellRowIndex = $rowIndex + 1;
                 $cell = $datagrid->getCellByColumnName($key, $cellRowIndex);
                 Assertion::notNull($cell, "No cell for \"{$key}\" and row \"{$cellRowIndex}\"");
-                Assertion::same($value, $cell->getText());
+                Assertion::same($cell->getText(), $value);
             }
         }
     }

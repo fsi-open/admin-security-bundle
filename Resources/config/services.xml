@@ -46,35 +46,35 @@
 
         <service id="admin_security.controller.activation" class="%admin_security.controller.activation.class%" public="true">
             <argument type="service" id="twig" />
-            <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
+            <argument type="string">%admin_security.templates.activation.change_password%</argument>
             <argument type="string">%admin_security.activation.change_password_form.type%</argument>
             <argument type="string">%admin_security.activation.change_password_form.validation_groups%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.request" class="%admin_security.controller.password_reset.request.class%" public="true">
             <argument type="service" id="twig" />
-            <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="router"/>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
+            <argument type="string">%admin_security.templates.password_reset.request%</argument>
             <argument type="string">%admin_security.password_reset.request_form.type%</argument>
         </service>
 
         <service id="admin_security.controller.password_reset.change_password" class="%admin_security.controller.password_reset.change_password.class%" public="true">
             <argument type="service" id="twig" />
-            <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
             <argument type="service" id="admin_security.repository.user"/>
             <argument type="service" id="router"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
+            <argument type="string">%admin_security.templates.password_reset.change_password%</argument>
             <argument type="string">%admin_security.password_reset.change_password_form.type%</argument>
             <argument type="string">%admin_security.password_reset.change_password_form.validation_groups%</argument>
         </service>

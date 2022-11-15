@@ -16,8 +16,6 @@ use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 
 final class AdminChangePassword extends Page
 {
-    private string $path = '/admin/change-password';
-
     /**
      * @param array<string, string|null> $urlParameters
      * @return void
@@ -25,10 +23,9 @@ final class AdminChangePassword extends Page
     public function verify(array $urlParameters = []): void
     {
         parent::verify($urlParameters);
-
         if (false === $this->getDocument()->has('css', '#page-header:contains("Change password")')) {
             throw new UnexpectedPageException(
-                "Page {$this->path} is not a Admin change password page"
+                "Page \"{$this->getDriver()->getCurrentUrl()}\" is not a Admin change password page."
             );
         }
     }
@@ -50,6 +47,6 @@ final class AdminChangePassword extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . $this->path;
+        return $this->getParameter('base_url') . '/admin/change-password';
     }
 }

@@ -57,12 +57,12 @@ class ResetRequestControllerSpec extends ObjectBehavior
 
         $this->beConstructedWith(
             $twig,
-            'template_path',
             $formFactory,
             $router,
             $userRepository,
             $eventDispatcher,
             $flashMessages,
+            'template_path',
             'form_type'
         );
     }

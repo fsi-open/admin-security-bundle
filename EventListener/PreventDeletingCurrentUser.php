@@ -51,6 +51,9 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         $this->flashMessages = $flashMessages;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

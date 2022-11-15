@@ -194,7 +194,7 @@ abstract class Page extends BasePage
 
     public function pressButton(string $label): void
     {
-        $this->getFormElement()->pressButton($label);
+        $this->getBodyElement()->pressButton($label);
     }
 
     public function hasLink(string $label): bool
@@ -202,9 +202,9 @@ abstract class Page extends BasePage
         return $this->getBodyElement()->hasLink($label);
     }
 
-    public function clickLink(string $label): bool
+    public function clickLink(string $label): void
     {
-        return $this->getBodyElement()->clickLink($label);
+        $this->getBodyElement()->clickLink($label);
     }
 
     /**

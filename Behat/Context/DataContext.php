@@ -17,10 +17,8 @@ use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use function expect;
 
 final class DataContext extends AbstractContext
 {
@@ -74,7 +72,9 @@ final class DataContext extends AbstractContext
         $user->setEnabled(true);
 
         if (0 !== strlen($password)) {
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $password));
+            $user->setPassword(
+                $this->passwordEncoder->encodePassword($user, $password)
+            );
             $user->eraseCredentials();
         }
 
@@ -162,6 +162,7 @@ final class DataContext extends AbstractContext
         $user = $this->getRepository(User::class)->findOneBy(['username' => $userName]);
         Assertion::notNull($user, "No user for username \"{$userName}\".");
 
+        $this->getEntityManager()->refresh($user);
         return $user;
     }
 
@@ -170,6 +171,7 @@ final class DataContext extends AbstractContext
         $user = $this->getRepository(User::class)->findOneBy(['email' => $userEmail]);
         Assertion::notNull($user, "No user for email \"{$userEmail}\".");
 
+        $this->getEntityManager()->refresh($user);
         return $user;
     }
 }

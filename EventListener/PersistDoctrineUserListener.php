@@ -36,6 +36,9 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
         $this->registry = $registry;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

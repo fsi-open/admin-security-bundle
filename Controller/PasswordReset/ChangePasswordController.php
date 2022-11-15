@@ -63,7 +63,7 @@ class ChangePasswordController
     private $flashMessages;
 
     /**
-     * @var class-string<FormInterface>
+     * @var class-string<FormInterface<FormInterface>>
      */
     private $formType;
 
@@ -73,27 +73,27 @@ class ChangePasswordController
     private $formValidationGroups;
 
     /**
-     * @param class-string<FormInterface> $formType
+     * @param class-string<FormInterface<FormInterface>> $formType
      * @param array<string> $formValidationGroups
      */
     public function __construct(
         Environment $twig,
-        string $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
+        string $changePasswordActionTemplate,
         string $formType,
         array $formValidationGroups
     ) {
         $this->twig = $twig;
-        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->formType = $formType;
         $this->formValidationGroups = $formValidationGroups;
     }

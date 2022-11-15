@@ -25,11 +25,10 @@ use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminPanel;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Page;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
-use function sprintf;
 
 final class AdminContext extends AbstractContext
 {
@@ -43,6 +42,33 @@ final class AdminContext extends AbstractContext
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
         $this->tokenStorage = $tokenStorage;
+    }
+
+    public function getPage(string $name): Page
+    {
+        switch ($name) {
+            case 'Login':
+                $page = $this->getPageObject(Login::class);
+                break;
+            case 'Admin panel':
+                $page = $this->getPageObject(AdminPanel::class);
+                break;
+            case 'Admin change password':
+                $page = $this->getPageObject(AdminChangePassword::class);
+                break;
+            case 'User list':
+                $page = $this->getPageObject(UserList::class);
+                break;
+            case 'Password reset request':
+                $page = $this->getPageObject(PasswordResetRequest::class);
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Could not cast \"{$name}\" to a page object."
+                );
+        }
+
+        return $page;
     }
 
     /**
@@ -79,7 +105,7 @@ final class AdminContext extends AbstractContext
     public function iImpersonateUser(string $user): void
     {
         $this->getSession()->visit(
-            sprintf('%s/admin/?_switch_user=%s', $this->getBaseUrl(), $user)
+            "{$this->getBaseUrl()}/admin/?_switch_user={$user}"
         );
     }
 
@@ -154,7 +180,7 @@ final class AdminContext extends AbstractContext
         $links = $this->getPageObject(AdminPanel::class)->getDropdownOptions($button);
 
         foreach ($dropdownLinks->getHash() as $link) {
-            Assertion::contains($links, $link['Link']);
+            Assertion::inArray($link['Link'], $links);
         }
     }
 
@@ -164,7 +190,7 @@ final class AdminContext extends AbstractContext
     public function iClickLinkFromDropdownButton(string $link, string $dropdown): void
     {
         $dropDownElement = $this->getPageObject(AdminPanel::class)->getDropdown($dropdown);
-        Assertion::notNull($dropDownElement, "No dropdown element!");
+        Assertion::notNull($dropDownElement, 'No dropdown element!');
 
         $dropDownElement->clickLink($link);
     }
@@ -174,10 +200,7 @@ final class AdminContext extends AbstractContext
      */
     public function iShouldBeLoggedOff(): void
     {
-        Assertion::null(
-            $this->tokenStorage->getToken(),
-            "User should have been logged out."
-        );
+        Assertion::null($this->tokenStorage->getToken(), 'User should have been logged out.');
     }
 
     /**
@@ -234,34 +257,7 @@ final class AdminContext extends AbstractContext
     {
         Assertion::false(
             $this->getPageObject(AdminPanel::class)->hasAnyMenuElements(),
-            "Top menu should not have any element."
+            'Top menu should not have any element.'
         );
-    }
-
-    public function getPage(string $name): Page
-    {
-        switch ($name) {
-            case 'Login':
-                $page = $this->getPageObject(Login::class);
-                break;
-            case 'Admin panel':
-                $page = $this->getPageObject(AdminPanel::class);
-                break;
-            case 'Admin change password':
-                $page = $this->getPageObject(AdminChangePassword::class);
-                break;
-            case 'User list':
-                $page = $this->getPageObject(UserList::class);
-                break;
-            case 'Password reset request':
-                $page = $this->getPageObject(AdminChangePassword::class);
-                break;
-            default:
-                throw new InvalidArgumentException(
-                    "Could not cast \"{$name}\" to a page object."
-                );
-        }
-
-        return $page;
     }
 }

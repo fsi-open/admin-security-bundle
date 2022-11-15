@@ -58,12 +58,12 @@ class ActivationControllerSpec extends ObjectBehavior
 
         $this->beConstructedWith(
             $twig,
-            'change-password.html.twig',
             $userRepository,
             $router,
             $formFactory,
             $eventDispatcher,
             $flashMessages,
+            'change-password.html.twig',
             'form_type',
             ['validation_group']
         );

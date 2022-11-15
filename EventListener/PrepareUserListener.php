@@ -31,6 +31,9 @@ class PrepareUserListener implements EventSubscriberInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

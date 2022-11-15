@@ -35,7 +35,7 @@ class SetLastLoginListenerSpec extends ObjectBehavior
         $event->getAuthenticationToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
-        $user->setLastLogin(Argument::type('DateTime'))->shouldBeCalled();
+        $user->setLastLogin(Argument::type('DateTimeImmutable'))->shouldBeCalled();
 
         $this->onInteractiveLogin($event);
     }

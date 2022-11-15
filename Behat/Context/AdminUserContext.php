@@ -17,7 +17,6 @@ use Behat\Gherkin\Node\TableNode;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\Form;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
-use function expect;
 
 final class AdminUserContext extends AbstractContext
 {

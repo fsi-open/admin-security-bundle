@@ -12,4 +12,4 @@ framework:
     test:            ~
     assets:          ~
     session:
-        storage_id:     session.storage.filesystem
+        storage_id:  session.storage.filesystem

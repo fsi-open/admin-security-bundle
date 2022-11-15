@@ -54,8 +54,10 @@ class BuildAccountMenuListener
         $logoutItem->setLabel($this->translator->trans('admin.logout', [], 'FSiAdminSecurity'));
         $rootItem->addChild($logoutItem);
 
-        $event->getMenu()->addChild($rootItem);
-        return $event->getMenu();
+        $menu = $event->getMenu();
+        $menu->addChild($rootItem);
+
+        return $menu;
     }
 
     private function createRootItem(): Item

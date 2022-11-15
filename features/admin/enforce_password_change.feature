@@ -28,4 +28,5 @@ Feature: Admin change password
     And I'm logged in as admin
     When I impersonate user "redactor"
     Then I should be on the "Admin panel" page
+    When I am on the "Admin panel" page
     And I should be logged in as "redactor"

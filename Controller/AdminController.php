@@ -54,17 +54,17 @@ class AdminController
     private $formFactory;
 
     /**
-     * @var string
-     */
-    private $changePasswordActionTemplate;
-
-    /**
      * @var FlashMessages
      */
     private $flashMessages;
 
     /**
-     * @var class-string<FormInterface>
+     * @var string
+     */
+    private $changePasswordActionTemplate;
+
+    /**
+     * @var class-string<FormInterface<FormInterface>>
      */
     private $changePasswordFormType;
 
@@ -74,7 +74,7 @@ class AdminController
     private $changePasswordFormValidationGroups;
 
     /**
-     * @param class-string<FormInterface> $changePasswordFormType
+     * @param class-string<FormInterface<FormInterface>> $changePasswordFormType
      * @param array<string> $changePasswordFormValidationGroups
      */
     public function __construct(
