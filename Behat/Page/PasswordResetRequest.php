@@ -34,11 +34,6 @@ class PasswordResetRequest extends Page
         }
     }
 
-    public function getMessage(): string
-    {
-        return $this->find('css', '.alert')->getText();
-    }
-
     /**
      * @param array<string, string|null> $urlParameters
      * @return string

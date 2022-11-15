@@ -64,6 +64,9 @@ abstract class Page extends BasePage
     public function hasBatchAction(string $value): bool
     {
         $select = $this->getDocument()->find('css', 'select[data-datagrid-name]');
+        if (null === $select) {
+            throw new RuntimeException('No select for name "data-datagrid-name".');
+        }
 
         return $select->has('css', sprintf('option:contains("%s")', $value));
     }
@@ -75,41 +78,64 @@ abstract class Page extends BasePage
             "descendant-or-self::table/tbody/tr[position() = {$rowIndex}]"
         );
 
-        $tr->find('css', 'input[type="checkbox"]')->check();
+        if (null === $tr) {
+            throw new RuntimeException("No row for index {$rowIndex}");
+        }
+
+        $checkbox = $tr->find('css', 'input[type="checkbox"]');
+        if (null === $checkbox) {
+            throw new RuntimeException("No checkbox for row with index {$rowIndex}");
+        }
+
+        $checkbox->check();
     }
 
     public function pressBatchActionConfirmationButton(): void
     {
-        $this->getDocument()->find('css', 'button[data-datagrid-name]')->click();
+        $button = $this->getDocument()->find('css', 'button[data-datagrid-name]');
+        if (null === $button) {
+            throw new RuntimeException('No button for name "data-datagrid-name"');
+        }
+
+        $button->click();
     }
 
     public function selectBatchAction(string $action): void
     {
-        $this->getDocument()->find('css', 'select[data-datagrid-name]')->selectOption($action);
+        $select = $this->getDocument()->find('css', 'select[data-datagrid-name]');
+        if (null === $select) {
+            throw new RuntimeException('No select for name "data-datagrid-name".');
+        }
+
+        $select->selectOption($action);
     }
 
     public function getColumnPosition(string $columnHeader): int
     {
         $headers = $this->getDocument()->findAll('css', 'th');
+        /** @var NodeElement $header */
         foreach ($headers as $index => $header) {
-            /** @var NodeElement $header */
-            if (
-                true === $header->has('css', 'span')
-                && $header->find('css', 'span')->getText() === $columnHeader
-            ) {
+            $span = $header->find('css', 'span');
+            if (null !== $span && $span->getText() === $columnHeader) {
                 return $index + 1;
             }
         }
 
-        throw new UnexpectedPageException(sprintf('Can\'t find column %s', $columnHeader));
+        throw new UnexpectedPageException("Can\'t find column \"{$columnHeader}\"");
     }
 
     public function getCell(string $columnHeader, int $rowNumber): ?NodeElement
     {
         $columnPos = $this->getColumnPosition($columnHeader);
 
-        return $this->getDocument()
-            ->find('xpath', sprintf('descendant-or-self::table/tbody/tr[%d]/td[%d]', $rowNumber, $columnPos));
+        return $this->getDocument()->find(
+            'xpath',
+            sprintf(
+                'descendant-or-self::table/tbody/tr[%d]/td[%d]',
+                $rowNumber,
+                $columnPos
+            )
+        );
     }
 
     public function getPopover(): ?NodeElement

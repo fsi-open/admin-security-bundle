@@ -211,10 +211,9 @@ final class AdminUserContext extends AbstractContext
      */
     public function iShouldSeeFieldErrorInChangePasswordFormWithMessage(string $field, PyStringNode $message): void
     {
-        Assertion::same(
-            $this->getChangePasswordPage()->findFieldError($field)->getText(),
-            (string) $message
-        );
+        $fieldError = $this->getChangePasswordPage()->findFieldError($field);
+        Assertion::notNull($fieldError, "No error for field \"{$field}\".");
+        Assertion::same($fieldError->getText(), (string) $message);
     }
 
     /**

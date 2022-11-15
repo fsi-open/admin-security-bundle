@@ -3,7 +3,7 @@ includes:
 parameters:
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
-    level: 7
+    level: 8
     paths:
         - .
     excludePaths:

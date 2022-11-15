@@ -24,6 +24,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Twig\Environment;
@@ -106,6 +107,9 @@ class ResetRequestController
 
         $user = $this->getUser($form);
         $redirectResponse = $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+        if (false === $user instanceof ResettablePasswordInterface) {
+            return $redirectResponse;
+        }
 
         if (false === $this->isUserEligibleForResettingPassword($user)) {
             return $redirectResponse;
@@ -134,24 +138,18 @@ class ResetRequestController
         }
 
         if (false === $user instanceof UserInterface) {
-            throw new RuntimeException(
-                sprintf('Expected instance of %s but got instance of %s', UserInterface::class, get_class($user))
-            );
+            throw new RuntimeException(sprintf(
+                'Expected instance of %s but got instance of %s',
+                UserInterface::class,
+                get_class($user)
+            ));
         }
 
         return $user;
     }
 
-    /**
-     * @param object $user
-     * @return bool
-     */
-    private function isUserEligibleForResettingPassword($user): bool
+    private function isUserEligibleForResettingPassword(ResettablePasswordInterface $user): bool
     {
-        if (false === $user instanceof ResettablePasswordInterface) {
-            return false;
-        }
-
         if (true === $user instanceof AdvancedUserInterface && false === $user->isEnabled()) {
             return false;
         }

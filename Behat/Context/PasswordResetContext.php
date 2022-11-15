@@ -39,8 +39,13 @@ final class PasswordResetContext extends AbstractContext
     public function userShouldStillHaveConfirmationToken(string $username, string $expectedConfirmationToken): void
     {
         $user = $this->findUserByUsername($username);
+        $passwordResetToken = $user->getPasswordResetToken();
+        Assertion::notNull(
+            $passwordResetToken,
+            "User {$username} has no password reset token"
+        );
         Assertion::same(
-            $user->getPasswordResetToken()->getToken(),
+            $passwordResetToken->getToken(),
             $expectedConfirmationToken
         );
     }

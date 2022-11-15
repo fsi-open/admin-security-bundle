@@ -21,7 +21,7 @@ final class Form extends Element
     {
         $field = $this->getElement('form')->findField($locator);
         if (null === $field) {
-            throw new RuntimeException("Form \"{$locator}\" field");
+            throw new RuntimeException("No form field \"{$locator}\"");
         }
 
         return $field;
@@ -29,9 +29,14 @@ final class Form extends Element
 
     public function getFieldErrors(string $fieldLocator): string
     {
+        $field = $this->getElement('form')->findField($fieldLocator);
+        if (null === $field) {
+            throw new RuntimeException('');
+        }
+
         $errorSelector = sprintf(
             'span.error[data-for="%s"]',
-            $this->getElement('form')->findField($fieldLocator)->getAttribute('id')
+            $field->getAttribute('id')
         );
 
         $errors = $this->getDocument()->findAll('css', $errorSelector);

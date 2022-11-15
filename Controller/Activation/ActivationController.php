@@ -80,22 +80,22 @@ class ActivationController
      */
     public function __construct(
         Environment $twig,
-        string $changePasswordActionTemplate,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
+        string $changePasswordActionTemplate,
         string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
         $this->twig = $twig;
-        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->changePasswordFormType = $changePasswordFormType;
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
@@ -103,7 +103,6 @@ class ActivationController
     public function activateAction(string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
-
         if (true === $this->isUserEnforcedToChangePassword($user)) {
             $this->flashMessages->info(
                 'admin.activation.message.change_password',
@@ -126,7 +125,6 @@ class ActivationController
     public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
-
         if (false === $this->isUserEnforcedToChangePassword($user)) {
             throw new NotFoundHttpException();
         }
@@ -167,7 +165,12 @@ class ActivationController
             throw new NotFoundHttpException();
         }
 
-        if (false === $user->getActivationToken()->isNonExpired()) {
+        $activationToken = $user->getActivationToken();
+        if (null === $activationToken) {
+            throw new NotFoundHttpException();
+        }
+
+        if (false === $activationToken->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 

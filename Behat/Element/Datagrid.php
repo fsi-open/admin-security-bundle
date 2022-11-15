@@ -39,17 +39,22 @@ final class Datagrid extends Element
         return count($records);
     }
 
-    public function checkCellCheckbox(int $rowNum, int $columnNum = 1): void
+    public function checkCellCheckbox(int $rowNumber, int $columnNumber = 1): void
     {
-        $row = $this->getRow($rowNum);
-        $cell = $row->find('xpath', '//td[' . $columnNum . ']');
-        $checkbox = $cell->find('css', 'input[type="checkbox"]');
+        $row = $this->getRow($rowNumber);
+        $cell = $row->find('xpath', "//td[{$columnNumber}]");
+        if (null === $cell) {
+            throw new UnexpectedPageException(
+                "No cell for numer {$columnNumber} and row {$rowNumber}"
+            );
+        }
 
+        $checkbox = $cell->find('css', 'input[type="checkbox"]');
         if (null === $checkbox) {
             throw new UnexpectedPageException(sprintf(
                 'Can\'t find checkbox in %d column of %d row',
-                $columnNum,
-                $rowNum
+                $columnNumber,
+                $rowNumber
             ));
         }
 

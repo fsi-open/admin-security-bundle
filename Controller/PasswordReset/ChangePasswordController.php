@@ -106,7 +106,12 @@ class ChangePasswordController
             throw new NotFoundHttpException();
         }
 
-        if (false === $user->getPasswordResetToken()->isNonExpired()) {
+        $passwordResetToken = $user->getPasswordResetToken();
+        if (null === $passwordResetToken) {
+            throw new NotFoundHttpException();
+        }
+
+        if (false === $passwordResetToken->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 

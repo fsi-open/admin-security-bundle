@@ -163,7 +163,10 @@ final class AdminContext extends AbstractContext
      */
     public function iClickLinkFromDropdownButton(string $link, string $dropdown): void
     {
-        $this->getPageObject(AdminPanel::class)->getDropdown($dropdown)->clickLink($link);
+        $dropDownElement = $this->getPageObject(AdminPanel::class)->getDropdown($dropdown);
+        Assertion::notNull($dropDownElement, "No dropdown element!");
+
+        $dropDownElement->clickLink($link);
     }
 
     /**

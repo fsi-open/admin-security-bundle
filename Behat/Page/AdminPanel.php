@@ -13,6 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Page;
 
 use Behat\Mink\Element\NodeElement;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
+use RuntimeException;
 
 use function array_filter;
 use function array_map;
@@ -65,7 +66,12 @@ final class AdminPanel extends Page
 
     public function hasElementInTopMenu(string $element): bool
     {
-        return $this->getDocument()->find('css', '#top-menu')->hasLink($element);
+        $topMenuElement = $this->find('css', '#top-menu');
+        if (null === $topMenuElement) {
+            throw new RuntimeException('No element for "#top-menu".');
+        }
+
+        return $topMenuElement->hasLink($element);
     }
 
     public function hasAnyMenuElements(): bool

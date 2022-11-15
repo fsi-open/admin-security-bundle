@@ -40,8 +40,10 @@ final class ActivationContext extends AbstractContext
     public function userShouldStillHaveActivationToken(string $username, string $expectedActivationToken): void
     {
         $user = $this->getUserByUsername($username);
+        $activationToken = $user->getActivationToken();
+        Assertion::notNull($activationToken, "User \"{$username}\" has no activation token.");
         Assertion::same(
-            $user->getActivationToken()->getToken(),
+            $activationToken->getToken(),
             $expectedActivationToken
         );
     }
@@ -81,8 +83,11 @@ final class ActivationContext extends AbstractContext
     public function iOpenActivationPageWithTokenReceivedByUserInTheEmail(string $email): void
     {
         $user = $this->getUserByEmail($email);
+        $activationToken = $user->getActivationToken();
+        Assertion::notNull($activationToken, "User \"{$email}\" has no activation token.");
+
         $this->getPageObject(Activation::class)->openWithoutVerification([
-            'activationToken' => $user->getActivationToken()->getToken()
+            'activationToken' => $activationToken->getToken()
         ]);
     }
 

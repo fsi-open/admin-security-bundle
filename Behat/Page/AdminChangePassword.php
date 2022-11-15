@@ -35,7 +35,12 @@ final class AdminChangePassword extends Page
 
     public function findFieldError(string $field): ?NodeElement
     {
-        $fieldContainer = $this->getDocument()->findField($field)->getParent();
+        $fieldElement = $this->getDocument()->findField($field);
+        if (null === $fieldElement) {
+            return null;
+        }
+
+        $fieldContainer = $fieldElement->getParent();
         return $fieldContainer->find('css', 'span.help-block');
     }
 

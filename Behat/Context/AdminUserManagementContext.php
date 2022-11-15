@@ -30,7 +30,9 @@ final class AdminUserManagementContext extends AbstractContext
         Assertion::same($datagrid->getRowCount(), count($table->getHash()));
         foreach ($table->getHash() as $rowIndex => $row) {
             foreach ($row as $key => $value) {
-                $cell = $datagrid->getCellByColumnName($key, $rowIndex + 1);
+                $cellRowIndex = $rowIndex + 1;
+                $cell = $datagrid->getCellByColumnName($key, $cellRowIndex);
+                Assertion::notNull($cell, "No cell for \"{$key}\" and row \"{$cellRowIndex}\"");
                 Assertion::same($value, $cell->getText());
             }
         }

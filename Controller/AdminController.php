@@ -101,7 +101,12 @@ class AdminController
 
     public function changePasswordAction(Request $request): Response
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new NotFoundHttpException();
+        }
+
+        $user = $token->getUser();
         if (false === $user instanceof ChangeablePasswordInterface) {
             throw new NotFoundHttpException();
         }

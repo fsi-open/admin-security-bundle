@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Page;
 
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
+use RuntimeException;
 
 final class Login extends Page
 {
@@ -32,7 +33,12 @@ final class Login extends Page
 
     public function getFormErrorMessage(): string
     {
-        return $this->find('css', 'form > div.alert-danger')->getText();
+        $messageElement = $this->find('css', 'form > div.alert-danger');
+        if (null === $messageElement) {
+            throw new RuntimeException('No element for "form > div.alert-danger".');
+        }
+
+        return $messageElement->getText();
     }
 
     /**

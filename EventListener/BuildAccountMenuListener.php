@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminBundle\Event\MenuEvent;
 use FSi\Bundle\AdminBundle\Event\MenuToolsEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminBundle\Menu\Item\RoutableItem;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use RuntimeException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,7 +44,6 @@ class BuildAccountMenuListener
         }
 
         $rootItem = $this->createRootItem();
-
         if (true === $this->canChangeUserPassword()) {
             $changePasswordItem = new RoutableItem('account.change-password', 'fsi_admin_change_password');
             $changePasswordItem->setLabel($this->translator->trans('admin.change_password', [], 'FSiAdminSecurity'));
@@ -56,18 +55,21 @@ class BuildAccountMenuListener
         $rootItem->addChild($logoutItem);
 
         $event->getMenu()->addChild($rootItem);
-
         return $event->getMenu();
     }
 
     private function createRootItem(): Item
     {
-        $rootItem = new Item('account');
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new RuntimeException('No logged in user.');
+        }
 
+        $rootItem = new Item('account');
         $rootItem->setLabel(
             $this->translator->trans(
                 'admin.welcome',
-                ['%username%' => $this->tokenStorage->getToken()->getUsername()],
+                ['%username%' => $token->getUsername()],
                 'FSiAdminSecurity'
             )
         );
@@ -83,11 +85,16 @@ class BuildAccountMenuListener
 
     private function hasUserLoggedIn(): bool
     {
-        return $this->tokenStorage->getToken() !== null;
+        return null !== $this->tokenStorage->getToken();
     }
 
     private function canChangeUserPassword(): bool
     {
-        return $this->tokenStorage->getToken()->getUser() instanceof ChangeablePasswordInterface;
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new RuntimeException('No logged in user.');
+        }
+
+        return $token->getUser() instanceof ChangeablePasswordInterface;
     }
 }

@@ -54,12 +54,12 @@ class SecuredManager implements ManagerInterface
 
     public function hasElement(string $id): bool
     {
-        if (!$this->manager->hasElement($id)) {
+        if (false === $this->manager->hasElement($id)) {
             return false;
         }
 
         $element = $this->manager->getElement($id);
-        if ($this->isAccessToElementRestricted($element)) {
+        if (true === $this->isAccessToElementRestricted($element)) {
             return false;
         }
 
@@ -74,8 +74,7 @@ class SecuredManager implements ManagerInterface
     public function getElement(string $id): Element
     {
         $element = $this->manager->getElement($id);
-
-        if ($this->isAccessToElementRestricted($element)) {
+        if (true === $this->isAccessToElementRestricted($element)) {
             throw new AccessDeniedException(sprintf(
                 'Access denied to element "%s"',
                 get_class($element)
@@ -92,14 +91,13 @@ class SecuredManager implements ManagerInterface
 
     public function getElements(): array
     {
-        return array_filter($this->manager->getElements(), function (Element $element): bool {
-            return false === $this->isAccessToElementRestricted($element);
-        });
+        return array_filter(
+            $this->manager->getElements(),
+            fn(Element $element): bool
+                => false === $this->isAccessToElementRestricted($element)
+        );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function accept(Visitor $visitor): void
     {
         $visitor->visitManager($this);
@@ -112,12 +110,13 @@ class SecuredManager implements ManagerInterface
             return true;
         }
 
-        if ($this->isUserForcedToChangePassword()) {
+        if (true === $this->isUserForcedToChangePassword()) {
             return true;
         }
 
         return true === $element instanceof SecuredElementInterface
-            && false === $element->isAllowed($this->authorizationChecker);
+            && false === $element->isAllowed($this->authorizationChecker)
+        ;
     }
 
     private function isUserForcedToChangePassword(): bool
@@ -126,7 +125,12 @@ class SecuredManager implements ManagerInterface
             return false;
         }
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new RuntimeException('User is authenticated fully, but there is no token in storage.');
+        }
+
+        $user = $token->getUser();
         if (false === $user instanceof EnforceablePasswordChangeInterface) {
             return false;
         }
