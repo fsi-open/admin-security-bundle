@@ -14,6 +14,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -101,19 +102,11 @@ class ChangePasswordController
     public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
-
         if (null === $user) {
             throw new NotFoundHttpException();
         }
 
-        $passwordResetToken = $user->getPasswordResetToken();
-        if (null === $passwordResetToken) {
-            throw new NotFoundHttpException();
-        }
-
-        if (false === $passwordResetToken->isNonExpired()) {
-            throw new NotFoundHttpException();
-        }
+        $this->validatePasswordResetToken($user);
 
         $form = $this->formFactory->create(
             $this->formType,
@@ -123,22 +116,47 @@ class ChangePasswordController
 
         $form->handleRequest($request);
         if (true === $form->isSubmitted() && true === $form->isValid()) {
-            $user->removePasswordResetToken();
-
-            $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
-
-            $this->flashMessages->success(
-                'admin.password_reset.change_password.message.success',
-                [],
-                'FSiAdminSecurity'
-            );
-
-            return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
+            return $this->handleFormSubmitAndRedirect($user);
         }
 
         return new Response($this->twig->render(
             $this->changePasswordActionTemplate,
             ['form' => $form->createView()]
         ));
+    }
+
+    /**
+     * @param ResettablePasswordInterface $user
+     * @return void
+     * @throws NotFoundHttpException
+     */
+    private function validatePasswordResetToken(ResettablePasswordInterface $user): void
+    {
+        $passwordResetToken = $user->getPasswordResetToken();
+        if (null === $passwordResetToken) {
+            throw new NotFoundHttpException();
+        }
+
+        if (false === $passwordResetToken->isNonExpired()) {
+            throw new NotFoundHttpException();
+        }
+    }
+
+    private function handleFormSubmitAndRedirect(ResettablePasswordInterface $user): Response
+    {
+        $user->removePasswordResetToken();
+
+        $this->eventDispatcher->dispatch(
+            new ChangePasswordEvent($user),
+            AdminSecurityEvents::CHANGE_PASSWORD
+        );
+
+        $this->flashMessages->success(
+            'admin.password_reset.change_password.message.success',
+            [],
+            'FSiAdminSecurity'
+        );
+
+        return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 }

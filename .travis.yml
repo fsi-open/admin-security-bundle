@@ -29,7 +29,7 @@ before_install:
   - wget --no-clobber -O vendor/bin/selenium.jar http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar || true
 
 before_script:
-  - nohup php -S localhost:8080 -t features/fixtures/project/public > /tmp/server.log 2>&1 &
+  - nohup php -S localhost:8080 -t features/fixtures/project/public > features/fixtures/project/var/logs/server.log 2>&1 &
   - java -jar vendor/bin/selenium.jar > /dev/null 2>&1 &
   - sleep 5
   - features/fixtures/project/bin/console assets:install --symlink features/fixtures/project/public
@@ -41,5 +41,5 @@ script:
   - vendor/bin/behat --no-snippets --profile=travis
 
 after_failure:
-  - cat /tmp/FSiAdminSecurityBundle/logs/test.log
-  - cat /tmp/server.log
+  - cat features/fixtures/project/var/logs/test.log
+  - cat features/fixtures/project/var/logs/server.log

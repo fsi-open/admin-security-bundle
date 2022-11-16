@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -59,7 +59,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
     public function it_changes_password(
         Request $request,
         UserRepositoryInterface $userRepository,
-        UserInterface $user,
+        ResettablePasswordInterface $user,
         TokenInterface $token,
         FormFactoryInterface $formFactory,
         FormInterface $form,
