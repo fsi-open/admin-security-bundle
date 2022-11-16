@@ -14,13 +14,17 @@ namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @extends BatchElement<UserInterface>
+ */
 class PasswordResetBatchElement extends BatchElement
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userModel;
 
@@ -29,6 +33,11 @@ class PasswordResetBatchElement extends BatchElement
      */
     private $eventDispatcher;
 
+    /**
+     * @param array<string, mixed> $options
+     * @param class-string<UserInterface> $userModel
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(array $options, string $userModel, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($options);

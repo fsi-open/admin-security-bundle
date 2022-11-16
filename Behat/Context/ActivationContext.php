@@ -11,83 +11,18 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
-use Behat\Mink\Mink;
-use Behat\Mink\Session;
-use Behat\MinkExtension\Context\MinkAwareContext;
-use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Assert\Assertion;
 use DateInterval;
-use DateTime;
-use Doctrine\Persistence\ManagerRegistry;
+use DateTimeImmutable;
 use Exception;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Activation;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\ActivationChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\Activation;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\ActivationChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\FixturesBundle\Entity\User;
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-use Symfony\Component\HttpKernel\KernelInterface;
 
-use function expect;
-
-final class ActivationContext extends PageObjectContext implements KernelAwareContext, MinkAwareContext
+final class ActivationContext extends AbstractContext
 {
-    /**
-     * @var Mink
-     */
-    private $mink;
-
-    /**
-     * @var array
-     */
-    private $minkParameters;
-
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
-
-    /**
-     * @var Activation
-     */
-    private $activationPage;
-
-    /**
-     * @var ActivationChangePassword
-     */
-    private $activationChangePasswordPage;
-
-    public function __construct(Activation $activationPage, ActivationChangePassword $activationChangePasswordPage)
-    {
-        $this->activationPage = $activationPage;
-        $this->activationChangePasswordPage = $activationChangePasswordPage;
-    }
-
-    public function setKernel(KernelInterface $kernel): void
-    {
-        $this->kernel = $kernel;
-    }
-
-    public function setMink(Mink $mink): void
-    {
-        $this->mink = $mink;
-    }
-
-    public function getMink(): Mink
-    {
-        return $this->mink;
-    }
-
-    public function setMinkParameters(array $parameters): void
-    {
-        $this->minkParameters = $parameters;
-    }
-
-    public function getSession(?string $name = null): Session
-    {
-        return $this->getMink()->getSession($name);
-    }
-
     /**
      * @Given /^user "([^"]*)" has activation token "([^"]*)"$/
      */
@@ -96,17 +31,21 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
         $user = $this->getUserByUsername($username);
         $user->setActivationToken($this->createToken($activationToken, new DateInterval('PT3600S')));
 
-        $this->flush();
+        $this->getEntityManager()->flush();
     }
 
     /**
      * @Given /^user "([^"]*)" should still have activation token "([^"]*)"$/
      */
-    public function userShouldStillHaveActivationToken(string $username, $expectedActivationToken): void
+    public function userShouldStillHaveActivationToken(string $username, string $expectedActivationToken): void
     {
         $user = $this->getUserByUsername($username);
-
-        expect($user->getActivationToken()->getToken())->toBe($expectedActivationToken);
+        $activationToken = $user->getActivationToken();
+        Assertion::notNull($activationToken, "User \"{$username}\" has no activation token.");
+        Assertion::same(
+            $activationToken->getToken(),
+            $expectedActivationToken
+        );
     }
 
     /**
@@ -115,11 +54,11 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     public function userHasActivationTokenWithTtl(string $username, string $activationToken): void
     {
         $ttl = new DateInterval('P1D');
-        $ttl->invert = true;
+        $ttl->invert = 1;
 
         $this->getUserByUsername($username)->setActivationToken($this->createToken($activationToken, $ttl));
 
-        $this->flush();
+        $this->getEntityManager()->flush();
     }
 
     /**
@@ -127,7 +66,9 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
      */
     public function iTryOpenActivationPageWithToken(string $activationToken): void
     {
-        $this->activationChangePasswordPage->openWithoutVerification(['activationToken' => $activationToken]);
+        $this->getPageObject(ActivationChangePassword::class)->openWithoutVerification([
+            'activationToken' => $activationToken
+        ]);
     }
 
     /**
@@ -135,7 +76,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
      */
     public function iOpenActivationPageWithToken(string $activationToken): void
     {
-        $this->activationPage->openWithoutVerification(['activationToken' => $activationToken]);
+        $this->getPageObject(Activation::class)->openWithoutVerification(['activationToken' => $activationToken]);
     }
 
     /**
@@ -144,8 +85,11 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
     public function iOpenActivationPageWithTokenReceivedByUserInTheEmail(string $email): void
     {
         $user = $this->getUserByEmail($email);
-        $this->activationPage->openWithoutVerification([
-            'activationToken' => $user->getActivationToken()->getToken()
+        $activationToken = $user->getActivationToken();
+        Assertion::notNull($activationToken, "User \"{$email}\" has no activation token.");
+
+        $this->getPageObject(Activation::class)->openWithoutVerification([
+            'activationToken' => $activationToken->getToken()
         ]);
     }
 
@@ -154,7 +98,7 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
      */
     public function iFillInNewPasswordWithConfirmation(): void
     {
-        $this->activationChangePasswordPage->fillForm();
+        $this->getPageObject(ActivationChangePassword::class)->fillForm();
     }
 
     /**
@@ -162,12 +106,12 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
      */
     public function iFillInNewPasswordWithInvalidConfirmation(): void
     {
-        $this->activationChangePasswordPage->fillFormWithInvalidData();
+        $this->getPageObject(ActivationChangePassword::class)->fillFormWithInvalidData();
     }
 
     public function getUserByEmail(string $email): UserInterface
     {
-        $user = $this->getUserRepository()->findOneBy(['email' => $email]);
+        $user = $this->getRepository(User::class)->findOneBy(['email' => $email]);
         if (null === $user) {
             throw new Exception("No user for email \"{$email}\"");
         }
@@ -177,37 +121,12 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
 
     public function getUserByUsername(string $username): UserInterface
     {
-        $user = $this->getUserRepository()->findOneBy(['username' => $username]);
+        $user = $this->getRepository(User::class)->findOneBy(['username' => $username]);
         if (null === $user) {
             throw new Exception("No user for username \"{$username}\"");
         }
 
         return $user;
-    }
-
-    private function flush(): void
-    {
-        $manager = $this->getDoctrine()->getManagerForClass(User::class);
-        if (null === $manager) {
-            throw new Exception(sprintf('Unable to fetch manager for class "%s"', User::class));
-        }
-
-        $manager->flush();
-    }
-
-    private function getDoctrine(): ManagerRegistry
-    {
-        $doctrine = $this->kernel->getContainer()->get('doctrine');
-        if (false === $doctrine instanceof ManagerRegistry) {
-            throw new Exception('Unable to fetch Doctrine');
-        }
-
-        return $doctrine;
-    }
-
-    private function getUserRepository(): UserRepositoryInterface
-    {
-        return $this->getDoctrine()->getRepository(User::class);
     }
 
     /**
@@ -217,6 +136,6 @@ final class ActivationContext extends PageObjectContext implements KernelAwareCo
      */
     private function createToken(string $token, DateInterval $ttl): Token
     {
-        return new Token($token, new DateTime(), $ttl);
+        return new Token($token, new DateTimeImmutable(), $ttl);
     }
 }

@@ -17,6 +17,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class RequestType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('email', EmailType::class, [

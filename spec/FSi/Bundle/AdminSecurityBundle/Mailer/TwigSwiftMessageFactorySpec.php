@@ -44,7 +44,8 @@ class TwigSwiftMessageFactorySpec extends ObjectBehavior
         $templateParameters = ['user' => 'user', 'request' => $request];
 
         $twig->mergeGlobals($templateParameters)->willReturn($templateParameters);
-        $twig->loadTemplate('mail-template.html.twig')->willReturn($template);
+        $twig->getTemplateClass('mail-template.html.twig')->willReturn('1234template.php');
+        $twig->loadTemplate('1234template.php', 'mail-template.html.twig')->willReturn($template);
 
         $template->renderBlock('subject', $templateParameters)->willReturn('subject string');
         $template->renderBlock('body_html', $templateParameters)->willReturn('body string');

@@ -1,0 +1,4 @@
+---
+fsi_resource_repository:
+    map_path: "%kernel.project_dir%/features/fixtures/project/config/resource_map.yml"
+    resource_class: FSi\FixturesBundle\Entity\Resource

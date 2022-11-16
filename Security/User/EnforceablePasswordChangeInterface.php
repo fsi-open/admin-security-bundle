@@ -14,6 +14,5 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 interface EnforceablePasswordChangeInterface extends ChangeablePasswordInterface
 {
     public function isForcedToChangePassword(): bool;
-
     public function enforcePasswordChange(bool $enforce): void;
 }

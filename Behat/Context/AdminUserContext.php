@@ -11,40 +11,25 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
+use Assert\Assertion;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\AdminChangePassword;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Form;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Login;
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use FSi\Bundle\AdminSecurityBundle\Behat\Element\Form;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminChangePassword;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
 
-final class AdminUserContext extends PageObjectContext
+final class AdminUserContext extends AbstractContext
 {
-    /**
-     * @var Login
-     */
-    private $loginPage;
-
-    /**
-     * @var AdminChangePassword
-     */
-    private $changePasswordPage;
-
-    public function __construct(Login $loginPage, AdminChangePassword $changePasswordPage)
-    {
-        $this->loginPage = $loginPage;
-        $this->changePasswordPage = $changePasswordPage;
-    }
-
     /**
      * @Given /^I\'m logged in as admin$/
      */
     public function iMLoggedInAsAdmin(): void
     {
-        if (false === $this->loginPage->getSession()->isStarted()) {
-            $this->loginPage->getSession()->start();
+        if (false === $this->getSession()->isStarted()) {
+            $this->getSession()->start();
         }
-        $this->loginPage->open();
+
+        $this->getLoginPage()->open();
         $this->iFillFormWithValidAdminLoginAndPassword();
         $this->iPressButton('Login');
     }
@@ -54,7 +39,7 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iMLoggedInAsRedactor(): void
     {
-        $this->loginPage->open();
+        $this->getLoginPage()->open();
         $this->iFillFormWithValidRedactorLoginAndPassword();
         $this->iPressButton('Login');
     }
@@ -64,8 +49,8 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillFormWithLoginAndPassword(string $username, string $password): void
     {
-        $this->changePasswordPage->fillField('E-mail', $username);
-        $this->changePasswordPage->fillField('Password', $password);
+        $this->getChangePasswordPage()->fillField('E-mail', $username);
+        $this->getChangePasswordPage()->fillField('Password', $password);
     }
 
     /**
@@ -73,8 +58,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldSeeLoginFormWithFollowingFields(TableNode $fieldsTable): void
     {
+        $loginPage = $this->getLoginPage();
         foreach ($fieldsTable->getHash() as $fieldRow) {
-            expect($this->loginPage->hasField($fieldRow['Field name']))->toBe(true);
+            $fieldName = $fieldRow['Field name'];
+            Assertion::true($loginPage->hasField($fieldName), "Field \"{$fieldName}\" not found.");
         }
     }
 
@@ -83,7 +70,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldAlsoSeeLoginFormButton(string $buttonName): void
     {
-        expect($this->loginPage->hasButton($buttonName))->toBe(true);
+        Assertion::true(
+            $this->getLoginPage()->hasButton($buttonName),
+            "Button \"{$buttonName}\" not found."
+        );
     }
 
     /**
@@ -91,8 +81,9 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillFormWithValidAdminLoginAndPassword(): void
     {
-        $this->loginPage->fillField('E-mail', 'admin');
-        $this->loginPage->fillField('Password', 'admin');
+        $loginPage = $this->getLoginPage();
+        $loginPage->fillField('E-mail', 'admin');
+        $loginPage->fillField('Password', 'admin');
     }
 
     /**
@@ -100,8 +91,9 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillFormWithValidRedactorLoginAndPassword(): void
     {
-        $this->loginPage->fillField('E-mail', 'redactor');
-        $this->loginPage->fillField('Password', 'redactor');
+        $loginPage = $this->getLoginPage();
+        $loginPage->fillField('E-mail', 'redactor');
+        $loginPage->fillField('Password', 'redactor');
     }
 
     /**
@@ -109,8 +101,9 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillFormWithInvalidAdminLoginAndPassword(): void
     {
-        $this->loginPage->fillField('E-mail', 'invalid mail');
-        $this->loginPage->fillField('Password', 'invalid password');
+        $loginPage = $this->getLoginPage();
+        $loginPage->fillField('E-mail', 'invalid mail');
+        $loginPage->fillField('Password', 'invalid password');
     }
 
     /**
@@ -118,7 +111,7 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iPressButton(string $buttonName): void
     {
-        $this->loginPage->pressButton($buttonName);
+        $this->getLoginPage()->pressButton($buttonName);
     }
 
     /**
@@ -126,7 +119,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldSeeLoginFormErrorMessage(string $message): void
     {
-        expect($this->loginPage->getFormErrorMessage())->toBe($message);
+        Assertion::same(
+            $this->getLoginPage()->getFormErrorMessage(),
+            $message
+        );
     }
 
     /**
@@ -134,8 +130,13 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldSeeChangePasswordFormWithFollowingFields(TableNode $formField): void
     {
+        $changePasswordPage = $this->getChangePasswordPage();
         foreach ($formField->getHash() as $fieldData) {
-            expect($this->changePasswordPage->hasField($fieldData['Field name']))->toBe(true);
+            $fieldName = $fieldData['Field name'];
+            Assertion::true(
+                $changePasswordPage->hasField($fieldName),
+                "Field \"{$fieldName}\" not found."
+            );
         }
     }
 
@@ -144,7 +145,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldSeeChangePasswordFormButton(string $buttonName): void
     {
-        expect($this->changePasswordPage->hasButton($buttonName))->toBe(true);
+        Assertion::true(
+            $this->getChangePasswordPage()->hasButton($buttonName),
+            "Button \"{$buttonName}\" not found."
+        );
     }
 
     /**
@@ -152,10 +156,11 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iChangeMyPassword(): void
     {
-        $this->changePasswordPage->open();
-        $this->changePasswordPage->fillField('Current password', 'redactor');
-        $this->changePasswordPage->fillField('New password', 'admin-new');
-        $this->changePasswordPage->fillField('Repeat password', 'admin-new');
+        $changePasswordPage = $this->getChangePasswordPage();
+        $changePasswordPage->open();
+        $changePasswordPage->fillField('Current password', 'redactor');
+        $changePasswordPage->fillField('New password', 'admin-new');
+        $changePasswordPage->fillField('Repeat password', 'admin-new');
         $this->iPress('Save');
     }
 
@@ -164,9 +169,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillChangePasswordFormFieldsWithValidData(): void
     {
-        $this->changePasswordPage->fillField('Current password', 'admin');
-        $this->changePasswordPage->fillField('New password', 'admin-new');
-        $this->changePasswordPage->fillField('Repeat password', 'admin-new');
+        $changePasswordPage = $this->getChangePasswordPage();
+        $changePasswordPage->fillField('Current password', 'admin');
+        $changePasswordPage->fillField('New password', 'admin-new');
+        $changePasswordPage->fillField('Repeat password', 'admin-new');
     }
 
     /**
@@ -174,9 +180,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillChangePasswordFormFieldsWithInvalidCurrentPassword(): void
     {
-        $this->changePasswordPage->fillField('Current password', 'invalid-password');
-        $this->changePasswordPage->fillField('New password', 'admin-new');
-        $this->changePasswordPage->fillField('Repeat password', 'admin-new');
+        $changePasswordPage = $this->getChangePasswordPage();
+        $changePasswordPage->fillField('Current password', 'invalid-password');
+        $changePasswordPage->fillField('New password', 'admin-new');
+        $changePasswordPage->fillField('Repeat password', 'admin-new');
     }
 
     /**
@@ -184,9 +191,10 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iFillChangePasswordFormFieldsWithRepeatPasswordDifferentThanNewPassword(): void
     {
-        $this->changePasswordPage->fillField('Current password', 'admin');
-        $this->changePasswordPage->fillField('New password', 'admin-new');
-        $this->changePasswordPage->fillField('Repeat password', 'admin-new-different');
+        $changePasswordPage = $this->getChangePasswordPage();
+        $changePasswordPage->fillField('Current password', 'admin');
+        $changePasswordPage->fillField('New password', 'admin-new');
+        $changePasswordPage->fillField('Repeat password', 'admin-new-different');
     }
 
     /**
@@ -194,7 +202,7 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iPress(string $button): void
     {
-        $this->changePasswordPage->pressButton($button);
+        $this->getChangePasswordPage()->pressButton($button);
     }
 
     /**
@@ -202,7 +210,9 @@ final class AdminUserContext extends PageObjectContext
      */
     public function iShouldSeeFieldErrorInChangePasswordFormWithMessage(string $field, PyStringNode $message): void
     {
-        expect($this->changePasswordPage->findFieldError($field)->getText())->toBe((string) $message);
+        $fieldError = $this->getChangePasswordPage()->findFieldError($field);
+        Assertion::notNull($fieldError, "No error for field \"{$field}\".");
+        Assertion::same($fieldError->getText(), (string) $message);
     }
 
     /**
@@ -211,7 +221,20 @@ final class AdminUserContext extends PageObjectContext
     public function iShouldSeeInformationAboutPasswordsMismatch(): void
     {
         /** @var Form $form */
-        $form = $this->getElement('Form');
-        expect($form->getFieldErrors('New password'))->toBe('The entered passwords don\'t match');
+        $form = $this->getElement(Form::class);
+        Assertion::same(
+            $form->getFieldErrors('New password'),
+            'The entered passwords don\'t match'
+        );
+    }
+
+    private function getLoginPage(): Login
+    {
+        return $this->getPageObject(Login::class);
+    }
+
+    private function getChangePasswordPage(): AdminChangePassword
+    {
+        return $this->getPageObject(AdminChangePassword::class);
     }
 }

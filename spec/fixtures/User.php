@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\spec\fixtures;
 
+use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 
@@ -34,6 +35,7 @@ class User implements UserInterface
 
     public function getSalt()
     {
+        return null;
     }
 
     public function getUsername()
@@ -128,11 +130,11 @@ class User implements UserInterface
     {
     }
 
-    public function setLastLogin(\DateTime $time): void
+    public function setLastLogin(DateTimeImmutable $time): void
     {
     }
 
-    public function getLastLogin(): ?\DateTime
+    public function getLastLogin(): ?DateTimeImmutable
     {
     }
 

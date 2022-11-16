@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Form\Type\Admin;
 
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -18,24 +19,35 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function sprintf;
+
 class UserType extends AbstractType
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>|null
      */
     private $dataClass;
 
     /**
-     * @var array
+     * @var array<array<string>>|null
      */
     private $roles;
 
+    /**
+     * @param class-string<UserInterface>|null $dataClass
+     * @param array<array<string>>|null $roles
+     */
     public function __construct(?string $dataClass, ?array $roles)
     {
         $this->dataClass = $dataClass;
         $this->roles = $roles;
     }
 
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed> $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('email', EmailType::class, ['label' => 'admin.admin_user.email']);
@@ -59,9 +71,15 @@ class UserType extends AbstractType
         ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function getRoleList(): array
     {
         $roleList = [];
+        if (null === $this->roles) {
+            return $roleList;
+        }
 
         foreach ($this->roles as $role => $child) {
             $label = sprintf('%s [ %s ]', $role, implode(', ', $child));

@@ -76,6 +76,9 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

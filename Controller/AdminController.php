@@ -15,15 +15,16 @@ use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Twig\Environment;
 
 class AdminController
 {
@@ -43,19 +44,14 @@ class AdminController
     private $eventDispatcher;
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var FormFactoryInterface
      */
     private $formFactory;
-
-    /**
-     * @var string
-     */
-    private $changePasswordActionTemplate;
 
     /**
      * @var FlashMessages
@@ -65,15 +61,24 @@ class AdminController
     /**
      * @var string
      */
+    private $changePasswordActionTemplate;
+
+    /**
+     * @var class-string<FormInterface<FormInterface>>
+     */
     private $changePasswordFormType;
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $changePasswordFormValidationGroups;
 
+    /**
+     * @param class-string<FormInterface<FormInterface>> $changePasswordFormType
+     * @param array<string> $changePasswordFormValidationGroups
+     */
     public function __construct(
-        EngineInterface $templating,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         TokenStorageInterface $tokenStorage,
         RouterInterface $router,
@@ -83,7 +88,7 @@ class AdminController
         string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
-        $this->templating = $templating;
+        $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
@@ -96,7 +101,12 @@ class AdminController
 
     public function changePasswordAction(Request $request): Response
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new NotFoundHttpException();
+        }
+
+        $user = $token->getUser();
         if (false === $user instanceof ChangeablePasswordInterface) {
             throw new NotFoundHttpException();
         }
@@ -120,9 +130,9 @@ class AdminController
             return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
         }
 
-        return $this->templating->renderResponse(
+        return new Response($this->twig->render(
             $this->changePasswordActionTemplate,
             ['form' => $form->createView()]
-        );
+        ));
     }
 }

@@ -36,6 +36,9 @@ final class ResendActvationMailListener implements EventSubscriberInterface
         $this->tokenFactory = $tokenFactory;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [AdminSecurityEvents::RESEND_ACTIVATION_TOKEN => 'resendActivationMail'];

@@ -14,10 +14,14 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SetEmailAsUsernameListener implements EventSubscriberInterface
 {
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -32,6 +36,14 @@ class SetEmailAsUsernameListener implements EventSubscriberInterface
             return;
         }
 
-        $user->setUsername($user->getEmail());
+        $email = $user->getEmail();
+        if (null === $email) {
+            throw new RuntimeException(sprintf(
+                'No email for user of class "%s"',
+                get_class($user)
+            ));
+        }
+
+        $user->setUsername($email);
     }
 }

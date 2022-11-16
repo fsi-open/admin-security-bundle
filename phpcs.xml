@@ -4,6 +4,7 @@
     <rule ref="PSR12"/>
 
     <file>.</file>
+
     <exclude-pattern>Resources</exclude-pattern>
     <exclude-pattern>features/fixtures/project/config</exclude-pattern>
     <exclude-pattern>features/fixtures/project/public</exclude-pattern>

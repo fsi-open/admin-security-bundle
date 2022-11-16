@@ -11,25 +11,15 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
+use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\Element\Datagrid;
-use FSi\Bundle\AdminSecurityBundle\Behat\Context\Page\UserList;
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+use FSi\Bundle\AdminSecurityBundle\Behat\Element\Datagrid;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 
-use function expect;
+use function count;
 
-final class AdminUserManagementContext extends PageObjectContext
+final class AdminUserManagementContext extends AbstractContext
 {
-    /**
-     * @var UserList
-     */
-    private $userListPage;
-
-    public function __construct(UserList $userListPage)
-    {
-        $this->userListPage = $userListPage;
-    }
-
     /**
      * @Then I should see following table:
      */
@@ -37,12 +27,13 @@ final class AdminUserManagementContext extends PageObjectContext
     {
         $datagrid = $this->getDatagrid();
 
-        expect($datagrid->getRowCount())->toBe(count($table->getHash()));
-
+        Assertion::same($datagrid->getRowCount(), count($table->getHash()));
         foreach ($table->getHash() as $rowIndex => $row) {
             foreach ($row as $key => $value) {
-                $cell = $datagrid->getCellByColumnName($key, $rowIndex + 1);
-                expect($cell->getText())->toBe($value);
+                $cellRowIndex = $rowIndex + 1;
+                $cell = $datagrid->getCellByColumnName($key, $cellRowIndex);
+                Assertion::notNull($cell, "No cell for \"{$key}\" and row \"{$cellRowIndex}\"");
+                Assertion::same($cell->getText(), $value);
             }
         }
     }
@@ -52,7 +43,10 @@ final class AdminUserManagementContext extends PageObjectContext
      */
     public function iShouldHaveFollowingListBatchActions(TableNode $table): void
     {
-        expect(array_values($this->userListPage->getBatchActions()))->toBe(array_keys($table->getRowsHash()));
+        Assertion::same(
+            array_values($this->getUserListPage()->getBatchActions()),
+            array_keys($table->getRowsHash())
+        );
     }
 
     /**
@@ -84,7 +78,7 @@ final class AdminUserManagementContext extends PageObjectContext
      */
     public function iPressLink(string $name): void
     {
-        $this->userListPage->clickLink($name);
+        $this->getUserListPage()->clickLink($name);
     }
 
     /**
@@ -92,23 +86,30 @@ final class AdminUserManagementContext extends PageObjectContext
      */
     public function iFillFormWithValidUserData(): void
     {
-        $this->userListPage->fillField('Email', 'new-user@fsi.pl');
-        $this->userListPage->checkField('ROLE_ADMIN');
+        $userListPage = $this->getUserListPage();
+        $userListPage->fillField('Email', 'new-user@fsi.pl');
+        $userListPage->checkField('ROLE_ADMIN');
     }
 
     private function performBatchAction(string $action, int $cellIndex): void
     {
-        $this->userListPage->getBatchActionsElement()->selectOption($action);
+        $userListPage = $this->getUserListPage();
+        $userListPage->getBatchActionsElement()->selectOption($action);
 
         $this->getDatagrid()->checkCellCheckbox($cellIndex);
 
-        $this->userListPage->pressButton('Ok');
+        $userListPage->pressButton('Ok');
+    }
+
+    private function getUserListPage(): UserList
+    {
+        return $this->getPageObject(UserList::class);
     }
 
     private function getDatagrid(): Datagrid
     {
         /** @var Datagrid $datagrid */
-        $datagrid = $this->getElement('Datagrid');
+        $datagrid = $this->getElement(Datagrid::class);
         return $datagrid;
     }
 }

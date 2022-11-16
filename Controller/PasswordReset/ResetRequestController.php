@@ -18,7 +18,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -27,15 +26,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Twig\Environment;
 
 use function get_class;
 
 class ResetRequestController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -68,27 +68,30 @@ class ResetRequestController
     private $flashMessages;
 
     /**
-     * @var string
+     * @var class-string<FormInterface<FormInterface>>
      */
     private $formType;
 
+    /**
+     * @param class-string<FormInterface<FormInterface>> $formType
+     */
     public function __construct(
-        EngineInterface $templating,
-        $requestActionTemplate,
+        Environment $twig,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
-        $formType
+        string $requestActionTemplate,
+        string $formType
     ) {
-        $this->templating = $templating;
-        $this->requestActionTemplate = $requestActionTemplate;
+        $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->userRepository = $userRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->requestActionTemplate = $requestActionTemplate;
         $this->formType = $formType;
     }
 
@@ -98,14 +101,18 @@ class ResetRequestController
 
         $form->handleRequest($request);
         if (false === $form->isSubmitted() || false === $form->isValid()) {
-            return $this->templating->renderResponse($this->requestActionTemplate, ['form' => $form->createView()]);
+            return new Response(
+                $this->twig->render($this->requestActionTemplate, ['form' => $form->createView()])
+            );
         }
 
         $user = $this->getUser($form);
-        $redirectResponse = $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+        if (false === $user instanceof ResettablePasswordInterface) {
+            return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+        }
 
         if (false === $this->isUserEligibleForResettingPassword($user)) {
-            return $redirectResponse;
+            return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
         }
 
         $this->eventDispatcher->dispatch(
@@ -113,7 +120,7 @@ class ResetRequestController
             AdminSecurityEvents::RESET_PASSWORD_REQUEST
         );
 
-        return $redirectResponse;
+        return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
     }
 
     private function addFlashAndRedirect(string $type, string $message): RedirectResponse
@@ -123,6 +130,11 @@ class ResetRequestController
         return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
     }
 
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @return UserInterface|null
+     * @throws RuntimeException
+     */
     private function getUser(FormInterface $form): ?UserInterface
     {
         $user = $this->userRepository->findUserByEmail($form->get('email')->getData());
@@ -131,20 +143,18 @@ class ResetRequestController
         }
 
         if (false === $user instanceof UserInterface) {
-            throw new RuntimeException(
-                sprintf('Expected instance of %s but got instance of %s', UserInterface::class, get_class($user))
-            );
+            throw new RuntimeException(sprintf(
+                'Expected instance of %s but got instance of %s',
+                UserInterface::class,
+                get_class($user)
+            ));
         }
 
         return $user;
     }
 
-    private function isUserEligibleForResettingPassword($user): bool
+    private function isUserEligibleForResettingPassword(ResettablePasswordInterface $user): bool
     {
-        if (false === $user instanceof ResettablePasswordInterface) {
-            return false;
-        }
-
         if (true === $user instanceof AdvancedUserInterface && false === $user->isEnabled()) {
             return false;
         }
@@ -162,6 +172,8 @@ class ResetRequestController
 
     private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user): bool
     {
-        return $user->getPasswordResetToken() && $user->getPasswordResetToken()->isNonExpired();
+        return null !== $user->getPasswordResetToken()
+            && true === $user->getPasswordResetToken()->isNonExpired()
+        ;
     }
 }

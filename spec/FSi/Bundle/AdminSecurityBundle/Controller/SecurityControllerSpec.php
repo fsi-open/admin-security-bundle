@@ -18,24 +18,20 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Twig\Environment;
 
 class SecurityControllerSpec extends ObjectBehavior
 {
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages
     ): void {
-        $this->beConstructedWith(
-            $templating,
-            $authenticationUtils,
-            $flashMessages,
-            'login_template'
-        );
+        $this->beConstructedWith($twig, $authenticationUtils, $flashMessages, 'login_template');
     }
 
     public function it_render_login_template_in_login_action(
-        EngineInterface $templating,
+        Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
         AuthenticationException $exception,
@@ -54,11 +50,11 @@ class SecurityControllerSpec extends ObjectBehavior
             Argument::type('string')
         )->shouldBeCalled();
 
-        $templating->renderResponse(
+        $twig->render(
             Argument::type('string'),
             ['last_username' => 'user']
-        )->willReturn($response);
+        )->willReturn('response');
 
-        $this->loginAction()->shouldReturn($response);
+        $this->loginAction()->getContent()->shouldReturn('response');
     }
 }

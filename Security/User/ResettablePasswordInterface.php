@@ -17,8 +17,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 interface ResettablePasswordInterface extends ChangeablePasswordInterface, EmailableInterface
 {
     public function getPasswordResetToken(): ?TokenInterface;
-
     public function setPasswordResetToken(TokenInterface $token): void;
-
     public function removePasswordResetToken(): void;
 }

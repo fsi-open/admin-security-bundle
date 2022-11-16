@@ -40,7 +40,7 @@ class DemoteUserCommand extends Command
     public function __construct(
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
-        $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
 
@@ -69,17 +69,24 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
+        if (false === is_string($email)) {
+            throw new InvalidArgumentException('Email is not a string!');
+        }
+
         $role = $input->getArgument('role');
+        if (false === is_string($role)) {
+            throw new InvalidArgumentException('Role is not a string!');
+        }
 
         $user = $this->userRepository->findUserByEmail($email);
         if (false === $user instanceof UserInterface) {
-            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+            throw new InvalidArgumentException("User with email \"{$email}\" cannot be found");
         }
 
         $user->removeRole($role);
         $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::DEMOTE_USER);
 
-        $output->writeln(sprintf('User <comment>%s</comment> has been demoted', $email));
+        $output->writeln("User <comment>{$email}</comment> has been demoted");
 
         return 0;
     }

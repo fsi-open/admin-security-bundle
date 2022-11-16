@@ -43,7 +43,9 @@ class FSiAdminSecurityBundle extends Bundle
         if (false === $userRepository instanceof UserRepositoryInterface) {
             throw new LogicException(sprintf(
                 'Repository for class "%s" does not implement the "%s" interface!',
-                get_class($userRepository),
+                true === is_object($userRepository)
+                    ? get_class($userRepository)
+                    : gettype($userRepository),
                 UserRepositoryInterface::class
             ));
         }

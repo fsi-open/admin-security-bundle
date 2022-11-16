@@ -19,6 +19,11 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class FSIAdminSecurityExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * @param array<string, mixed> $configs
+     * @param ContainerBuilder $container
+     * @return void
+     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -48,6 +53,12 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         ]);
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param string $prefix
+     * @param array<string, mixed> $config
+     * @return void
+     */
     protected function setTemplateParameters(ContainerBuilder $container, string $prefix, array $config = []): void
     {
         foreach ($config as $key => $value) {
@@ -61,11 +72,21 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         }
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param array<string, mixed> $model
+     * @return void
+     */
     protected function setModelParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.model.user', $model['user']);
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param array<string, mixed> $model
+     * @return void
+     */
     private function setActivationParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.activation.token_ttl', $model['token_ttl']);
@@ -87,6 +108,11 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         );
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param array<string, mixed> $model
+     * @return void
+     */
     private function setPasswordResetParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter('admin_security.password_reset.token_ttl', $model['token_ttl']);
@@ -108,6 +134,11 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
         );
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param array<string, mixed> $model
+     * @return void
+     */
     private function setChangePasswordParameters(ContainerBuilder $container, array $model): void
     {
         $container->setParameter(

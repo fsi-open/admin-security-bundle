@@ -12,11 +12,12 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Admin\Element;
-use FSi\Bundle\AdminBundle\Event\BatchEvents;
+use FSi\Bundle\AdminBundle\Event\BatchObjectsPreApplyEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,10 +51,13 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
         $this->flashMessages = $flashMessages;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [
-            BatchEvents::BATCH_OBJECTS_PRE_APPLY => 'preventDeletingCurrentUser',
+            BatchObjectsPreApplyEvent::class => 'preventDeletingCurrentUser',
         ];
     }
 
@@ -64,7 +68,12 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
             return;
         }
 
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new RuntimeException('Not logged in!');
+        }
+
+        $user = $token->getUser();
         $request = $event->getRequest();
         $indexes = $request->get('indexes', []);
 

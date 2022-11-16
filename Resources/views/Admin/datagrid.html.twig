@@ -8,9 +8,9 @@
         <input type="checkbox" disabled />
     {% else %}
         <input type="checkbox"
-               name="{{ cell.attribute('datagrid_name') }}_{{ cell.type }}[]"
-               value="{{ cell.value }}"
-               class="{{ cell.attribute('datagrid_name') }}_{{ cell.type }}"
+               name="{{ datagrid_name }}_{{ cell.type }}[]"
+               value="{{ cell.getAttribute('index') }}"
+               class="{{ datagrid_name }}_{{ cell.type }}"
         />
     {% endif %}
     </td>

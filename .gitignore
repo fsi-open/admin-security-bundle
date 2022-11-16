@@ -6,6 +6,7 @@
 /features/fixtures/project/var/logs/*
 /features/fixtures/project/var/mysql/*
 !/features/fixtures/project/var/.gitkeep
+!/features/fixtures/project/var/data/.gitkeep
 /features/fixtures/project/config/parameters.yaml
 *.sqlite
 .phpcs-cache

@@ -18,7 +18,8 @@ security:
             security: false
 
         admin_panel:
-            pattern:    ^/admin
+            pattern: ^/admin
+            logout_on_user_change: true
             form_login:
                 provider: entity_provider
                 check_path: fsi_admin_security_user_check

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 
 class Token implements TokenInterface
 {
@@ -22,21 +22,20 @@ class Token implements TokenInterface
     protected $token;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
     protected $createdAt;
 
     /**
-     * @var DateTime
+     * @var DateTimeImmutable
      */
     protected $expiresAt;
 
-    public function __construct(string $token, DateTime $createdAt, DateInterval $ttl)
+    public function __construct(string $token, DateTimeImmutable $createdAt, DateInterval $ttl)
     {
         $this->token = $token;
-        $this->createdAt = clone $createdAt;
-        $this->expiresAt = clone $this->createdAt;
-        $this->expiresAt->add($ttl);
+        $this->createdAt = $createdAt;
+        $this->expiresAt = $createdAt->add($ttl);
     }
 
     public function getToken(): string
@@ -44,13 +43,13 @@ class Token implements TokenInterface
         return $this->token;
     }
 
-    public function getExpiresAt(): DateTime
+    public function getExpiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;
     }
 
     public function isNonExpired(): bool
     {
-        return new DateTime() <= $this->expiresAt;
+        return new DateTimeImmutable() <= $this->expiresAt;
     }
 }

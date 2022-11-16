@@ -4,12 +4,22 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <defaults autoconfigure="true" autowire="true" public="false">
+            <bind key="$session" id="behat.mink.default_session" />
+            <bind key="$minkParameters" id="behat.mink.parameters" />
+            <bind key="$spoolDirectory">%swiftmailer.spool.default.file.path%</bind>
+            <bind key="$projectDirectory">%kernel.project_dir%</bind>
+        </defaults>
+
+        <prototype namespace="FSi\Bundle\AdminSecurityBundle\Behat\Context\" resource="../../../../../../Behat/Context" />
+
         <service id="fsi_fixtures_bundle.admin.news" class="FSi\FixturesBundle\Admin\News">
             <tag name="admin.element"/>
         </service>
+
         <service id="fsi_fixtures_bundle.admin.page_settings" class="FSi\FixturesBundle\Admin\PageSettings">
             <tag name="admin.element"/>
         </service>
-        <service id="test.security.encoder_factory" alias="security.encoder_factory" public="true" />
+
     </services>
 </container>

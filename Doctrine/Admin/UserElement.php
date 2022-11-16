@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Component\DataGrid\DataGridFactoryInterface;
 use FSi\Component\DataGrid\DataGridInterface;
 use FSi\Component\DataSource\DataSourceFactoryInterface;
@@ -19,18 +20,26 @@ use FSi\Component\DataSource\DataSourceInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
+/**
+ * @extends CRUDElement<UserInterface>
+ */
 class UserElement extends CRUDElement
 {
     /**
-     * @var string
+     * @var class-string<UserInterface>
      */
     private $userModel;
 
     /**
-     * @var string
+     * @var class-string<FormInterface<FormInterface>>
      */
     private $formClass;
 
+    /**
+     * @param array<string, mixed> $options
+     * @param class-string<UserInterface> $userModel
+     * @param class-string<FormInterface<FormInterface>> $formClass
+     */
     public function __construct(array $options, string $userModel, string $formClass)
     {
         parent::__construct($options);

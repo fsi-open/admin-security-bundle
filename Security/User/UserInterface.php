@@ -11,27 +11,20 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
-use Serializable;
+use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 interface UserInterface extends
     AdvancedUserInterface,
     ResettablePasswordInterface,
     EnforceablePasswordChangeInterface,
-    ActivableInterface,
-    Serializable
+    ActivableInterface
 {
     public function setUsername(string $username): void;
-
     public function setEmail(string $email): void;
-
     public function setLocked(bool $boolean): void;
-
-    public function setLastLogin(\DateTime $time): void;
-
-    public function getLastLogin(): ?\DateTime;
-
+    public function setLastLogin(DateTimeImmutable $time): void;
+    public function getLastLogin(): ?DateTimeImmutable;
     public function addRole(string $role): void;
-
     public function removeRole(string $role): void;
 }

@@ -25,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+use function is_string;
+
 class ChangePasswordCommand extends Command
 {
     /**
@@ -75,16 +77,24 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
+        if (false === is_string($email)) {
+            throw new InvalidArgumentException('Email is not a string!');
+        }
+
         $password = $input->getArgument('password');
+        if (false === is_string($password)) {
+            throw new InvalidArgumentException('Password is not a string!');
+        }
 
         $user = $this->userRepository->findUserByEmail($email);
         if (false === $user instanceof ChangeablePasswordInterface) {
-            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+            throw new InvalidArgumentException("User with email \"{$email}\" cannot be found");
         }
+
         $user->setPlainPassword($password);
         $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
 
-        $output->writeln(sprintf('Changed password of user <comment>%s</comment>', $email));
+        $output->writeln("Changed password of user <comment>{$email}</comment>");
 
         return 0;
     }

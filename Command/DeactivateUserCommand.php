@@ -25,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+use function is_string;
+
 class DeactivateUserCommand extends Command
 {
     /**
@@ -68,14 +70,18 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
+        if (false === is_string($email)) {
+            throw new InvalidArgumentException('Email is not a string!');
+        }
 
         $user = $this->userRepository->findUserByEmail($email);
         if (false === $user instanceof ActivableInterface) {
-            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+            throw new InvalidArgumentException("User with email \"{$email}\" cannot be found");
         }
+
         $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::DEACTIVATION);
 
-        $output->writeln(sprintf('User <comment>%s</comment> has been deactivated', $email));
+        $output->writeln("User <comment>{$email}</comment> has been deactivated");
 
         return 0;
     }

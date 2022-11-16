@@ -11,32 +11,27 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class ChangePasswordControllerSpec extends ObjectBehavior
 {
-    public function it_is_initializable(): void
-    {
-        $this->shouldHaveType(ChangePasswordController::class);
-    }
-
     public function let(
-        EngineInterface $templating,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -44,22 +39,27 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         FlashMessages $flashMessages
     ): void {
         $this->beConstructedWith(
-            $templating,
-            'template-name',
+            $twig,
             $userRepository,
             $router,
             $formFactory,
             $eventDispatcher,
             $flashMessages,
+            'template-name',
             'form_type',
             ['validation_group']
         );
     }
 
+    public function it_is_initializable(): void
+    {
+        $this->shouldHaveType(ChangePasswordController::class);
+    }
+
     public function it_changes_password(
         Request $request,
         UserRepositoryInterface $userRepository,
-        UserInterface $user,
+        ResettablePasswordInterface $user,
         TokenInterface $token,
         FormFactoryInterface $formFactory,
         FormInterface $form,

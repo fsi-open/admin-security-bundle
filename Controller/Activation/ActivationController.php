@@ -19,7 +19,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,13 +26,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class ActivationController
 {
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    private $templating;
+    private $twig;
 
     /**
      * @var string
@@ -71,28 +71,31 @@ class ActivationController
     private $changePasswordFormType;
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $changePasswordFormValidationGroups;
 
+    /**
+     * @param array<string> $changePasswordFormValidationGroups
+     */
     public function __construct(
-        EngineInterface $templating,
-        $changePasswordActionTemplate,
+        Environment $twig,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
+        string $changePasswordActionTemplate,
         string $changePasswordFormType,
         array $changePasswordFormValidationGroups
     ) {
-        $this->templating = $templating;
-        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
+        $this->twig = $twig;
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
+        $this->changePasswordActionTemplate = $changePasswordActionTemplate;
         $this->changePasswordFormType = $changePasswordFormType;
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
@@ -100,7 +103,6 @@ class ActivationController
     public function activateAction(string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
-
         if (true === $this->isUserEnforcedToChangePassword($user)) {
             $this->flashMessages->info(
                 'admin.activation.message.change_password',
@@ -123,7 +125,6 @@ class ActivationController
     public function changePasswordAction(Request $request, string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
-
         if (false === $this->isUserEnforcedToChangePassword($user)) {
             throw new NotFoundHttpException();
         }
@@ -142,10 +143,10 @@ class ActivationController
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
 
-        return $this->templating->renderResponse(
+        return new Response($this->twig->render(
             $this->changePasswordActionTemplate,
             ['form' => $form->createView()]
-        );
+        ));
     }
 
     /**
@@ -164,7 +165,12 @@ class ActivationController
             throw new NotFoundHttpException();
         }
 
-        if (false === $user->getActivationToken()->isNonExpired()) {
+        $activationToken = $user->getActivationToken();
+        if (null === $activationToken) {
+            throw new NotFoundHttpException();
+        }
+
+        if (false === $activationToken->isNonExpired()) {
             throw new NotFoundHttpException();
         }
 

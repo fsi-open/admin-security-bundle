@@ -11,22 +11,35 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
+use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
+
+use function array_fill;
+use function array_merge;
+use function array_search;
+use function array_unique;
+use function base_convert;
+use function in_array;
+use function mt_rand;
+use function sha1;
+use function strtoupper;
+use function time;
+use function uniqid;
 
 abstract class User implements UserInterface
 {
     /**
-     * @var int
+     * @var int|null
      */
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $username;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $email;
 
@@ -43,14 +56,14 @@ abstract class User implements UserInterface
     /**
      * The salt to use for hashing
      *
-     * @var string
+     * @var string|null
      */
     protected $salt;
 
     /**
      * Encrypted password. Must be persisted.
      *
-     * @var string
+     * @var string|null
      */
     protected $password;
 
@@ -62,7 +75,7 @@ abstract class User implements UserInterface
     protected $plainPassword;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable|null
      */
     protected $lastLogin;
 
@@ -87,12 +100,12 @@ abstract class User implements UserInterface
     protected $expired;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable|null
      */
     protected $expiresAt;
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $roles;
 
@@ -102,7 +115,7 @@ abstract class User implements UserInterface
     protected $credentialsExpired;
 
     /**
-     * @var \DateTime
+     * @var DateTimeImmutable|null
      */
     protected $credentialsExpireAt;
 
@@ -118,62 +131,71 @@ abstract class User implements UserInterface
     }
 
     /**
-     * Serializes the user.
-     *
-     * The serialized data have to contain the fields used by the equals method and the username.
-     *
-     * @return string
+     * @return array{
+     *   password: string|null,
+     *   salt: string|null,
+     *   username: string|null,
+     *   expired: bool,
+     *   locked: bool,
+     *   credentialsExpired: bool,
+     *   enabled: bool,
+     *   id: int|null,
+     * }
      */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize([
-            $this->password,
-            $this->salt,
-            $this->username,
-            $this->expired,
-            $this->locked,
-            $this->credentialsExpired,
-            $this->enabled,
-            $this->id
-        ]);
+        return [
+            'password' => $this->password,
+            'salt' => $this->salt,
+            'username' => $this->username,
+            'expired' => $this->expired,
+            'locked' => $this->locked,
+            'credentialsExpired' => $this->credentialsExpired,
+            'enabled' => $this->enabled,
+            'id' => $this->id
+        ];
     }
 
     /**
-     * Unserializes the user.
-     *
-     * @param string $serialized
+     * @param array{
+     *   password: string|null,
+     *   salt: string|null,
+     *   username: string|null,
+     *   expired: bool,
+     *   locked: bool,
+     *   credentialsExpired: bool,
+     *   enabled: bool,
+     *   id: int|null,
+     * } $serialized
      */
-    public function unserialize($serialized)
+    public function __unserialize($serialized): void
     {
-        $data = unserialize($serialized);
         // add a few extra elements in the array to ensure that we have enough keys when unserializing
         // older data which does not include all properties.
-        $data = array_merge($data, array_fill(0, 2, null));
+        $data = array_merge($serialized, array_fill(0, 2, null));
 
-        list(
-            $this->password,
-            $this->salt,
-            $this->username,
-            $this->expired,
-            $this->locked,
-            $this->credentialsExpired,
-            $this->enabled,
-            $this->id
-            ) = $data;
+        $this->password = $data['password'];
+        $this->salt = $data['salt'];
+        $this->username = $data['username'];
+        $this->expired = $data['expired'];
+        $this->locked = $data['locked'];
+        $this->credentialsExpired = $data['credentialsExpired'];
+        $this->enabled = $data['enabled'];
+        $this->id = $data['id'];
     }
 
-    /**
-     * Removes sensitive data from the user.
-     */
+    public function __toString(): string
+    {
+        return (string) $this->getUsername();
+    }
+
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
     }
 
     /**
-     * Returns the user unique id.
-     *
-     * @return mixed
+     * @return int|null
      */
     public function getId()
     {
@@ -205,7 +227,7 @@ abstract class User implements UserInterface
         return $this->plainPassword;
     }
 
-    public function getLastLogin(): ?\DateTime
+    public function getLastLogin(): ?DateTimeImmutable
     {
         return $this->lastLogin;
     }
@@ -262,7 +284,7 @@ abstract class User implements UserInterface
 
     public function isAccountNonLocked(): bool
     {
-        return !$this->locked;
+        return false === $this->locked;
     }
 
     public function isCredentialsNonExpired(): bool
@@ -271,7 +293,10 @@ abstract class User implements UserInterface
             return false;
         }
 
-        if (null !== $this->credentialsExpireAt && $this->credentialsExpireAt->getTimestamp() < time()) {
+        if (
+            null !== $this->credentialsExpireAt
+            && $this->credentialsExpireAt->getTimestamp() < time()
+        ) {
             return false;
         }
 
@@ -280,7 +305,7 @@ abstract class User implements UserInterface
 
     public function isCredentialsExpired(): bool
     {
-        return !$this->isCredentialsNonExpired();
+        return false === $this->isCredentialsNonExpired();
     }
 
     public function isEnabled(): bool
@@ -290,26 +315,26 @@ abstract class User implements UserInterface
 
     public function isExpired(): bool
     {
-        return !$this->isAccountNonExpired();
+        return false === $this->isAccountNonExpired();
     }
 
     public function isLocked(): bool
     {
-        return !$this->isAccountNonLocked();
+        return false === $this->isAccountNonLocked();
     }
 
     public function addRole(string $role): void
     {
         $role = strtoupper($role);
-
-        if (!in_array($role, $this->roles, true)) {
+        if (false === in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
     }
 
     public function removeRole(string $role): void
     {
-        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+        $key = array_search(strtoupper($role), $this->roles, true);
+        if (false !== $key) {
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
         }
@@ -320,7 +345,7 @@ abstract class User implements UserInterface
         $this->username = $username;
     }
 
-    public function setCredentialsExpireAt(\DateTime $date): void
+    public function setCredentialsExpireAt(DateTimeImmutable $date): void
     {
         $this->credentialsExpireAt = $date;
     }
@@ -345,7 +370,7 @@ abstract class User implements UserInterface
         $this->expired = $boolean;
     }
 
-    public function setExpiresAt(\DateTime $date): void
+    public function setExpiresAt(DateTimeImmutable $date): void
     {
         $this->expiresAt = $date;
     }
@@ -360,7 +385,7 @@ abstract class User implements UserInterface
         $this->plainPassword = $password;
     }
 
-    public function setLastLogin(\DateTime $time): void
+    public function setLastLogin(DateTimeImmutable $time): void
     {
         $this->lastLogin = $time;
     }
@@ -378,10 +403,5 @@ abstract class User implements UserInterface
     public function enforcePasswordChange(bool $enforcePasswordChange): void
     {
         $this->enforcePasswordChange = $enforcePasswordChange;
-    }
-
-    public function __toString(): string
-    {
-        return (string) $this->getUsername();
     }
 }

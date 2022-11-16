@@ -45,7 +45,7 @@ class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
         $templateContext = $this->twig->mergeGlobals($data);
 
         /** @var Template $template */
-        $template = $this->twig->loadTemplate($template);
+        $template = $this->twig->loadTemplate($this->twig->getTemplateClass($template), $template);
         $subject = $template->renderBlock('subject', $templateContext);
         $htmlBody = $template->renderBlock('body_html', $templateContext);
         $message = new Swift_Message($subject);

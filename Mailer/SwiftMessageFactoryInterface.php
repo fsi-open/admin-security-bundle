@@ -15,5 +15,11 @@ use Swift_Message;
 
 interface SwiftMessageFactoryInterface
 {
+    /**
+     * @param string $email
+     * @param string $template
+     * @param array<string, mixed> $data
+     * @return Swift_Message
+     */
     public function createMessage(string $email, string $template, array $data): Swift_Message;
 }

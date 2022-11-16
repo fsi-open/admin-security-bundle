@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminBundle\Event\MenuEvent;
+use FSi\Bundle\AdminBundle\Event\MenuToolsEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\ElementItem;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
@@ -42,13 +42,13 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
 
     public function it_builds_account_menu(): void
     {
-        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItem('account', false);
-        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild(
+        $this->createAccountMenu(new MenuToolsEvent(new Item()))->shouldHaveItem('account', false);
+        $this->createAccountMenu(new MenuToolsEvent(new Item()))->shouldHaveItemThatHaveChild(
             'account',
             'account.change-password',
             'fsi_admin_change_password'
         );
-        $this->createAccountMenu(new MenuEvent(new Item()))->shouldHaveItemThatHaveChild(
+        $this->createAccountMenu(new MenuToolsEvent(new Item()))->shouldHaveItemThatHaveChild(
             'account',
             'account.logout',
             'fsi_admin_security_user_logout'

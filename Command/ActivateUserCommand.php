@@ -25,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+use function is_string;
+
 class ActivateUserCommand extends Command
 {
     /**
@@ -68,13 +70,17 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
+        if (false === is_string($email)) {
+            throw new InvalidArgumentException('Email is not a string!');
+        }
+
         $user = $this->userRepository->findUserByEmail($email);
         if (false === $user instanceof ActivableInterface) {
-            throw new InvalidArgumentException(sprintf('User with email "%s" cannot be found', $email));
+            throw new InvalidArgumentException("User with email \"{$email}\" cannot be found");
         }
 
         $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::ACTIVATION);
-        $output->writeln(sprintf('User <comment>%s</comment> has been activated', $email));
+        $output->writeln("User <comment>{$email}</comment> has been activated");
 
         return 0;
     }
@@ -90,7 +96,7 @@ EOT
     {
         $question = new Question('Please choose an email:');
         $question->setValidator(function (string $email): string {
-            if (empty($email)) {
+            if ('' === $email) {
                 throw new Exception('Email can not be empty');
             }
 
