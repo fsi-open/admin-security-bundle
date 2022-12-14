@@ -19,6 +19,7 @@ use FSi\Component\DataSource\DataSourceFactoryInterface;
 use FSi\Component\DataSource\DataSourceInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormTypeInterface;
 
 /**
  * @extends CRUDElement<UserInterface>
@@ -31,14 +32,14 @@ class UserElement extends CRUDElement
     private $userModel;
 
     /**
-     * @var class-string<FormInterface<FormInterface>>
+     * @var class-string<FormTypeInterface>
      */
     private $formClass;
 
     /**
      * @param array<string, mixed> $options
      * @param class-string<UserInterface> $userModel
-     * @param class-string<FormInterface<FormInterface>> $formClass
+     * @param class-string<FormTypeInterface> $formClass
      */
     public function __construct(array $options, string $userModel, string $formClass)
     {
