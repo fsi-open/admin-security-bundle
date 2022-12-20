@@ -22,12 +22,15 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 
 /**
- * @extends CRUDElement<UserInterface>
+ * @template T of UserInterface
+ * @template TSaveDTO of object
+ * @template-default TSaveDTO=T
+ * @template-extends CRUDElement<T, TSaveDTO>
  */
 class UserElement extends CRUDElement
 {
     /**
-     * @var class-string<UserInterface>
+     * @var class-string<T>
      */
     private $userModel;
 
@@ -38,7 +41,7 @@ class UserElement extends CRUDElement
 
     /**
      * @param array<string, mixed> $options
-     * @param class-string<UserInterface> $userModel
+     * @param class-string<T> $userModel
      * @param class-string<FormTypeInterface> $formClass
      */
     public function __construct(array $options, string $userModel, string $formClass)
