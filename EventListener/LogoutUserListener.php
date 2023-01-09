@@ -20,15 +20,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class LogoutUserListener implements EventSubscriberInterface
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private RequestStack $requestStack;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(RequestStack $requestStack, TokenStorageInterface $tokenStorage)
     {

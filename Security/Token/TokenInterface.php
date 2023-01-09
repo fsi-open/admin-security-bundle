@@ -14,6 +14,5 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 interface TokenInterface
 {
     public function getToken(): string;
-
     public function isNonExpired(): bool;
 }

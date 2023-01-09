@@ -11,22 +11,19 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class UserEvent extends Event
 {
-    /**
-     * @var AdvancedUserInterface
-     */
-    private $user;
+    private UserInterface $user;
 
-    public function __construct(AdvancedUserInterface $user)
+    public function __construct(UserInterface $user)
     {
         $this->user = $user;
     }
 
-    public function getUser(): AdvancedUserInterface
+    public function getUser(): UserInterface
     {
         return $this->user;
     }

@@ -19,12 +19,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 
+use function bin2hex;
+use function random_bytes;
+
 class PrepareUserListener implements EventSubscriberInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -44,13 +44,12 @@ class PrepareUserListener implements EventSubscriberInterface
     public function prepareAndDispatchUserCreated(FormEvent $event): void
     {
         $entity = $event->getForm()->getData();
-
         if (false === $entity instanceof UserInterface) {
             return;
         }
 
         // do not dispatch event and do not set random password for existing users
-        if ($entity->getPassword()) {
+        if (null !== $entity->getPassword()) {
             return;
         }
 

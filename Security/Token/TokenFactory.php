@@ -16,15 +16,11 @@ use DateTimeImmutable;
 
 class TokenFactory implements TokenFactoryInterface
 {
-    /**
-     * @var DateInterval
-     */
-    private $ttl;
-
+    private DateInterval $ttl;
     /**
      * @var int<1, max>
      */
-    private $length;
+    private int $length;
 
     /**
      * @param int<1, max> $ttl

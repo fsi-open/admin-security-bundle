@@ -16,10 +16,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ActivationEvent extends Event
 {
-    /**
-     * @var ActivableInterface
-     */
-    private $user;
+    private ActivableInterface $user;
 
     public function __construct(ActivableInterface $user)
     {

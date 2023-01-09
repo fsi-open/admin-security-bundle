@@ -21,15 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BuildAccountMenuListener
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private TranslatorInterface $translator;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(TranslatorInterface $translator, TokenStorageInterface $tokenStorage)
     {
