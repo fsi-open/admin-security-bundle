@@ -12,17 +12,16 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use DateTimeImmutable;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 interface UserInterface extends
-    AdvancedUserInterface,
-    ResettablePasswordInterface,
+    ActivableInterface,
     EnforceablePasswordChangeInterface,
-    ActivableInterface
+    ResettablePasswordInterface,
+    SymfonyUserInterface
 {
     public function setUsername(string $username): void;
     public function setEmail(string $email): void;
-    public function setLocked(bool $boolean): void;
     public function setLastLogin(DateTimeImmutable $time): void;
     public function getLastLogin(): ?DateTimeImmutable;
     public function addRole(string $role): void;

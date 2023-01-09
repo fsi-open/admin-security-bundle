@@ -26,20 +26,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class PreventDeletingCurrentUser implements EventSubscriberInterface
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
+    private TokenStorageInterface $tokenStorage;
+    private RouterInterface $router;
+    private FlashMessages $flashMessages;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,

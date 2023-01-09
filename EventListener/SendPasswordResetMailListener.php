@@ -19,15 +19,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SendPasswordResetMailListener implements EventSubscriberInterface
 {
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
-
-    /**
-     * @var TokenFactoryInterface
-     */
-    private $tokenFactory;
+    private MailerInterface $mailer;
+    private TokenFactoryInterface $tokenFactory;
 
     public function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
     {

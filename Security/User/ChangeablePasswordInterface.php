@@ -16,12 +16,6 @@ interface ChangeablePasswordInterface
     public function getPlainPassword(): ?string;
     public function setPassword(string $password): void;
     public function setPlainPassword(string $password): void;
-    /**
-     * @return string|null
-     */
-    public function getSalt();
-    /**
-     * @return void
-     */
-    public function eraseCredentials();
+    public function getSalt(): ?string;
+    public function eraseCredentials(): void;
 }

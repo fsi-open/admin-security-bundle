@@ -23,111 +23,46 @@ use function in_array;
 use function mt_rand;
 use function sha1;
 use function strtoupper;
-use function time;
 use function uniqid;
 
 abstract class User implements UserInterface
 {
-    /**
-     * @var int|null
-     */
-    protected $id;
-
-    /**
-     * @var string|null
-     */
-    protected $username;
-
-    /**
-     * @var string|null
-     */
-    protected $email;
-
-    /**
-     * @var boolean
-     */
-    protected $enabled;
-
-    /**
-     * @var boolean
-     */
-    protected $enforcePasswordChange;
-
-    /**
-     * The salt to use for hashing
-     *
-     * @var string|null
-     */
-    protected $salt;
-
+    protected ?int $id;
+    protected ?string $username;
+    protected ?string $email;
+    protected bool $enabled;
+    protected bool $enforcePasswordChange;
+    protected ?string $salt;
     /**
      * Encrypted password. Must be persisted.
-     *
-     * @var string|null
      */
-    protected $password;
-
+    protected ?string $password;
     /**
      * Plain password. Used for model validation. Must not be persisted.
-     *
-     * @var string|null
      */
-    protected $plainPassword;
-
-    /**
-     * @var DateTimeImmutable|null
-     */
-    protected $lastLogin;
-
-    /**
-     * @var TokenInterface|null
-     */
-    protected $activationToken;
-
-    /**
-     * @var TokenInterface|null
-     */
-    protected $passwordResetToken;
-
-    /**
-     * @var boolean
-     */
-    protected $locked;
-
-    /**
-     * @var boolean
-     */
-    protected $expired;
-
-    /**
-     * @var DateTimeImmutable|null
-     */
-    protected $expiresAt;
-
+    protected ?string $plainPassword;
+    protected ?DateTimeImmutable $lastLogin;
+    protected ?TokenInterface $activationToken;
+    protected ?TokenInterface $passwordResetToken;
     /**
      * @var array<string>
      */
-    protected $roles;
-
-    /**
-     * @var boolean
-     */
-    protected $credentialsExpired;
-
-    /**
-     * @var DateTimeImmutable|null
-     */
-    protected $credentialsExpireAt;
+    protected array $roles;
 
     public function __construct()
     {
-        $this->salt = base_convert(sha1(uniqid((string) mt_rand(), true)), 16, 36);
+        $this->id = null;
+        $this->username = null;
+        $this->email = null;
         $this->enabled = false;
-        $this->locked = false;
         $this->enforcePasswordChange = false;
-        $this->expired = false;
+        $this->salt = base_convert(sha1(uniqid((string) mt_rand(), true)), 16, 36);
+        $this->password = null;
+        $this->plainPassword = null;
+        $this->lastLogin = null;
+        $this->activationToken = null;
+        $this->passwordResetToken = null;
         $this->roles = [];
-        $this->credentialsExpired = false;
     }
 
     /**
@@ -135,9 +70,6 @@ abstract class User implements UserInterface
      *   password: string|null,
      *   salt: string|null,
      *   username: string|null,
-     *   expired: bool,
-     *   locked: bool,
-     *   credentialsExpired: bool,
      *   enabled: bool,
      *   id: int|null,
      * }
@@ -148,9 +80,6 @@ abstract class User implements UserInterface
             'password' => $this->password,
             'salt' => $this->salt,
             'username' => $this->username,
-            'expired' => $this->expired,
-            'locked' => $this->locked,
-            'credentialsExpired' => $this->credentialsExpired,
             'enabled' => $this->enabled,
             'id' => $this->id
         ];
@@ -161,9 +90,6 @@ abstract class User implements UserInterface
      *   password: string|null,
      *   salt: string|null,
      *   username: string|null,
-     *   expired: bool,
-     *   locked: bool,
-     *   credentialsExpired: bool,
      *   enabled: bool,
      *   id: int|null,
      * } $serialized
@@ -177,9 +103,6 @@ abstract class User implements UserInterface
         $this->password = $data['password'];
         $this->salt = $data['salt'];
         $this->username = $data['username'];
-        $this->expired = $data['expired'];
-        $this->locked = $data['locked'];
-        $this->credentialsExpired = $data['credentialsExpired'];
         $this->enabled = $data['enabled'];
         $this->id = $data['id'];
     }
@@ -194,10 +117,7 @@ abstract class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -262,65 +182,17 @@ abstract class User implements UserInterface
         $this->passwordResetToken = null;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-
-        return array_unique($roles);
-    }
-
-    public function isAccountNonExpired(): bool
-    {
-        if (true === $this->expired) {
-            return false;
-        }
-
-        if (null !== $this->expiresAt && $this->expiresAt->getTimestamp() < time()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isAccountNonLocked(): bool
-    {
-        return false === $this->locked;
-    }
-
-    public function isCredentialsNonExpired(): bool
-    {
-        if (true === $this->credentialsExpired) {
-            return false;
-        }
-
-        if (
-            null !== $this->credentialsExpireAt
-            && $this->credentialsExpireAt->getTimestamp() < time()
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isCredentialsExpired(): bool
-    {
-        return false === $this->isCredentialsNonExpired();
+        return array_unique($this->roles);
     }
 
     public function isEnabled(): bool
     {
         return $this->enabled;
-    }
-
-    public function isExpired(): bool
-    {
-        return false === $this->isAccountNonExpired();
-    }
-
-    public function isLocked(): bool
-    {
-        return false === $this->isAccountNonLocked();
     }
 
     public function addRole(string $role): void
@@ -345,16 +217,6 @@ abstract class User implements UserInterface
         $this->username = $username;
     }
 
-    public function setCredentialsExpireAt(DateTimeImmutable $date): void
-    {
-        $this->credentialsExpireAt = $date;
-    }
-
-    public function setCredentialsExpired(bool $boolean): void
-    {
-        $this->credentialsExpired = $boolean;
-    }
-
     public function setEmail(string $email): void
     {
         $this->email = $email;
@@ -363,16 +225,6 @@ abstract class User implements UserInterface
     public function setEnabled(bool $boolean): void
     {
         $this->enabled = $boolean;
-    }
-
-    public function setExpired(bool $boolean): void
-    {
-        $this->expired = $boolean;
-    }
-
-    public function setExpiresAt(DateTimeImmutable $date): void
-    {
-        $this->expiresAt = $date;
     }
 
     public function setPassword(string $password): void
@@ -388,11 +240,6 @@ abstract class User implements UserInterface
     public function setLastLogin(DateTimeImmutable $time): void
     {
         $this->lastLogin = $time;
-    }
-
-    public function setLocked(bool $boolean): void
-    {
-        $this->locked = $boolean;
     }
 
     public function isForcedToChangePassword(): bool

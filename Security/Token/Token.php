@@ -16,20 +16,9 @@ use DateTimeImmutable;
 
 class Token implements TokenInterface
 {
-    /**
-     * @var string
-     */
-    protected $token;
-
-    /**
-     * @var DateTimeImmutable
-     */
-    protected $createdAt;
-
-    /**
-     * @var DateTimeImmutable
-     */
-    protected $expiresAt;
+    protected string $token;
+    protected DateTimeImmutable $createdAt;
+    protected DateTimeImmutable $expiresAt;
 
     public function __construct(string $token, DateTimeImmutable $createdAt, DateInterval $ttl)
     {

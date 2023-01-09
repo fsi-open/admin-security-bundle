@@ -17,13 +17,18 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 
 class User implements UserInterface
 {
-    private $password;
+    private ?string $password = null;
 
-    public function getRoles()
+    public function __toString()
+    {
+        return '';
+    }
+
+    public function getRoles(): array
     {
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -33,16 +38,16 @@ class User implements UserInterface
         $this->password = $password;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return null;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -62,19 +67,7 @@ class User implements UserInterface
     {
     }
 
-    public function isAccountNonExpired()
-    {
-    }
-
-    public function isAccountNonLocked()
-    {
-    }
-
-    public function isCredentialsNonExpired()
-    {
-    }
-
-    public function isEnabled()
+    public function isEnabled(): bool
     {
     }
 
@@ -83,14 +76,6 @@ class User implements UserInterface
     }
 
     public function setPlainPassword(string $password): void
-    {
-    }
-
-    public function serialize()
-    {
-    }
-
-    public function unserialize($serialized)
     {
     }
 

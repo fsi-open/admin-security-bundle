@@ -25,10 +25,7 @@ use function get_class;
 
 class EncodePasswordListener implements EventSubscriberInterface
 {
-    /**
-     * @var EncoderFactoryInterface
-     */
-    private $encoderFactory;
+    private EncoderFactoryInterface $encoderFactory;
 
     public function __construct(EncoderFactoryInterface $encoderFactory)
     {

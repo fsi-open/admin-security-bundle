@@ -17,12 +17,7 @@
         <field name="salt" column="salt" type="string" nullable="true" />
         <field name="password" column="password" type="string" />
         <field name="lastLogin" column="last_login" type="datetime_immutable" nullable="true" />
-        <field name="locked" column="locked" type="boolean" />
-        <field name="expired" column="expired" type="boolean" />
-        <field name="expiresAt" column="expires_at" type="datetime_immutable" nullable="true" />
         <field name="roles" column="roles" type="array" />
-        <field name="credentialsExpired" column="credentials_expired" type="boolean" />
-        <field name="credentialsExpireAt" column="credentials_expire_at" type="datetime_immutable" nullable="true" />
 
         <embedded name="activationToken" column-prefix="activation_token_" class="FSi\Bundle\AdminSecurityBundle\Security\Token\Token" />
         <embedded name="passwordResetToken" column-prefix="password_reset_token_" class="FSi\Bundle\AdminSecurityBundle\Security\Token\Token" />

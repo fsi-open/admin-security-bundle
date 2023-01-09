@@ -16,10 +16,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ChangePasswordEvent extends Event
 {
-    /**
-     * @var ChangeablePasswordInterface
-     */
-    private $user;
+    private ChangeablePasswordInterface $user;
 
     public function __construct(ChangeablePasswordInterface $user)
     {
