@@ -13,28 +13,29 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Hook\AfterScenario;
+use Behat\Hook\BeforeScenario;
 use Behat\Mink\Session;
+use Behat\Step\Given;
+use Behat\Step\Then;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\FixturesBundle\Entity\User;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 final class DataContext extends AbstractContext
 {
-    private UserPasswordEncoderInterface $passwordEncoder;
-    private string $dbFilePath;
+    private PasswordHasherFactoryInterface $passwordHasherFactory;
 
     public function __construct(
         Session $session,
         MinkParameters $minkParameters,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
-        string $projectDirectory
+        PasswordHasherFactoryInterface $passwordHasherFactory
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
-        $this->passwordEncoder = $passwordEncoder;
-        $this->dbFilePath = "{$projectDirectory}/var/data.sqlite";
+        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     /**
@@ -54,9 +55,10 @@ final class DataContext extends AbstractContext
      */
     public function deleteDatabaseIfExist(): void
     {
-        if (true === file_exists($this->dbFilePath)) {
-            unlink($this->dbFilePath);
-        }
+        $manager = $this->getEntityManager();
+        $metadata = $manager->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($manager);
+        $tool->dropSchema($metadata);
     }
 
     /**
@@ -73,7 +75,7 @@ final class DataContext extends AbstractContext
 
         if (0 !== strlen($password)) {
             $user->setPassword(
-                $this->passwordEncoder->encodePassword($user, $password)
+                $this->passwordHasherFactory->getPasswordHasher($user)->hash($password)
             );
             $user->eraseCredentials();
         }
@@ -122,28 +124,18 @@ final class DataContext extends AbstractContext
     }
 
     /**
-     * @Then /^user password should be changed$/
-     */
-    public function userPasswordShouldBeChanged(): void
-    {
-        $user = $this->findUserByUsername('admin');
-
-        Assertion::same(
-            $user->getPassword(),
-            $this->passwordEncoder->encodePassword($user, 'admin-new')
-        );
-    }
-
-    /**
-     * @Then /^user "([^"]*)" should have changed password$/
+     * @Then /^user "([^"]*)" password should be changed$/
      */
     public function userShouldHaveChangedPassword(string $userEmail): void
     {
         $user = $this->findUserByEmail($userEmail);
 
-        Assertion::same(
-            $user->getPassword(),
-            $this->passwordEncoder->encodePassword($user, 'admin-new')
+        Assertion::true(
+            $this->passwordHasherFactory->getPasswordHasher($user)->verify(
+                $user->getPassword(),
+                'admin-new'
+            ),
+            'User password has not been changed.'
         );
     }
 

@@ -4,8 +4,8 @@ Feature: Display secured admin elements that are allowed for logged user
   I need to create secured admin elements
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
-    And there is "redactor" user with role "ROLE_REDACTOR" and password "redactor"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
+    And there is "redactor@fsi.pl" user with role "ROLE_REDACTOR" and password "redactor"
 
   Scenario: Display navigation menu to admin
     Given I'm logged in as admin

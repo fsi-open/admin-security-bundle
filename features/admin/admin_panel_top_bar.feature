@@ -4,7 +4,7 @@ Feature: Secure admin top bar
   I need to install FSiAdminSecurityBundle in my application
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
 
   Scenario: Navigation top bar display
     Given I'm logged in as admin

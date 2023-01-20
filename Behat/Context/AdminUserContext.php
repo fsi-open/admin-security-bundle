@@ -82,7 +82,7 @@ final class AdminUserContext extends AbstractContext
     public function iFillFormWithValidAdminLoginAndPassword(): void
     {
         $loginPage = $this->getLoginPage();
-        $loginPage->fillField('E-mail', 'admin');
+        $loginPage->fillField('E-mail', 'admin@fsi.pl');
         $loginPage->fillField('Password', 'admin');
     }
 
@@ -92,7 +92,7 @@ final class AdminUserContext extends AbstractContext
     public function iFillFormWithValidRedactorLoginAndPassword(): void
     {
         $loginPage = $this->getLoginPage();
-        $loginPage->fillField('E-mail', 'redactor');
+        $loginPage->fillField('E-mail', 'redactor@fsi.pl');
         $loginPage->fillField('Password', 'redactor');
     }
 

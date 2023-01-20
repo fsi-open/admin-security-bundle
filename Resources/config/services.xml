@@ -123,7 +123,7 @@
 
         <!-- Event listeners -->
         <service id="admin_security.listener.encode_password" class="%admin_security.listener.encode_password.class%">
-            <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="security.password_hasher_factory" />
             <tag name="kernel.event_subscriber" />
         </service>
 

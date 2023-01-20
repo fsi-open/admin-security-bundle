@@ -8,7 +8,6 @@
             <bind key="$session" id="behat.mink.default_session" />
             <bind key="$minkParameters" id="behat.mink.parameters" />
             <bind key="$spoolDirectory">%swiftmailer.spool.default.file.path%</bind>
-            <bind key="$projectDirectory">%kernel.project_dir%</bind>
         </defaults>
 
         <prototype namespace="FSi\Bundle\AdminSecurityBundle\Behat\Context\" resource="../../../../../../Behat/Context" />

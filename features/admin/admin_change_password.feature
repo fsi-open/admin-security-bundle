@@ -4,7 +4,7 @@ Feature: Admin change password
   I need to install FSiAdminSecurityBundle in my application
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
     And I'm logged in as admin
 
   Scenario: Access change password page
@@ -27,7 +27,7 @@ Feature: Admin change password
     And I am on the "Admin change password" page
     When I fill change password form fields with valid data
     And I press "Save"
-    Then user password should be changed
+    Then user "admin@fsi.pl" password should be changed
     And I should be redirected to "Login" page
     And I should see message:
     """

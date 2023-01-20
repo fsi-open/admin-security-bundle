@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Security\User;
 
 use DateTimeImmutable;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 interface UserInterface extends
     ActivableInterface,
     EnforceablePasswordChangeInterface,
+    PasswordAuthenticatedUserInterface,
     ResettablePasswordInterface,
     SymfonyUserInterface
 {
