@@ -5,7 +5,7 @@ Feature: Resend activation email
     There should be an option to send a new email with a new activation token
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
     And I'm logged in as admin
     Given I create disabled user with email address "user@example.com"
     And I clear the email pool

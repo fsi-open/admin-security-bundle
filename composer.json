@@ -32,6 +32,7 @@
         "twig/twig": "^3.4,>=3.4.3"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "behat/behat": "^3.11",
         "behat/mink": "^1.10",
         "behat/mink-selenium2-driver": "^1.6",
@@ -62,9 +63,10 @@
     },
     "conflict": {
         "doctrine/doctrine-cache-bundle": "<1.4.0",
-        "fsi/datasource": "<2.1",
-        "symfony/expression-language": "<4.4",
-        "twig/twig": "<2.0"
+        "fsi/datagrid": "*",
+        "fsi/datasource": "*",
+        "twig/twig": "<2.0",
+        "symfony/expression-language": "<4.4"
     },
     "config": {
         "bin-dir": "vendor/bin"

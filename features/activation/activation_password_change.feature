@@ -32,7 +32,7 @@ Feature: Activation of disabled user with enforced password change
     When I fill in new password with confirmation
     And I press "Activate account" button
     And I should be redirected to "Login" page
-    Then user "user@example.com" should have changed password
+    Then user "user@example.com" password should be changed
     And I should see message:
     """
     Your password has been successfully changed and your account has been activated

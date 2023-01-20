@@ -1,7 +1,7 @@
 Feature: User management
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
     And I'm logged in as admin
     And there are following users:
       | Email            | Role          |

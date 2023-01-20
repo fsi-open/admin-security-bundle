@@ -161,7 +161,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $objectManager->flush()->shouldBeCalled();
 
         $this->onInteractiveLogin(
-            new InteractiveLoginEvent(new Request(), new UsernamePasswordToken($user, 'firewall'))
+            new InteractiveLoginEvent(new Request(), new UsernamePasswordToken($user, 'firewall', []))
         );
     }
 }
