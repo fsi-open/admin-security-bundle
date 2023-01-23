@@ -12,9 +12,9 @@ Feature: User management
     Given I am on the "User list" page
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
-      | red1@example.com | Yes    | No                     | No                 |
-      | red2@example.com | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    |                        |                    |
+      | red1@example.com | Yes    |                        |                    |
+      | red2@example.com | Yes    |                        |                    |
 
   Scenario: Batch actions
     Given I am on the "User list" page
@@ -29,8 +29,8 @@ Feature: User management
     When I delete second user on the list
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
-      | red2@example.com | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    |                        |                    |
+      | red2@example.com | Yes    |                        |                    |
 
   @email
   @javascript
@@ -44,9 +44,9 @@ Feature: User management
       | reply_to | do-not-reply@example.com |
     And I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
-      | red1@example.com | Yes    | Yes                    | No                 |
-      | red2@example.com | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    |                        |                    |
+      | red1@example.com | Yes    | Yes                    |                    |
+      | red2@example.com | Yes    |                        |                    |
 
   @email
   Scenario: Create User
@@ -57,10 +57,10 @@ Feature: User management
     And I am on the "User list" page
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
-      | red1@example.com | Yes    | No                     | No                 |
-      | red2@example.com | Yes    | No                     | No                 |
-      | new-user@fsi.pl  | No     | No                     | Yes                |
+      | admin@fsi.pl     | Yes    |                        |                    |
+      | red1@example.com | Yes    |                        |                    |
+      | red2@example.com | Yes    |                        |                    |
+      | new-user@fsi.pl  | No     |                        | Yes                |
     And an email should be sent:
       | subject  | User Activation          |
       | from     | activation@fsi.pl        |

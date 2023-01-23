@@ -129,10 +129,11 @@ final class DataContext extends AbstractContext
     public function userShouldHaveChangedPassword(string $userEmail): void
     {
         $user = $this->findUserByEmail($userEmail);
-
+        $password = $user->getPassword();
+        Assertion::notNull($password, "User \"{$userEmail}\" has no password.");
         Assertion::true(
             $this->passwordHasherFactory->getPasswordHasher($user)->verify(
-                $user->getPassword(),
+                $password,
                 'admin-new'
             ),
             'User password has not been changed.'

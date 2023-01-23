@@ -1,5 +1,4 @@
 security:
-    enable_authenticator_manager: true
     password_hashers:
         FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto
 
