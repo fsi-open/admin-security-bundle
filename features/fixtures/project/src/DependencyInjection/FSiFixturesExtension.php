@@ -13,11 +13,27 @@ namespace FSi\FixturesBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 
-class FSiFixturesExtension extends Extension
+use function class_exists;
+
+final class FSiFixturesExtension extends Extension implements PrependExtensionInterface
 {
+    public function prepend(ContainerBuilder $container): void
+    {
+        // Only enable the option for SecurityBundle 5.3 and higher
+        if (false === class_exists(InMemoryUser::class)) {
+            return;
+        }
+
+        $container->prependExtensionConfig('security', [
+            'enable_authenticator_manager' => true
+        ]);
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

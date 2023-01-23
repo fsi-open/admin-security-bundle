@@ -12,5 +12,10 @@
             <argument type="string">%admin_security.model.user%</argument>
         </service>
 
+        <!-- Event listener-->
+        <service id="admin_security.entity_listener.empty_embeddable_cleaner" class="FSi\Integration\Doctrine\EmptyEmbeddableClearListener">
+            <tag name="doctrine.orm.entity_listener" event="postLoad" entity="FSi\Bundle\AdminSecurityBundle\Security\User\User" method="clearEmpty" />
+        </service>
+
     </services>
 </container>
