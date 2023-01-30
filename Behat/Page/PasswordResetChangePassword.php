@@ -72,6 +72,6 @@ final class PasswordResetChangePassword extends Page
             ));
         }
 
-        return $this->getParameter('base_url') . "/admin/password-reset/change-password/{$confirmationToken}";
+        return $this->getParameter('base_url') . "/admin/en/password-reset/change-password/{$confirmationToken}";
     }
 }

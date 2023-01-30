@@ -1,0 +1,11 @@
+fsi_admin_activation:
+    path: /{translatableLocale}/activation/activate/{token}
+    controller: admin_security.controller.activation:activateAction
+    defaults:
+        translatableLocale: '%admin.default_locale%'
+
+fsi_admin_activation_change_password:
+    path: /{translatableLocale}/activation/change-password/{token}
+    controller: admin_security.controller.activation:changePasswordAction
+    defaults:
+        translatableLocale: '%admin.default_locale%'

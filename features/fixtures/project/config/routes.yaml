@@ -1,15 +1,15 @@
-admin:
-    resource: "@FSiAdminBundle/Resources/config/routing/admin.yml"
-    prefix: /admin
-
 admin_security:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yaml"
     prefix: /admin
 
 admin_activation:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_activation.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_activation.yaml"
     prefix: /admin
 
 admin_password_reset:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yaml"
+    prefix: /admin
+
+admin:
+    resource: "@FSiAdminBundle/Resources/config/routing/admin.yaml"
     prefix: /admin

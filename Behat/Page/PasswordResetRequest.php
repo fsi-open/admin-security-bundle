@@ -40,6 +40,6 @@ class PasswordResetRequest extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . '/admin/password-reset/request';
+        return $this->getParameter('base_url') . '/admin/en/password-reset/request';
     }
 }

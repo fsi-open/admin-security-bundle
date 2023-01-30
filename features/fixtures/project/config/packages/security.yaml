@@ -1,3 +1,4 @@
+---
 security:
     encoders:
         FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: sha512
@@ -32,6 +33,6 @@ security:
 
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/activation/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/password-reset/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/admin/[a-z]{2}/activation/', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/admin/[a-z]{2}/password-reset/', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_REDACTOR] }

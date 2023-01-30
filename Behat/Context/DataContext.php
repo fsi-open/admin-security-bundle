@@ -34,7 +34,7 @@ final class DataContext extends AbstractContext
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
         $this->passwordEncoder = $passwordEncoder;
-        $this->dbFilePath = "{$projectDirectory}/var/data.sqlite";
+        $this->dbFilePath = "{$projectDirectory}/var/data/data.sqlite";
     }
 
     /**

@@ -6,7 +6,7 @@ Add to composer.json
 
 ```json
 "require": {
-    "fsi/admin-security-bundle": "^3.0@dev"
+    "fsi/admin-security-bundle": "^4.0@dev"
 }
 ```
 
@@ -34,22 +34,22 @@ public function registerBundles()
 ## 3. Configure routing
 
 ```yml
-# app/config/routing.yml
-
-admin:
-    resource: "@FSiAdminBundle/Resources/config/routing/admin.yml"
-    prefix: /admin
+# config/routes.yaml
 
 admin_security:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_security.yaml"
     prefix: /admin
 
 admin_activation:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_activation.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_activation.yaml"
     prefix: /admin
 
 admin_password_reset:
-    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yml"
+    resource: "@FSiAdminSecurityBundle/Resources/config/routing/admin_password_reset.yaml"
+    prefix: /admin
+
+admin:
+    resource: "@FSiAdminBundle/Resources/config/routing/admin.yaml"
     prefix: /admin
 ```
 
@@ -63,7 +63,7 @@ to use FOSUserBundle you should choose bare user entity:
 ```php
 <?php
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FSi\Bundle\AdminSecurityBundle\Entity\User as BaseUser;
@@ -83,7 +83,7 @@ choose special compatibility entity class:
 ```php
 <?php
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FSi\Bundle\AdminSecurityBundle\Entity\FOSUser;
@@ -116,16 +116,16 @@ fsi_admin_security:
 ## 6. Configure security.yml
 
 ```yml
-# app/config/security.yml
+# config/security.yaml
 
 security:
     encoders:
-        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: sha512
+        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto
 
     providers:
         entity_provider:
             entity:
-                class: AppBundle:User
+                class: App\Entity\User
                 property: email
 
     firewalls:
@@ -148,23 +148,6 @@ security:
         - { path: ^/admin/password-reset/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/activation/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
-```
-
-### Bcrypt encoder
-
-If you want to use bcrypt encoder, you must clear the salt that is set in user constructor. Symfony >= 2.8 ignores salt.
-
-```php
-class User extends FSi\Bundle\AdminSecurityBundle\Security\User\User
-{
-    public function __construct()
-    {
-        parent::__construct();
-        $this->salt = null;
-    }
-
-    // ...
-}
 ```
 
 Now when your admin panel is secured you should read how to [secure specific admin elements](secured_admin_elements.md).
