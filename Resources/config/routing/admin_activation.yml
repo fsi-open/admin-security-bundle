@@ -1,9 +1,0 @@
-fsi_admin_activation:
-    path: /activation/activate/{token}
-    defaults:
-        _controller: admin_security.controller.activation:activateAction
-
-fsi_admin_activation_change_password:
-    path: /activation/change-password/{token}
-    defaults:
-        _controller: admin_security.controller.activation:changePasswordAction

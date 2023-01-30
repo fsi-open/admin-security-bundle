@@ -86,6 +86,6 @@ final class AdminPanel extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . '/admin/';
+        return $this->getParameter('base_url') . '/admin';
     }
 }

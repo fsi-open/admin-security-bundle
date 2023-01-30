@@ -47,6 +47,6 @@ final class AdminChangePassword extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . '/admin/change-password';
+        return $this->getParameter('base_url') . '/admin/en/change-password';
     }
 }

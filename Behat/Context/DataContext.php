@@ -20,21 +20,20 @@ use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\FixturesBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+use function count;
+
 final class DataContext extends AbstractContext
 {
     private UserPasswordEncoderInterface $passwordEncoder;
-    private string $dbFilePath;
 
     public function __construct(
         Session $session,
         MinkParameters $minkParameters,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder,
-        string $projectDirectory
+        UserPasswordEncoderInterface $passwordEncoder
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
         $this->passwordEncoder = $passwordEncoder;
-        $this->dbFilePath = "{$projectDirectory}/var/data.sqlite";
     }
 
     /**
@@ -42,7 +41,8 @@ final class DataContext extends AbstractContext
      */
     public function createDatabase(): void
     {
-        $this->deleteDatabaseIfExist();
+        $this->deleteDatabaseIfExists();
+
         $manager = $this->getEntityManager();
         $metadata = $manager->getMetadataFactory()->getAllMetadata();
         $tool = new SchemaTool($manager);
@@ -52,11 +52,16 @@ final class DataContext extends AbstractContext
     /**
      * @AfterScenario
      */
-    public function deleteDatabaseIfExist(): void
+    public function deleteDatabaseIfExists(): void
     {
-        if (true === file_exists($this->dbFilePath)) {
-            unlink($this->dbFilePath);
+        $manager = $this->getEntityManager();
+        $metadata = $manager->getMetadataFactory()->getAllMetadata();
+        $tool = new SchemaTool($manager);
+        if (0 === count($tool->getDropSchemaSQL($metadata))) {
+            return;
         }
+
+        $tool->dropSchema($metadata);
     }
 
     /**

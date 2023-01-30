@@ -79,6 +79,6 @@ final class UserList extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . '/admin/list/admin_security_user';
+        return $this->getParameter('base_url') . '/admin/en/list/admin_security_user';
     }
 }

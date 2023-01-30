@@ -39,6 +39,6 @@ final class Activation extends Page
             ));
         }
 
-        return $this->getParameter('base_url') . "/admin/activation/activate/{$activationToken}";
+        return $this->getParameter('base_url') . "/admin/en/activation/activate/{$activationToken}";
     }
 }

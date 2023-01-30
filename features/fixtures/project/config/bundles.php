@@ -11,6 +11,7 @@ return [
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
     FSi\Bundle\DataSourceBundle\DataSourceBundle::class => ['all' => true],
     FSi\Bundle\DataGridBundle\DataGridBundle::class => ['all' => true],
+    FSi\Component\Translatable\Integration\Symfony\TranslatableBundle::class => ['all' => true],
     FSi\Bundle\ResourceRepositoryBundle\FSiResourceRepositoryBundle::class => ['all' => true],
     FSi\Bundle\AdminBundle\FSiAdminBundle::class => ['all' => true],
     FSi\FixturesBundle\FSiFixturesBundle::class => ['all' => true],
