@@ -55,6 +55,11 @@ class User implements UserInterface
     {
     }
 
+    public function isActivationTokenNonExpired(): bool
+    {
+        return false;
+    }
+
     public function getActivationToken(): ?TokenInterface
     {
     }
@@ -89,6 +94,11 @@ class User implements UserInterface
 
     public function enforcePasswordChange(bool $enforce): void
     {
+    }
+
+    public function isPasswordResetTokenNonExpired(): bool
+    {
+        return false;
     }
 
     public function getPasswordResetToken(): ?TokenInterface

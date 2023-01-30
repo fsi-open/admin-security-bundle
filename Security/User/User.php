@@ -152,6 +152,15 @@ abstract class User implements UserInterface
         return $this->lastLogin;
     }
 
+    public function isActivationTokenNonExpired(): bool
+    {
+        if (null === $this->activationToken) {
+            return false;
+        }
+
+        return $this->activationToken->isNonExpired();
+    }
+
     public function getActivationToken(): ?TokenInterface
     {
         return $this->activationToken;
@@ -165,6 +174,15 @@ abstract class User implements UserInterface
     public function removeActivationToken(): void
     {
         $this->activationToken = null;
+    }
+
+    public function isPasswordResetTokenNonExpired(): bool
+    {
+        if (null === $this->passwordResetToken) {
+            return false;
+        }
+
+        return $this->passwordResetToken->isNonExpired();
     }
 
     public function getPasswordResetToken(): ?TokenInterface

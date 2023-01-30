@@ -18,6 +18,7 @@ interface ActivableInterface extends EmailableInterface
 {
     public function isEnabled(): bool;
     public function setEnabled(bool $boolean): void;
+    public function isActivationTokenNonExpired(): bool;
     public function getActivationToken(): ?TokenInterface;
     public function setActivationToken(TokenInterface $token): void;
     public function removeActivationToken(): void;

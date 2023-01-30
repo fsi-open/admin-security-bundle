@@ -53,9 +53,6 @@ final class DataContext extends AbstractContext
         $tool->createSchema($metadata);
     }
 
-    /**
-     * @AfterScenario
-     */
     public function deleteDatabaseIfExists(): void
     {
         $manager = $this->getEntityManager();

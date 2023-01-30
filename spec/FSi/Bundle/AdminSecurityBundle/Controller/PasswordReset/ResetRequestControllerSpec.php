@@ -52,7 +52,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
 
         $userRepository->findUserByEmail('admin@fsi.pl')->willReturn($user);
 
-        $user->getPasswordResetToken()->willReturn(null);
+        $user->isPasswordResetTokenNonExpired()->willReturn(false);
 
         $this->beConstructedWith(
             $twig,
