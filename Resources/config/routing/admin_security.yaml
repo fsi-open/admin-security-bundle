@@ -11,7 +11,5 @@ fsi_admin_security_user_logout:
     controller: admin_security.controller.security:logoutAction
 
 fsi_admin_change_password:
-    path: /{translatableLocale}/change-password
+    path: /change-password
     controller: admin_security.controller.admin:changePasswordAction
-    defaults:
-        translatableLocale: '%admin.default_locale%'
