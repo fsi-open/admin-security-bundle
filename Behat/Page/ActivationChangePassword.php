@@ -71,6 +71,6 @@ final class ActivationChangePassword extends Page
             ));
         }
 
-        return $this->getParameter('base_url') . "/admin/en/activation/change-password/{$activationToken}";
+        return $this->getParameter('base_url') . "/admin/activation/change-password/{$activationToken}";
     }
 }
