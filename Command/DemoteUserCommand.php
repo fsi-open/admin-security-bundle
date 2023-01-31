@@ -13,7 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\DemoteUserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
@@ -84,7 +84,7 @@ EOT
         }
 
         $user->removeRole($role);
-        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::DEMOTE_USER);
+        $this->eventDispatcher->dispatch(new DemoteUserEvent($user, $role), AdminSecurityEvents::DEMOTE_USER);
 
         $output->writeln("User <comment>{$email}</comment> has been demoted");
 

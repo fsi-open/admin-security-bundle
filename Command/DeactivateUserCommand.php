@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use Exception;
-use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
@@ -79,7 +79,7 @@ EOT
             throw new InvalidArgumentException("User with email \"{$email}\" cannot be found");
         }
 
-        $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::DEACTIVATION);
+        $this->eventDispatcher->dispatch(new DeactivationEvent($user), AdminSecurityEvents::DEACTIVATION);
 
         $output->writeln("User <comment>{$email}</comment> has been deactivated");
 

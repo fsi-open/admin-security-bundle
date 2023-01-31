@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DeactivateUserListener implements EventSubscriberInterface
@@ -27,7 +27,7 @@ class DeactivateUserListener implements EventSubscriberInterface
         ];
     }
 
-    public function onDeactivation(ActivationEvent $event): void
+    public function onDeactivation(DeactivationEvent $event): void
     {
         $event->getUser()->setEnabled(false);
     }

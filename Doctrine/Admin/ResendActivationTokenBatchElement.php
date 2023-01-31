@@ -13,8 +13,8 @@ namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -74,6 +74,9 @@ final class ResendActivationTokenBatchElement extends BatchElement
             return;
         }
 
-        $this->eventDispatcher->dispatch(new ActivationEvent($object), AdminSecurityEvents::RESEND_ACTIVATION_TOKEN);
+        $this->eventDispatcher->dispatch(
+            new ResendActivationTokenEvent($object),
+            AdminSecurityEvents::RESEND_ACTIVATION_TOKEN
+        );
     }
 }

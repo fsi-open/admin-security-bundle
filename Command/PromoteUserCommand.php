@@ -13,7 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\PromoteUserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
@@ -84,7 +84,7 @@ EOT
         }
 
         $user->addRole($role);
-        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::PROMOTE_USER);
+        $this->eventDispatcher->dispatch(new PromoteUserEvent($user, $role), AdminSecurityEvents::PROMOTE_USER);
 
         $output->writeln("User <comment>{$email}</comment> has been promoted");
 

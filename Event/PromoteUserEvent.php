@@ -11,20 +11,27 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Event;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class UserEvent extends Event
+class PromoteUserEvent extends Event
 {
     private UserInterface $user;
+    private string $role;
 
-    public function __construct(UserInterface $user)
+    public function __construct(UserInterface $user, string $role)
     {
         $this->user = $user;
+        $this->role = $role;
     }
 
     public function getUser(): UserInterface
     {
         return $this->user;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
     }
 }

@@ -13,7 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
@@ -47,7 +47,7 @@ class EncodePasswordListener implements EventSubscriberInterface
         $this->updateUserPassword($event->getUser());
     }
 
-    public function onUserCreated(UserEvent $event): void
+    public function onUserCreated(UserCreatedEvent $event): void
     {
         $user = $event->getUser();
         if (true === $user instanceof ChangeablePasswordInterface) {

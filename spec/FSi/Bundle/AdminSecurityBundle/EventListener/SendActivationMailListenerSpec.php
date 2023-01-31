@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
@@ -38,7 +38,7 @@ class SendActivationMailListenerSpec extends ObjectBehavior
         MailerInterface $mailer,
         TokenFactoryInterface $tokenFactory,
         TokenInterface $token,
-        UserEvent $event,
+        UserCreatedEvent $event,
         User $user
     ): void {
         $user->isEnabled()->willReturn(false);
@@ -53,7 +53,7 @@ class SendActivationMailListenerSpec extends ObjectBehavior
 
     public function it_does_not_send_email_if_user_is_enabled(
         MailerInterface $mailer,
-        UserEvent $event,
+        UserCreatedEvent $event,
         User $user
     ): void {
         $user->isEnabled()->willReturn(true);

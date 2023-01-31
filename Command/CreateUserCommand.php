@@ -13,7 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use Exception;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +27,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use function is_string;
 
-class CreateUserCommand extends Command
+final class CreateUserCommand extends Command
 {
     private EventDispatcherInterface $eventDispatcher;
     /**
@@ -108,7 +108,7 @@ EOT
         if (true === $input->getOption('enforce-password-change')) {
             $user->enforcePasswordChange(true);
         }
-        $this->eventDispatcher->dispatch(new UserEvent($user), AdminSecurityEvents::USER_CREATED);
+        $this->eventDispatcher->dispatch(new UserCreatedEvent($user), AdminSecurityEvents::USER_CREATED);
 
         $output->writeln(sprintf('Created user <comment>%s</comment>', $email));
 
