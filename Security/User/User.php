@@ -18,12 +18,8 @@ use function array_fill;
 use function array_merge;
 use function array_search;
 use function array_unique;
-use function base_convert;
 use function in_array;
-use function mt_rand;
-use function sha1;
 use function strtoupper;
-use function uniqid;
 
 abstract class User implements UserInterface
 {
@@ -32,7 +28,6 @@ abstract class User implements UserInterface
     protected ?string $email;
     protected bool $enabled;
     protected bool $enforcePasswordChange;
-    protected ?string $salt;
     /**
      * Encrypted password. Must be persisted.
      */
@@ -56,7 +51,6 @@ abstract class User implements UserInterface
         $this->email = null;
         $this->enabled = false;
         $this->enforcePasswordChange = false;
-        $this->salt = base_convert(sha1(uniqid((string) mt_rand(), true)), 16, 36);
         $this->password = null;
         $this->plainPassword = null;
         $this->lastLogin = null;
@@ -68,7 +62,6 @@ abstract class User implements UserInterface
     /**
      * @return array{
      *   password: string|null,
-     *   salt: string|null,
      *   username: string|null,
      *   enabled: bool,
      *   id: int|null,
@@ -78,7 +71,6 @@ abstract class User implements UserInterface
     {
         return [
             'password' => $this->password,
-            'salt' => $this->salt,
             'username' => $this->username,
             'enabled' => $this->enabled,
             'id' => $this->id
@@ -88,7 +80,6 @@ abstract class User implements UserInterface
     /**
      * @param array{
      *   password: string|null,
-     *   salt: string|null,
      *   username: string|null,
      *   enabled: bool,
      *   id: int|null,
@@ -101,7 +92,6 @@ abstract class User implements UserInterface
         $data = array_merge($serialized, array_fill(0, 2, null));
 
         $this->password = $data['password'];
-        $this->salt = $data['salt'];
         $this->username = $data['username'];
         $this->enabled = $data['enabled'];
         $this->id = $data['id'];
@@ -125,11 +115,6 @@ abstract class User implements UserInterface
     public function getUsername(): ?string
     {
         return $this->username;
-    }
-
-    public function getSalt(): ?string
-    {
-        return $this->salt;
     }
 
     public function getEmail(): ?string

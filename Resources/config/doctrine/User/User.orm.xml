@@ -14,7 +14,6 @@
         <field name="email" column="email" type="string" length="255" unique="true" />
         <field name="enabled" column="enabled" type="boolean" />
         <field name="enforcePasswordChange" column="enforce_password_change" type="boolean" />
-        <field name="salt" column="salt" type="string" nullable="true" />
         <field name="password" column="password" type="string" />
         <field name="lastLogin" column="last_login" type="datetime_immutable" nullable="true" />
         <field name="roles" column="roles" type="array" />

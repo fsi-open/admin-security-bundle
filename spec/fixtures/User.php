@@ -38,11 +38,6 @@ class User implements UserInterface
         $this->password = $password;
     }
 
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
     public function getUsername(): ?string
     {
     }
