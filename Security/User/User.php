@@ -132,6 +132,11 @@ abstract class User implements UserInterface
         return $this->plainPassword;
     }
 
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
     public function getLastLogin(): ?DateTimeImmutable
     {
         return $this->lastLogin;

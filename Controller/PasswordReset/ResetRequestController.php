@@ -132,6 +132,17 @@ class ResetRequestController
             return false;
         }
 
-        return false === $user->isPasswordResetTokenNonExpired();
+        if (true === $this->hasNonExpiredPasswordResetToken($user)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user): bool
+    {
+        return null !== $user->getPasswordResetToken()
+            && true === $user->getPasswordResetToken()->isNonExpired()
+        ;
     }
 }
