@@ -14,18 +14,18 @@ columns:
     options:
       label: admin.user_list.datagrid.last_login
       translation_domain: FSiAdminSecurity
-  password_reset_token:
-    type: boolean
+  password_reset_token_non_expired:
+    type: token_non_expired
     options:
       label: admin.user_list.datagrid.password_reset_token
       translation_domain: FSiAdminSecurity
-      field_mapping: [ 'passwordResetToken.isNonExpired' ]
-  activation_token:
-    type: boolean
+      field_mapping: [passwordResetToken]
+  activation_token_non_expired:
+    type: token_non_expired
     options:
       label: admin.user_list.datagrid.activation_token
       translation_domain: FSiAdminSecurity
-      field_mapping: [ 'activationToken.isNonExpired' ]
+      field_mapping: [activationToken]
   batch:
     type: batch
     options:

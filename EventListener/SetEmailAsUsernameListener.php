@@ -17,6 +17,9 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use function get_class;
+use function sprintf;
+
 class SetEmailAsUsernameListener implements EventSubscriberInterface
 {
     /**

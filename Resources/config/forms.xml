@@ -10,7 +10,7 @@
 
     <services>
 
-        <service id="admin_security.form.type.user" class="%admin_security.form.type.user.class%">
+        <service id="admin_security.form.type.user" class="FSi\Bundle\AdminSecurityBundle\Form\Type\Admin\UserType">
             <tag name="form.type" />
             <argument type="string">%admin_security.model.user%</argument>
             <argument>%security.role_hierarchy.roles%</argument>

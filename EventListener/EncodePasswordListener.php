@@ -14,25 +14,21 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 use function get_class;
 
 class EncodePasswordListener implements EventSubscriberInterface
 {
-    /**
-     * @var EncoderFactoryInterface
-     */
-    private $encoderFactory;
+    private PasswordHasherFactoryInterface $passwordHasherFactory;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory)
+    public function __construct(PasswordHasherFactoryInterface $passwordHasherFactory)
     {
-        $this->encoderFactory = $encoderFactory;
+        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     /**
@@ -62,24 +58,24 @@ class EncodePasswordListener implements EventSubscriberInterface
     protected function updateUserPassword(ChangeablePasswordInterface $user): void
     {
         $password = $user->getPlainPassword();
-        if (null !== $password) {
-            if (false === $user instanceof UserInterface) {
-                throw new RuntimeException(
-                    sprintf(
-                        "Expected to get instance of %s but got instance of %s",
-                        UserInterface::class,
-                        get_class($user)
-                    )
-                );
-            }
-            $encoder = $this->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
-            $user->eraseCredentials();
+        if (null === $password) {
+            return;
         }
-    }
 
-    protected function getEncoder(UserInterface $user): PasswordEncoderInterface
-    {
-        return $this->encoderFactory->getEncoder($user);
+        if (false === $user instanceof UserInterface) {
+            throw new RuntimeException(
+                sprintf(
+                    "Expected to get instance of %s but got instance of %s",
+                    UserInterface::class,
+                    get_class($user)
+                )
+            );
+        }
+
+        $user->setPassword(
+            $this->passwordHasherFactory->getPasswordHasher($user)->hash($password)
+        );
+
+        $user->eraseCredentials();
     }
 }

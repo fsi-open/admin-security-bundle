@@ -18,14 +18,14 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class EncodePasswordListenerSpec extends ObjectBehavior
 {
-    public function let(EncoderFactoryInterface $encoderFactory): void
+    public function let(PasswordHasherFactoryInterface $passwordHasherFactory): void
     {
-        $this->beConstructedWith($encoderFactory);
+        $this->beConstructedWith($passwordHasherFactory);
     }
 
     public function it_subscribes_change_password_event(): void
@@ -49,16 +49,15 @@ class EncodePasswordListenerSpec extends ObjectBehavior
     }
 
     public function it_encodes_password_for_user(
-        EncoderFactoryInterface $encoderFactory,
-        PasswordEncoderInterface $encoder,
+        PasswordHasherFactoryInterface $passwordHasherFactory,
+        PasswordHasherInterface $hasher,
         ChangePasswordEvent $event,
         UserInterface $user
     ): void {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
-        $encoderFactory->getEncoder($user)->willReturn($encoder);
-        $user->getSalt()->willReturn('salt');
-        $encoder->encodePassword('new-password', 'salt')->willReturn('encoded-new-password');
+        $passwordHasherFactory->getPasswordHasher($user)->willReturn($hasher);
+        $hasher->hash('new-password')->willReturn('encoded-new-password');
 
         $user->setPassword('encoded-new-password')->shouldBeCalled();
         $user->eraseCredentials()->shouldBeCalled();
@@ -67,16 +66,15 @@ class EncodePasswordListenerSpec extends ObjectBehavior
     }
 
     public function it_encodes_password_for_new_user(
-        EncoderFactoryInterface $encoderFactory,
-        PasswordEncoderInterface $encoder,
+        PasswordHasherFactoryInterface $passwordHasherFactory,
+        PasswordHasherInterface $hasher,
         UserEvent $event,
         UserInterface $user
     ): void {
         $event->getUser()->willReturn($user);
         $user->getPlainPassword()->willReturn('new-password');
-        $encoderFactory->getEncoder($user)->willReturn($encoder);
-        $user->getSalt()->willReturn('salt');
-        $encoder->encodePassword('new-password', 'salt')->willReturn('encoded-new-password');
+        $passwordHasherFactory->getPasswordHasher($user)->willReturn($hasher);
+        $hasher->hash('new-password')->willReturn('encoded-new-password');
 
         $user->setPassword('encoded-new-password')->shouldBeCalled();
         $user->eraseCredentials()->shouldBeCalled();

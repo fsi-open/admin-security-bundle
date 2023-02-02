@@ -27,38 +27,16 @@ use Symfony\Component\Security\Http\FirewallMapInterface;
 
 use function get_class;
 use function method_exists;
+use function sprintf;
 
 class EnforcePasswordChangeListener implements EventSubscriberInterface
 {
-    /**
-     * @var FirewallMapInterface
-     */
-    private $firewallMap;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var string
-     */
-    private $firewallName;
-
-    /**
-     * @var string
-     */
-    private $changePasswordRoute;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private FirewallMapInterface $firewallMap;
+    private AuthorizationCheckerInterface $authorizationChecker;
+    private TokenStorageInterface $tokenStorage;
+    private RouterInterface $router;
+    private string $firewallName;
+    private string $changePasswordRoute;
 
     public function __construct(
         FirewallMapInterface $firewallMap,

@@ -18,18 +18,17 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
+use function is_object;
+use function gettype;
+
 class PersistDoctrineUserListener implements EventSubscriberInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $registry;
+    private ManagerRegistry $registry;
 
     public function __construct(ManagerRegistry $registry)
     {

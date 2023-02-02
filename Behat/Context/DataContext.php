@@ -13,27 +13,31 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Hook\AfterScenario;
+use Behat\Hook\BeforeScenario;
 use Behat\Mink\Session;
+use Behat\Step\Given;
+use Behat\Step\Then;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\FixturesBundle\Entity\User;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 use function count;
 
 final class DataContext extends AbstractContext
 {
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private PasswordHasherFactoryInterface $passwordHasherFactory;
 
     public function __construct(
         Session $session,
         MinkParameters $minkParameters,
         EntityManagerInterface $entityManager,
-        UserPasswordEncoderInterface $passwordEncoder
+        PasswordHasherFactoryInterface $passwordHasherFactory
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasherFactory = $passwordHasherFactory;
     }
 
     /**
@@ -49,9 +53,6 @@ final class DataContext extends AbstractContext
         $tool->createSchema($metadata);
     }
 
-    /**
-     * @AfterScenario
-     */
     public function deleteDatabaseIfExists(): void
     {
         $manager = $this->getEntityManager();
@@ -78,7 +79,7 @@ final class DataContext extends AbstractContext
 
         if (0 !== strlen($password)) {
             $user->setPassword(
-                $this->passwordEncoder->encodePassword($user, $password)
+                $this->passwordHasherFactory->getPasswordHasher($user)->hash($password)
             );
             $user->eraseCredentials();
         }
@@ -127,28 +128,19 @@ final class DataContext extends AbstractContext
     }
 
     /**
-     * @Then /^user password should be changed$/
-     */
-    public function userPasswordShouldBeChanged(): void
-    {
-        $user = $this->findUserByUsername('admin');
-
-        Assertion::same(
-            $user->getPassword(),
-            $this->passwordEncoder->encodePassword($user, 'admin-new')
-        );
-    }
-
-    /**
-     * @Then /^user "([^"]*)" should have changed password$/
+     * @Then /^user "([^"]*)" password should be changed$/
      */
     public function userShouldHaveChangedPassword(string $userEmail): void
     {
         $user = $this->findUserByEmail($userEmail);
-
-        Assertion::same(
-            $user->getPassword(),
-            $this->passwordEncoder->encodePassword($user, 'admin-new')
+        $password = $user->getPassword();
+        Assertion::notNull($password, "User \"{$userEmail}\" has no password.");
+        Assertion::true(
+            $this->passwordHasherFactory->getPasswordHasher($user)->verify(
+                $password,
+                'admin-new'
+            ),
+            'User password has not been changed.'
         );
     }
 

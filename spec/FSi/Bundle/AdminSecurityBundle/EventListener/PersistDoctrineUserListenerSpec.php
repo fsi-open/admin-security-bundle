@@ -21,7 +21,9 @@ use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 
@@ -152,18 +154,14 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDemoteUser($event);
     }
 
-    public function it_flushes_om_after_user_logged_in(
-        InteractiveLoginEvent $event,
-        AbstractToken $token,
-        ObjectManager $objectManager,
-        User $user
-    ): void {
-        $token->getUser()->willReturn($user);
-        $event->getAuthenticationToken()->willReturn($token);
-
+    public function it_flushes_om_after_user_logged_in(ObjectManager $objectManager): void
+    {
+        $user = new User();
         $objectManager->persist($user)->shouldBeCalled();
         $objectManager->flush()->shouldBeCalled();
 
-        $this->onInteractiveLogin($event);
+        $this->onInteractiveLogin(
+            new InteractiveLoginEvent(new Request(), new UsernamePasswordToken($user, 'firewall', []))
+        );
     }
 }

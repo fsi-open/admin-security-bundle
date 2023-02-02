@@ -22,7 +22,7 @@ Feature:
     And I fill in new password with confirmation
     And I press "Change password" button
     And I should be redirected to "Login" page
-    Then user "admin@fsi.pl" should have changed password
+    Then user "admin@fsi.pl" password should be changed
     And I should see message:
     """
     Your password has been successfully changed

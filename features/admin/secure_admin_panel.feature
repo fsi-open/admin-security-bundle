@@ -4,7 +4,7 @@ Feature: Secure admin panel
   I need to install FSiAdminSecurityBundle in my application
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
     And I'm not logged in
 
   Scenario: Display login form to unauthorized users

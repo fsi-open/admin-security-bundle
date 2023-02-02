@@ -1,7 +1,7 @@
 ---
 security:
-    encoders:
-        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: sha512
+    password_hashers:
+        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto
 
     providers:
         entity_provider:
@@ -20,7 +20,6 @@ security:
 
         admin_panel:
             pattern: ^/admin
-            logout_on_user_change: true
             form_login:
                 provider: entity_provider
                 check_path: fsi_admin_security_user_check
@@ -28,7 +27,6 @@ security:
                 default_target_path: /admin
             logout:
                 path: fsi_admin_security_user_logout
-            anonymous: ~
             switch_user: true
 
     access_control:

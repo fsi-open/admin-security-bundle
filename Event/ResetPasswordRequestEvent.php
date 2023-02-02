@@ -16,10 +16,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ResetPasswordRequestEvent extends Event
 {
-    /**
-     * @var ResettablePasswordInterface
-     */
-    private $user;
+    private ResettablePasswordInterface $user;
 
     public function __construct(ResettablePasswordInterface $user)
     {

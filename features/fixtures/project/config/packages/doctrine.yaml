@@ -1,9 +1,16 @@
 doctrine:
     dbal:
         driver:   pdo_sqlite
-        user:     admin
+        user:     'admin'
         charset:  UTF8
         path: "%kernel.project_dir%/var/data/data.sqlite"
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+            FSiFixturesBundle:
+                is_bundle: false
+                type: xml
+                dir: "%kernel.project_dir%/config/doctrine"
+                prefix: 'FSi\FixturesBundle\Entity'
+                alias: FSiFixturesBundle

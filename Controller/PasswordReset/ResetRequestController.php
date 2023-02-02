@@ -14,6 +14,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
@@ -25,52 +26,24 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Twig\Environment;
 
 use function get_class;
 
 class ResetRequestController
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var string
-     */
-    private $requestActionTemplate;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
+    private Environment $twig;
+    private FormFactoryInterface $formFactory;
+    private RouterInterface $router;
+    private UserRepositoryInterface $userRepository;
+    private EventDispatcherInterface $eventDispatcher;
+    private FlashMessages $flashMessages;
 
     /**
      * @var class-string<FormInterface<FormInterface>>
      */
-    private $formType;
+    private string $formType;
+    private string $requestActionTemplate;
 
     /**
      * @param class-string<FormInterface<FormInterface>> $formType
@@ -155,15 +128,11 @@ class ResetRequestController
 
     private function isUserEligibleForResettingPassword(ResettablePasswordInterface $user): bool
     {
-        if (true === $user instanceof AdvancedUserInterface && false === $user->isEnabled()) {
+        if (true === $user instanceof ActivableInterface && false === $user->isEnabled()) {
             return false;
         }
 
         if (true === $this->hasNonExpiredPasswordResetToken($user)) {
-            return false;
-        }
-
-        if (true === $user instanceof AdvancedUserInterface && false === $user->isAccountNonLocked()) {
             return false;
         }
 

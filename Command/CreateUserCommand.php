@@ -29,20 +29,14 @@ use function is_string;
 
 class CreateUserCommand extends Command
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
+    private EventDispatcherInterface $eventDispatcher;
     /**
      * @var class-string<UserInterface>
      */
-    private $userClass;
+    private string $userClass;
 
     /**
-     * @param EventDispatcherInterface $eventDispatcher
      * @param class-string<UserInterface> $userClass
-     * @param string|null $name
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,

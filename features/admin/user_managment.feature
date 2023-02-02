@@ -1,7 +1,7 @@
 Feature: User management
 
   Background:
-    Given there is "admin" user with role "ROLE_ADMIN" and password "admin"
+    Given there is "admin@fsi.pl" user with role "ROLE_ADMIN" and password "admin"
     And I'm logged in as admin
     And there are following users:
       | Email            | Role          |
@@ -12,7 +12,7 @@ Feature: User management
     Given I am on the "User list" page
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    | No                     | No                 |
       | red1@example.com | Yes    | No                     | No                 |
       | red2@example.com | Yes    | No                     | No                 |
 
@@ -29,7 +29,7 @@ Feature: User management
     When I delete second user on the list
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    | No                     | No                 |
       | red2@example.com | Yes    | No                     | No                 |
 
   @email
@@ -44,7 +44,7 @@ Feature: User management
       | reply_to | do-not-reply@example.com |
     And I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    | No                     | No                 |
       | red1@example.com | Yes    | Yes                    | No                 |
       | red2@example.com | Yes    | No                     | No                 |
 
@@ -57,7 +57,7 @@ Feature: User management
     And I am on the "User list" page
     Then I should see following table:
       | Email            | Active | Password reset request | Activation request |
-      | admin            | Yes    | No                     | No                 |
+      | admin@fsi.pl     | Yes    | No                     | No                 |
       | red1@example.com | Yes    | No                     | No                 |
       | red2@example.com | Yes    | No                     | No                 |
       | new-user@fsi.pl  | No     | No                     | Yes                |
