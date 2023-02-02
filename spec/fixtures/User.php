@@ -50,11 +50,6 @@ class User implements UserInterface
     {
     }
 
-    public function isActivationTokenNonExpired(): bool
-    {
-        return false;
-    }
-
     public function getActivationToken(): ?TokenInterface
     {
     }
@@ -79,11 +74,6 @@ class User implements UserInterface
     {
     }
 
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
     public function getEmail(): ?string
     {
     }
@@ -94,11 +84,6 @@ class User implements UserInterface
 
     public function enforcePasswordChange(bool $enforce): void
     {
-    }
-
-    public function isPasswordResetTokenNonExpired(): bool
-    {
-        return false;
     }
 
     public function getPasswordResetToken(): ?TokenInterface
@@ -123,6 +108,11 @@ class User implements UserInterface
 
     public function setLocked(bool $boolean): void
     {
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
     }
 
     public function setLastLogin(DateTimeImmutable $time): void

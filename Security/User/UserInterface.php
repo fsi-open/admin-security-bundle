@@ -28,7 +28,4 @@ interface UserInterface extends
     public function getLastLogin(): ?DateTimeImmutable;
     public function addRole(string $role): void;
     public function removeRole(string $role): void;
-    // Added until DataGrid issues with accessing empty embeddables is resolved
-    public function isActivationTokenNonExpired(): bool;
-    public function isPasswordResetTokenNonExpired(): bool;
 }

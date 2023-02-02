@@ -214,6 +214,11 @@
             <argument type="collection"/>
             <tag name="admin.element"/>
         </service>
+
+        <!-- DataGrid -->
+
+        <service id="FSi\Bundle\AdminSecurityBundle\DataSource\ColumnType\TokenNonExpired" autoconfigure="true" autowire="true" />
+
     </services>
 
 </container>
