@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
@@ -34,10 +34,10 @@ class SendActivationMailListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [AdminSecurityEvents::USER_CREATED => 'onUserCreated'];
+        return [UserCreatedEvent::class => 'onUserCreated'];
     }
 
-    public function onUserCreated(UserEvent $event): void
+    public function onUserCreated(UserCreatedEvent $event): void
     {
         $user = $event->getUser();
         if (false === $user instanceof ActivableInterface || true === $user->isEnabled()) {

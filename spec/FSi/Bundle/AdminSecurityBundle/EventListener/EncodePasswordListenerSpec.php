@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
@@ -31,8 +30,8 @@ class EncodePasswordListenerSpec extends ObjectBehavior
     public function it_subscribes_change_password_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            ChangePasswordEvent::class => 'onChangePassword',
+            UserCreatedEvent::class => 'onUserCreated',
         ]);
     }
 
@@ -68,7 +67,7 @@ class EncodePasswordListenerSpec extends ObjectBehavior
     public function it_encodes_password_for_new_user(
         PasswordHasherFactoryInterface $passwordHasherFactory,
         PasswordHasherInterface $hasher,
-        UserEvent $event,
+        UserCreatedEvent $event,
         UserInterface $user
     ): void {
         $event->getUser()->willReturn($user);

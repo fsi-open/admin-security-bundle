@@ -4,7 +4,7 @@
 {# pattern: datagrid_{grid_name}_column_name_{column_name}_cell #}
 {% block datagrid_admin_security_user_column_name_batch_cell %}
     <td>
-    {% if are_same_users(cell.source, app.user) %}
+    {% if are_same_users(cell.getAttribute('source'), app.user) %}
         <input type="checkbox" disabled />
     {% else %}
         <input type="checkbox"

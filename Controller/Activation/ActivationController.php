@@ -13,13 +13,12 @@ namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,7 +113,7 @@ class ActivationController
                 $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
             );
         } else {
-            $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::ACTIVATION);
+            $this->eventDispatcher->dispatch(new ActivationEvent($user));
 
             $response = $this->addFlashAndRedirect('success', 'admin.activation.message.success');
         }
@@ -137,8 +136,8 @@ class ActivationController
 
         $form->handleRequest($request);
         if (true === $form->isSubmitted() && true === $form->isValid()) {
-            $this->eventDispatcher->dispatch(new ActivationEvent($user), AdminSecurityEvents::ACTIVATION);
-            $this->eventDispatcher->dispatch(new ChangePasswordEvent($user), AdminSecurityEvents::CHANGE_PASSWORD);
+            $this->eventDispatcher->dispatch(new ActivationEvent($user));
+            $this->eventDispatcher->dispatch(new ChangePasswordEvent($user));
 
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use PhpSpec\ObjectBehavior;
@@ -40,7 +39,7 @@ class LogoutUserListenerSpec extends ObjectBehavior
     public function it_subscribes_to_change_password_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+            ChangePasswordEvent::class => 'onChangePassword',
         ]);
     }
 

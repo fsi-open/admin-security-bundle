@@ -13,7 +13,6 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ChangePasswordController;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -86,8 +85,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::CHANGE_PASSWORD
+            )
         )->shouldBeCalled();
 
         $flashMessages->success(

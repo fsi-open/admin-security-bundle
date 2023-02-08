@@ -12,14 +12,13 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\FormEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\FormInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use Symfony\Component\Form\FormInterface;
 
 class PrepareUserListenerSpec extends ObjectBehavior
 {
@@ -49,8 +48,7 @@ class PrepareUserListenerSpec extends ObjectBehavior
         $user->enforcePasswordChange(true)->shouldBeCalled();
 
         $eventDispatcher->dispatch(
-            Argument::type(UserEvent::class),
-            AdminSecurityEvents::USER_CREATED
+            Argument::type(UserCreatedEvent::class)
         )->shouldBeCalled();
 
         $this->prepareAndDispatchUserCreated($event);

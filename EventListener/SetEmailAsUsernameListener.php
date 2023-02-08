@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Event\UserEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,11 +27,11 @@ class SetEmailAsUsernameListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::USER_CREATED => 'setEmailAsUsername'
+            UserCreatedEvent::class => 'setEmailAsUsername'
         ];
     }
 
-    public function setEmailAsUsername(UserEvent $event): void
+    public function setEmailAsUsername(UserCreatedEvent $event): void
     {
         $user = $event->getUser();
         if (false === $user instanceof UserInterface) {

@@ -16,7 +16,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @extends BatchElement<UserInterface>
@@ -36,7 +36,6 @@ class PasswordResetBatchElement extends BatchElement
     /**
      * @param array<string, mixed> $options
      * @param class-string<UserInterface> $userModel
-     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(array $options, string $userModel, EventDispatcherInterface $eventDispatcher)
     {
@@ -51,10 +50,7 @@ class PasswordResetBatchElement extends BatchElement
      */
     public function apply($object): void
     {
-        $this->eventDispatcher->dispatch(
-            new ResetPasswordRequestEvent($object),
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST
-        );
+        $this->eventDispatcher->dispatch(new ResetPasswordRequestEvent($object));
     }
 
     public function getId(): string

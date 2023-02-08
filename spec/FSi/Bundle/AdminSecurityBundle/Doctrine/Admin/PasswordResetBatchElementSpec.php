@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
-use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -47,8 +46,7 @@ class PasswordResetBatchElementSpec extends ObjectBehavior
         EventDispatcherInterface $eventDispatcher
     ): void {
         $eventDispatcher->dispatch(
-            Argument::type(ResetPasswordRequestEvent::class),
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST
+            Argument::type(ResetPasswordRequestEvent::class)
         )->shouldBeCalled();
 
         $this->apply($user);

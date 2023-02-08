@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ActivateUserListener implements EventSubscriberInterface
@@ -23,7 +22,7 @@ class ActivateUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::ACTIVATION => 'onActivation'
+            ActivationEvent::class => 'onActivation'
         ];
     }
 
