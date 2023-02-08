@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,7 +23,7 @@ class ClearChangePasswordEnforcementListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
+            ChangePasswordEvent::class => 'onChangePassword'
         ];
     }
 

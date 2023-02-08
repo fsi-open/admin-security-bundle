@@ -13,7 +13,6 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -22,7 +21,7 @@ class ClearChangePasswordEnforcementListenerSpec extends ObjectBehavior
     public function it_subscribes_change_password_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
+            ChangePasswordEvent::class => 'onChangePassword',
         ]);
     }
 

@@ -12,26 +12,25 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
-use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
+use TypeError;
 
 class ActivationControllerSpec extends ObjectBehavior
 {
@@ -88,9 +87,9 @@ class ActivationControllerSpec extends ObjectBehavior
     ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($symfonyUser);
 
-        $this->shouldThrow(\TypeError::class)
+        $this->shouldThrow(TypeError::class)
             ->during('activateAction', ['activation-token']);
-        $this->shouldThrow(\TypeError::class)
+        $this->shouldThrow(TypeError::class)
             ->during('changePasswordAction', [$request, 'activation-token']);
     }
 
@@ -166,8 +165,7 @@ class ActivationControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ActivationEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::ACTIVATION
+            )
         )->shouldBeCalled();
 
         $flashMessages->success('admin.activation.message.success', [], 'FSiAdminSecurity')->shouldBeCalled();
@@ -201,8 +199,7 @@ class ActivationControllerSpec extends ObjectBehavior
         FormView $formView,
         Request $request,
         UserInterface $user,
-        TokenInterface $token,
-        Response $response
+        TokenInterface $token
     ): void {
         $userRepository->findUserByActivationToken('activation-token')->willReturn($user);
         $user->isEnabled()->willReturn(false);
@@ -251,15 +248,13 @@ class ActivationControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ActivationEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::ACTIVATION
+            )
         )->shouldBeCalled();
         $eventDispatcher->dispatch(
             Argument::allOf(
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::CHANGE_PASSWORD
+            )
         )->shouldBeCalled();
 
         $flashMessages->success(

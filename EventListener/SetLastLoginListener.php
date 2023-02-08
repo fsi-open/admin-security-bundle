@@ -15,7 +15,6 @@ use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
 
 class SetLastLoginListener implements EventSubscriberInterface
 {
@@ -25,7 +24,7 @@ class SetLastLoginListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
+            InteractiveLoginEvent::class => 'onInteractiveLogin'
         ];
     }
 

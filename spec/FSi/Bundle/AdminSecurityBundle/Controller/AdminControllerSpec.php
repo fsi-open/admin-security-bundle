@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
+use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -23,11 +22,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Twig\Environment;
 
 class AdminControllerSpec extends ObjectBehavior
@@ -114,8 +111,7 @@ class AdminControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ChangePasswordEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::CHANGE_PASSWORD
+            )
         )->shouldBeCalled();
 
         $flashMessages->success(

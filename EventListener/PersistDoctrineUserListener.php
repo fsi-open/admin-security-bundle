@@ -14,7 +14,6 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DemoteUserEvent;
@@ -25,7 +24,6 @@ use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
 
 use function get_class;
 use function gettype;
@@ -47,15 +45,15 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest',
-            AdminSecurityEvents::ACTIVATION => 'onActivation',
-            AdminSecurityEvents::RESEND_ACTIVATION_TOKEN => 'onActivationResend',
-            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
-            AdminSecurityEvents::PROMOTE_USER => 'onPromoteUser',
-            AdminSecurityEvents::DEMOTE_USER => 'onDemoteUser',
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin'
+            ChangePasswordEvent::class => 'onChangePassword',
+            ResetPasswordRequestEvent::class => 'onResetPasswordRequest',
+            ActivationEvent::class => 'onActivation',
+            ResendActivationTokenEvent::class => 'onActivationResend',
+            DeactivationEvent::class => 'onDeactivation',
+            UserCreatedEvent::class => 'onUserCreated',
+            PromoteUserEvent::class => 'onPromoteUser',
+            DemoteUserEvent::class => 'onDemoteUser',
+            InteractiveLoginEvent::class => 'onInteractiveLogin'
         ];
     }
 

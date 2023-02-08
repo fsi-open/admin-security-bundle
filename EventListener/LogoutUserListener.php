@@ -35,7 +35,7 @@ class LogoutUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword'
+            ChangePasswordEvent::class => 'onChangePassword'
         ];
     }
 

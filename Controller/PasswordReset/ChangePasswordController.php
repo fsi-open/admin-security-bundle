@@ -12,11 +12,10 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -146,11 +145,7 @@ class ChangePasswordController
     {
         $user->removePasswordResetToken();
 
-        $this->eventDispatcher->dispatch(
-            new ChangePasswordEvent($user),
-            AdminSecurityEvents::CHANGE_PASSWORD
-        );
-
+        $this->eventDispatcher->dispatch(new ChangePasswordEvent($user));
         $this->flashMessages->success(
             'admin.password_reset.change_password.message.success',
             [],

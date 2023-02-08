@@ -34,7 +34,7 @@ class SendActivationMailListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [AdminSecurityEvents::USER_CREATED => 'onUserCreated'];
+        return [UserCreatedEvent::class => 'onUserCreated'];
     }
 
     public function onUserCreated(UserCreatedEvent $event): void

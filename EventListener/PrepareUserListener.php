@@ -13,12 +13,10 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
 use FSi\Bundle\AdminBundle\Event\FormDataPreSaveEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
 use function bin2hex;
 use function random_bytes;
 
@@ -57,6 +55,6 @@ final class PrepareUserListener implements EventSubscriberInterface
         $entity->enforcePasswordChange(true);
         $entity->setPlainPassword(bin2hex(random_bytes(32)));
 
-        $this->eventDispatcher->dispatch(new UserCreatedEvent($entity), AdminSecurityEvents::USER_CREATED);
+        $this->eventDispatcher->dispatch(new UserCreatedEvent($entity));
     }
 }

@@ -11,20 +11,19 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
-use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
+use FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset\ResetRequestController;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Twig\Environment;
 
 class ResetRequestControllerSpec extends ObjectBehavior
@@ -82,8 +81,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ResetPasswordRequestEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST
+            )
         )->shouldBeCalled();
 
         $flashMessages->info(
@@ -111,8 +109,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
             Argument::allOf(
                 Argument::type(ResetPasswordRequestEvent::class),
                 Argument::which('getUser', $user->getWrappedObject())
-            ),
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST
+            )
         )->shouldNotBeCalled();
 
         $flashMessages->info(

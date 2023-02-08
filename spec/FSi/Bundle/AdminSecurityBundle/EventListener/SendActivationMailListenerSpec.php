@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
@@ -30,7 +29,7 @@ class SendActivationMailListenerSpec extends ObjectBehavior
     public function it_subscribes_user_created_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated',
+            UserCreatedEvent::class => 'onUserCreated',
         ]);
     }
 

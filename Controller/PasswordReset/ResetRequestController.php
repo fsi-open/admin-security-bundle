@@ -12,14 +12,13 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -88,10 +87,7 @@ class ResetRequestController
             return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
         }
 
-        $this->eventDispatcher->dispatch(
-            new ResetPasswordRequestEvent($user),
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST
-        );
+        $this->eventDispatcher->dispatch(new ResetPasswordRequestEvent($user));
 
         return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
     }

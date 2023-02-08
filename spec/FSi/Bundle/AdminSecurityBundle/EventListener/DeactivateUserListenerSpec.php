@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use PhpSpec\ObjectBehavior;
@@ -21,7 +20,7 @@ class DeactivateUserListenerSpec extends ObjectBehavior
     public function it_subscribes_deactivation_event(): void
     {
         $this->getSubscribedEvents()->shouldReturn([
-            AdminSecurityEvents::DEACTIVATION => 'onDeactivation',
+            DeactivationEvent::class => 'onDeactivation',
         ]);
     }
 

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
@@ -37,8 +36,8 @@ class EncodePasswordListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::CHANGE_PASSWORD => 'onChangePassword',
-            AdminSecurityEvents::USER_CREATED => 'onUserCreated'
+            ChangePasswordEvent::class => 'onChangePassword',
+            UserCreatedEvent::class => 'onUserCreated'
         ];
     }
 

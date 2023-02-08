@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
@@ -27,7 +26,7 @@ final class ResendActvationMailListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [AdminSecurityEvents::RESEND_ACTIVATION_TOKEN => 'resendActivationMail'];
+        return [ResendActivationTokenEvent::class => 'resendActivationMail'];
     }
 
     public function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)

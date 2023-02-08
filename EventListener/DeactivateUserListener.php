@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -23,7 +22,7 @@ class DeactivateUserListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::DEACTIVATION => 'onDeactivation'
+            DeactivationEvent::class => 'onDeactivation'
         ];
     }
 

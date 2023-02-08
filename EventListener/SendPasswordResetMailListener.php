@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
@@ -34,7 +33,7 @@ class SendPasswordResetMailListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            AdminSecurityEvents::RESET_PASSWORD_REQUEST => 'onResetPasswordRequest'
+            ResetPasswordRequestEvent::class => 'onResetPasswordRequest'
         ];
     }
 
