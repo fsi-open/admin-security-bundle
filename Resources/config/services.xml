@@ -243,6 +243,12 @@
             <argument type="collection"/>
             <tag name="admin.element"/>
         </service>
+
+        <!-- Twig -->
+        <service id="FSi\Bundle\AdminSecurityBundle\Twig\SecurityExtension">
+            <tag name="twig.extension" />
+        </service>
+
     </services>
 
 </container>
