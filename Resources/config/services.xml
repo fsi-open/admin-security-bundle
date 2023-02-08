@@ -216,8 +216,12 @@
         </service>
 
         <!-- DataGrid -->
-
         <service id="FSi\Bundle\AdminSecurityBundle\DataSource\ColumnType\TokenNonExpired" autoconfigure="true" autowire="true" />
+
+        <!-- Twig -->
+        <service id="FSi\Bundle\AdminSecurityBundle\Twig\SecurityExtension">
+            <tag name="twig.extension" />
+        </service>
 
     </services>
 
