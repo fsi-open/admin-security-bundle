@@ -15,17 +15,45 @@ use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-interface UserInterface extends
-    ActivableInterface,
-    EnforceablePasswordChangeInterface,
-    PasswordAuthenticatedUserInterface,
-    ResettablePasswordInterface,
-    SymfonyUserInterface
-{
-    public function setUsername(string $username): void;
-    public function setEmail(string $email): void;
-    public function setLastLogin(DateTimeImmutable $time): void;
-    public function getLastLogin(): ?DateTimeImmutable;
-    public function addRole(string $role): void;
-    public function removeRole(string $role): void;
+use function interface_exists;
+
+if (true === interface_exists(PasswordAuthenticatedUserInterface::class)) {
+    interface UserInterface extends
+        ActivableInterface,
+        EnforceablePasswordChangeInterface,
+        PasswordAuthenticatedUserInterface,
+        ResettablePasswordInterface,
+        SymfonyUserInterface
+    {
+        public function setUsername(string $username): void;
+
+        public function setEmail(string $email): void;
+
+        public function setLastLogin(DateTimeImmutable $time): void;
+
+        public function getLastLogin(): ?DateTimeImmutable;
+
+        public function addRole(string $role): void;
+
+        public function removeRole(string $role): void;
+    }
+} else {
+    interface UserInterface extends
+        ActivableInterface,
+        EnforceablePasswordChangeInterface,
+        ResettablePasswordInterface,
+        SymfonyUserInterface
+    {
+        public function setUsername(string $username): void;
+
+        public function setEmail(string $email): void;
+
+        public function setLastLogin(DateTimeImmutable $time): void;
+
+        public function getLastLogin(): ?DateTimeImmutable;
+
+        public function addRole(string $role): void;
+
+        public function removeRole(string $role): void;
+    }
 }

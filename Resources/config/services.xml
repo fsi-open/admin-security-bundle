@@ -96,6 +96,11 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <service id="admin_security.listener.legacy_encode_password" class="FSi\Bundle\AdminSecurityBundle\EventListener\LegacyEncodePasswordListener">
+            <argument type="service" id="security.encoder_factory" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
         <service id="admin_security.listener.activate_user_listener" class="FSi\Bundle\AdminSecurityBundle\EventListener\ActivateUserListener">
             <tag name="kernel.event_subscriber" />
         </service>

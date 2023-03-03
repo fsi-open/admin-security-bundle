@@ -20,6 +20,12 @@ use Prophecy\Argument;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
+use function class_exists;
+
+if (false === class_exists(PasswordHasherFactoryInterface::class)) {
+    return;
+}
+
 class EncodePasswordListenerSpec extends ObjectBehavior
 {
     public function let(PasswordHasherFactoryInterface $passwordHasherFactory): void

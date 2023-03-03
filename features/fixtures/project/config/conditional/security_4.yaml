@@ -1,0 +1,4 @@
+---
+security:
+    encoders:
+        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto

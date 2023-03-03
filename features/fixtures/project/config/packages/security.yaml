@@ -1,8 +1,5 @@
 ---
 security:
-    password_hashers:
-        FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto
-
     providers:
         entity_provider:
             entity:

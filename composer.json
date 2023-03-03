@@ -24,7 +24,6 @@
         "symfony/doctrine-bridge": "^4.4|^5.4",
         "symfony/form": "^4.4|^5.4",
         "symfony/framework-bundle": "^4.4|^5.4",
-        "symfony/password-hasher": "^5.4|6.2",
         "symfony/property-access": "^4.4|^5.4",
         "symfony/security-bundle": "^4.4|^5.4",
         "symfony/swiftmailer-bundle": "^3.5",
