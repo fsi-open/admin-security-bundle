@@ -10,22 +10,6 @@ security:
         ROLE_ADMIN: [ROLE_REDACTOR, ROLE_ALLOWED_TO_SWITCH]
         ROLE_REDACTOR: ROLE_USER
 
-    firewalls:
-        dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
-        admin_panel:
-            pattern: ^/admin
-            form_login:
-                provider: entity_provider
-                check_path: fsi_admin_security_user_check
-                login_path: fsi_admin_security_user_login
-                default_target_path: /admin
-            logout:
-                path: fsi_admin_security_user_logout
-            switch_user: true
-
     access_control:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/activation/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

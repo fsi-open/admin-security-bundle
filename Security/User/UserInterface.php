@@ -17,6 +17,8 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 use function interface_exists;
 
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
 if (true === interface_exists(PasswordAuthenticatedUserInterface::class)) {
     interface UserInterface extends
         ActivableInterface,

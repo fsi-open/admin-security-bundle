@@ -26,8 +26,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
-use function class_exists;
 use function count;
+use function interface_exists;
 
 final class DataContext extends AbstractContext
 {
@@ -172,7 +172,7 @@ final class DataContext extends AbstractContext
 
     private function encodeUserPassword(UserInterface $user): string
     {
-        if (true === class_exists(PasswordHasherFactoryInterface::class)) {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
             $passwordHasherFactory = $this->container->get('security.password_hasher_factory');
             Assertion::isInstanceOf($passwordHasherFactory, PasswordHasherFactoryInterface::class);
 
@@ -187,7 +187,7 @@ final class DataContext extends AbstractContext
 
     private function verifyUserPassword(UserInterface $user, string $plain): bool
     {
-        if (true === class_exists(PasswordHasherFactoryInterface::class)) {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
             $passwordHasherFactory = $this->container->get('security.password_hasher_factory');
             Assertion::isInstanceOf($passwordHasherFactory, PasswordHasherFactoryInterface::class);
 

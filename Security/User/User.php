@@ -31,18 +31,18 @@ abstract class User implements UserInterface
     /**
      * Encrypted password. Must be persisted.
      */
-    protected ?string $password;
+    protected ?string $password = null;
     /**
      * Plain password. Used for model validation. Must not be persisted.
      */
-    protected ?string $plainPassword;
-    protected ?DateTimeImmutable $lastLogin;
-    protected ?TokenInterface $activationToken;
-    protected ?TokenInterface $passwordResetToken;
+    protected ?string $plainPassword = null;
+    protected ?DateTimeImmutable $lastLogin = null;
+    protected ?TokenInterface $activationToken = null;
+    protected ?TokenInterface $passwordResetToken = null;
     /**
      * @var array<string>
      */
-    protected array $roles;
+    protected array $roles = [];
 
     public function __construct()
     {

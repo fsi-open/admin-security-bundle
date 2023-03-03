@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
-use function class_exists;
+use function interface_exists;
 
 class PasswordEncodingPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        if (true === class_exists(PasswordHasherFactoryInterface::class)) {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
             $container->removeDefinition('admin_security.listener.legacy_encode_password');
         } else {
             $container->removeDefinition('admin_security.listener.encode_password');

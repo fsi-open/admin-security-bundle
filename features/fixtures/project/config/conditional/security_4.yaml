@@ -2,3 +2,21 @@
 security:
     encoders:
         FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface: auto
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin_panel:
+            pattern: ^/admin
+            logout_on_user_change: true
+            form_login:
+                provider: entity_provider
+                check_path: fsi_admin_security_user_check
+                login_path: fsi_admin_security_user_login
+                default_target_path: /admin
+            logout:
+                path: fsi_admin_security_user_logout
+            anonymous: ~
+            switch_user: true

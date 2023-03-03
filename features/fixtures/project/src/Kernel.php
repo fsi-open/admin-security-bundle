@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-use function class_exists;
+use function interface_exists;
 use function sprintf;
 
 class Kernel extends BaseKernel
@@ -64,7 +64,7 @@ class Kernel extends BaseKernel
         $loader->load($configDirectory . '/{packages}/' . $this->environment . '/*' . self::CONFIG_EXTS, 'glob');
         $loader->load($configDirectory . '/{services}' . self::CONFIG_EXTS, 'glob');
         $loader->load($configDirectory . '/{services}_' . $this->environment . self::CONFIG_EXTS, 'glob');
-        if (true === class_exists(PasswordHasherFactoryInterface::class)) {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
             $loader->load($configDirectory . '/{conditional}/security_5' . self::CONFIG_EXTS, 'glob');
         } else {
             $loader->load($configDirectory . '/{conditional}/security_4' . self::CONFIG_EXTS, 'glob');
