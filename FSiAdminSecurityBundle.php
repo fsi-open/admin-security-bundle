@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\PasswordEncodingPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
@@ -25,6 +26,7 @@ class FSiAdminSecurityBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new PasswordEncodingPass());
         $container->addCompilerPass(new ValidationCompilerPass());
 
         $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');

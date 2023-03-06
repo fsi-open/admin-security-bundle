@@ -15,3 +15,6 @@ parameters:
         - '%rootDir%/../../../vendor'
     ignoreErrors:
         - '#Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.#'
+        - '#Property FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::\$passwordHasherFactory has unknown class Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface as its type\.#'
+        - '#Parameter \$passwordHasherFactory of method FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::__construct\(\) has invalid type Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface\.#'
+        - '#Call to method getPasswordHasher\(\) on an unknown class Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface\.#'

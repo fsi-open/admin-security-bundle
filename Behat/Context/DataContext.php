@@ -13,7 +13,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Hook\AfterScenario;
 use Behat\Hook\BeforeScenario;
 use Behat\Mink\Session;
 use Behat\Step\Given;
@@ -21,23 +20,27 @@ use Behat\Step\Then;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\FixturesBundle\Entity\User;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 use function count;
+use function interface_exists;
 
 final class DataContext extends AbstractContext
 {
-    private PasswordHasherFactoryInterface $passwordHasherFactory;
+    private ContainerInterface $container;
 
     public function __construct(
+        ContainerInterface $container,
         Session $session,
         MinkParameters $minkParameters,
-        EntityManagerInterface $entityManager,
-        PasswordHasherFactoryInterface $passwordHasherFactory
+        EntityManagerInterface $entityManager
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
-        $this->passwordHasherFactory = $passwordHasherFactory;
+        $this->container = $container;
     }
 
     /**
@@ -78,9 +81,7 @@ final class DataContext extends AbstractContext
         $user->setEnabled(true);
 
         if (0 !== strlen($password)) {
-            $user->setPassword(
-                $this->passwordHasherFactory->getPasswordHasher($user)->hash($password)
-            );
+            $user->setPassword($this->encodeUserPassword($user));
             $user->eraseCredentials();
         }
 
@@ -136,10 +137,7 @@ final class DataContext extends AbstractContext
         $password = $user->getPassword();
         Assertion::notNull($password, "User \"{$userEmail}\" has no password.");
         Assertion::true(
-            $this->passwordHasherFactory->getPasswordHasher($user)->verify(
-                $password,
-                'admin-new'
-            ),
+            $this->verifyUserPassword($user, 'admin-new'),
             'User password has not been changed.'
         );
     }
@@ -170,5 +168,35 @@ final class DataContext extends AbstractContext
 
         $this->getEntityManager()->refresh($user);
         return $user;
+    }
+
+    private function encodeUserPassword(UserInterface $user): string
+    {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
+            $passwordHasherFactory = $this->container->get('security.password_hasher_factory');
+            Assertion::isInstanceOf($passwordHasherFactory, PasswordHasherFactoryInterface::class);
+
+            return $passwordHasherFactory->getPasswordHasher($user)->hash($user->getPlainPassword() ?? '');
+        }
+
+        $passwordEncoderFactory = $this->container->get('security.encoder_factory');
+        Assertion::isInstanceOf($passwordEncoderFactory, EncoderFactoryInterface::class);
+
+        return $passwordEncoderFactory->getEncoder($user)->encodePassword($user->getPlainPassword() ?? '', null);
+    }
+
+    private function verifyUserPassword(UserInterface $user, string $plain): bool
+    {
+        if (true === interface_exists(PasswordHasherFactoryInterface::class)) {
+            $passwordHasherFactory = $this->container->get('security.password_hasher_factory');
+            Assertion::isInstanceOf($passwordHasherFactory, PasswordHasherFactoryInterface::class);
+
+            return $passwordHasherFactory->getPasswordHasher($user)->verify($user->getPassword() ?? '', $plain);
+        }
+
+        $passwordEncoderFactory = $this->container->get('security.encoder_factory');
+        Assertion::isInstanceOf($passwordEncoderFactory, EncoderFactoryInterface::class);
+
+        return $passwordEncoderFactory->getEncoder($user)->isPasswordValid($user->getPassword() ?? '', $plain, null);
     }
 }

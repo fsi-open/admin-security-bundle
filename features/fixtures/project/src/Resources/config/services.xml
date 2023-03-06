@@ -12,6 +12,10 @@
 
         <prototype namespace="FSi\Bundle\AdminSecurityBundle\Behat\Context\" resource="../../../../../../Behat/Context" />
 
+        <service id="FSi\Bundle\AdminSecurityBundle\Behat\Context\DataContext">
+            <argument key="$container" type="service" id="behat.driver.service_container" on-invalid="null" />
+        </service>
+
         <service id="fsi_fixtures_bundle.admin.news" class="FSi\FixturesBundle\Admin\News">
             <tag name="admin.element"/>
         </service>

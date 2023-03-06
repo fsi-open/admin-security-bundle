@@ -163,15 +163,17 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
         $this->onDemoteUser($event);
     }
 
-    public function it_flushes_om_after_user_logged_in(ObjectManager $objectManager): void
+    public function it_flushes_om_after_user_logged_in(ObjectManager $objectManager, UsernamePasswordToken $token): void
     {
         $user = new User();
         $objectManager->contains($user)->willReturn(false);
         $objectManager->persist($user)->shouldBeCalled();
         $objectManager->flush()->shouldBeCalled();
 
+        $token->getUser()->willReturn($user);
+
         $this->onInteractiveLogin(
-            new InteractiveLoginEvent(new Request(), new UsernamePasswordToken($user, 'firewall'))
+            new InteractiveLoginEvent(new Request(), $token->getWrappedObject())
         );
     }
 }
