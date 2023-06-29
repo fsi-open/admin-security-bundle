@@ -29,50 +29,18 @@ use Twig\Environment;
 
 class ActivationController
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var string
-     */
-    private $changePasswordActionTemplate;
-
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
-
-    /**
-     * @var string
-     */
-    private $changePasswordFormType;
-
+    private Environment $twig;
+    private UserRepositoryInterface $userRepository;
+    private RouterInterface $router;
+    private FormFactoryInterface $formFactory;
+    private EventDispatcherInterface $eventDispatcher;
+    private FlashMessages $flashMessages;
+    private string $changePasswordActionTemplate;
+    private string $changePasswordFormType;
     /**
      * @var array<string>
      */
-    private $changePasswordFormValidationGroups;
+    private array $changePasswordFormValidationGroups;
 
     /**
      * @param array<string> $changePasswordFormValidationGroups

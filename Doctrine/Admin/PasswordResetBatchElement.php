@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -23,15 +22,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class PasswordResetBatchElement extends BatchElement
 {
+    private EventDispatcherInterface $eventDispatcher;
     /**
      * @var class-string<UserInterface>
      */
-    private $userModel;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private string $userModel;
 
     /**
      * @param array<string, mixed> $options
@@ -45,9 +40,6 @@ class PasswordResetBatchElement extends BatchElement
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param ResettablePasswordInterface $object
-     */
     public function apply($object): void
     {
         $this->eventDispatcher->dispatch(new ResetPasswordRequestEvent($object));

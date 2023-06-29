@@ -18,15 +18,8 @@ use Twig\Template;
 
 class TwigSwiftMessageFactory implements SwiftMessageFactoryInterface
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private Environment $twig;
+    private RequestStack $requestStack;
 
     public function __construct(Environment $twig, RequestStack $requestStack)
     {

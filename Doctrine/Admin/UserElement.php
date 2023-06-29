@@ -32,12 +32,12 @@ class UserElement extends CRUDElement
     /**
      * @var class-string<T>
      */
-    private $userModel;
+    private string $userModel;
 
     /**
      * @var class-string<FormTypeInterface>
      */
-    private $formClass;
+    private string $formClass;
 
     /**
      * @param array<string, mixed> $options

@@ -25,8 +25,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 final class CommandContext extends AbstractContext
 {
     private KernelInterface $kernel;
-    private ?Application $application;
-    private ?CommandTester $tester;
+    private ?Application $application = null;
+    private ?CommandTester $tester = null;
 
     public function __construct(
         Session $session,
@@ -36,8 +36,6 @@ final class CommandContext extends AbstractContext
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
         $this->kernel = $kernel;
-        $this->application = null;
-        $this->tester = null;
     }
 
     /**

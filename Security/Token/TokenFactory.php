@@ -14,6 +14,12 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 use DateInterval;
 use DateTimeImmutable;
 
+use function base64_encode;
+use function random_bytes;
+use function rtrim;
+use function sprintf;
+use function strtr;
+
 class TokenFactory implements TokenFactoryInterface
 {
     private DateInterval $ttl;

@@ -28,15 +28,8 @@ use function is_string;
 
 class ActivateUserCommand extends Command
 {
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private UserRepositoryInterface $userRepository;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         UserRepositoryInterface $userRepository,

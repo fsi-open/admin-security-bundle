@@ -22,20 +22,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecuredManager implements ManagerInterface
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
+    private ManagerInterface $manager;
+    private TokenStorageInterface $tokenStorage;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
     public function __construct(
         ManagerInterface $manager,
@@ -67,8 +56,6 @@ class SecuredManager implements ManagerInterface
     }
 
     /**
-     * @param string $id
-     * @return Element
      * @throws AccessDeniedException
      */
     public function getElement(string $id): Element

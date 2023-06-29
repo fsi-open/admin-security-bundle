@@ -21,8 +21,6 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
 {
     /**
      * @param array<string, mixed> $configs
-     * @param ContainerBuilder $container
-     * @return void
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -54,10 +52,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     }
 
     /**
-     * @param ContainerBuilder $container
-     * @param string $prefix
      * @param array<string, mixed> $config
-     * @return void
      */
     protected function setTemplateParameters(ContainerBuilder $container, string $prefix, array $config = []): void
     {
@@ -73,9 +68,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     }
 
     /**
-     * @param ContainerBuilder $container
      * @param array<string, mixed> $model
-     * @return void
      */
     protected function setModelParameters(ContainerBuilder $container, array $model): void
     {
@@ -83,9 +76,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     }
 
     /**
-     * @param ContainerBuilder $container
      * @param array<string, mixed> $model
-     * @return void
      */
     private function setActivationParameters(ContainerBuilder $container, array $model): void
     {
@@ -109,9 +100,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     }
 
     /**
-     * @param ContainerBuilder $container
      * @param array<string, mixed> $model
-     * @return void
      */
     private function setPasswordResetParameters(ContainerBuilder $container, array $model): void
     {
@@ -135,9 +124,7 @@ class FSIAdminSecurityExtension extends Extension implements PrependExtensionInt
     }
 
     /**
-     * @param ContainerBuilder $container
      * @param array<string, mixed> $model
-     * @return void
      */
     private function setChangePasswordParameters(ContainerBuilder $container, array $model): void
     {
