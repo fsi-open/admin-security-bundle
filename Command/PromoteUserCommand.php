@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Command;
 
 use Exception;
-use FSi\Bundle\AdminSecurityBundle\Event\AdminSecurityEvents;
 use FSi\Bundle\AdminSecurityBundle\Event\PromoteUserEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
@@ -27,20 +26,13 @@ use Symfony\Component\Console\Question\Question;
 
 class PromoteUserCommand extends Command
 {
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private UserRepositoryInterface $userRepository;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
-        $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
 

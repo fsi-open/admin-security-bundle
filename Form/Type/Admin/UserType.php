@@ -26,12 +26,11 @@ class UserType extends AbstractType
     /**
      * @var class-string<UserInterface>|null
      */
-    private $dataClass;
-
+    private ?string $dataClass;
     /**
      * @var array<array<string>>|null
      */
-    private $roles;
+    private ?array $roles;
 
     /**
      * @param class-string<UserInterface>|null $dataClass
@@ -65,9 +64,8 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => $this->dataClass,
             'translation_domain' => 'FSiAdminSecurity',
-            'validation_groups' => function (FormInterface $form): array {
-                return ['Default', null !== $form->getData() ? 'Edit' : 'Create'];
-            }
+            'validation_groups' => static fn(FormInterface $form): array
+                => ['Default', null !== $form->getData() ? 'Edit' : 'Create']
         ]);
     }
 

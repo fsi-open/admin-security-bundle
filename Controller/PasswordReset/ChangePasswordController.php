@@ -27,50 +27,21 @@ use Twig\Environment;
 
 class ChangePasswordController
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var string
-     */
-    private $changePasswordActionTemplate;
-
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
-
+    private Environment $twig;
+    private UserRepositoryInterface $userRepository;
+    private RouterInterface $router;
+    private FormFactoryInterface $formFactory;
+    private EventDispatcherInterface $eventDispatcher;
+    private FlashMessages $flashMessages;
+    private string $changePasswordActionTemplate;
     /**
      * @var class-string<FormInterface<FormInterface>>
      */
-    private $formType;
-
+    private string $formType;
     /**
      * @var array<string>
      */
-    private $formValidationGroups;
+    private array $formValidationGroups;
 
     /**
      * @param class-string<FormInterface<FormInterface>> $formType
@@ -125,8 +96,6 @@ class ChangePasswordController
     }
 
     /**
-     * @param ResettablePasswordInterface $user
-     * @return void
      * @throws NotFoundHttpException
      */
     private function validatePasswordResetToken(ResettablePasswordInterface $user): void

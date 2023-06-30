@@ -16,30 +16,11 @@ use Swift_Mailer;
 
 class TwigSwiftMailer implements MailerInterface
 {
-    /**
-     * @var Swift_Mailer
-     */
-    private $mailer;
-
-    /**
-     * @var SwiftMessageFactoryInterface
-     */
-    private $messageFactory;
-
-    /**
-     * @var string
-     */
-    private $templateName;
-
-    /**
-     * @var string
-     */
-    private $fromEmail;
-
-    /**
-     * @var string|null
-     */
-    private $replyToEmail;
+    private Swift_Mailer $mailer;
+    private SwiftMessageFactoryInterface $messageFactory;
+    private string $templateName;
+    private string $fromEmail;
+    private ?string $replyToEmail;
 
     public function __construct(
         Swift_Mailer $mailer,

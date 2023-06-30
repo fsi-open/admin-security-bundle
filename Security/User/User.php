@@ -18,6 +18,7 @@ use function array_fill;
 use function array_merge;
 use function array_search;
 use function array_unique;
+use function array_values;
 use function in_array;
 use function strtoupper;
 
@@ -42,7 +43,7 @@ abstract class User implements UserInterface
     /**
      * @var array<string>
      */
-    protected array $roles = [];
+    protected array $roles;
 
     public function __construct()
     {
@@ -188,18 +189,22 @@ abstract class User implements UserInterface
     public function addRole(string $role): void
     {
         $role = strtoupper($role);
-        if (false === in_array($role, $this->roles, true)) {
-            $this->roles[] = $role;
+        if (true === in_array($role, $this->roles, true)) {
+            return;
         }
+
+        $this->roles[] = $role;
     }
 
     public function removeRole(string $role): void
     {
         $key = array_search(strtoupper($role), $this->roles, true);
-        if (false !== $key) {
-            unset($this->roles[$key]);
-            $this->roles = array_values($this->roles);
+        if (false === $key) {
+            return;
         }
+
+        unset($this->roles[$key]);
+        $this->roles = array_values($this->roles);
     }
 
     public function setUsername(string $username): void

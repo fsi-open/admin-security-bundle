@@ -27,50 +27,21 @@ use Twig\Environment;
 
 class AdminController
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
-
-    /**
-     * @var string
-     */
-    private $changePasswordActionTemplate;
-
+    private TokenStorageInterface $tokenStorage;
+    private RouterInterface $router;
+    private EventDispatcherInterface $eventDispatcher;
+    private Environment $twig;
+    private FormFactoryInterface $formFactory;
+    private FlashMessages $flashMessages;
+    private string $changePasswordActionTemplate;
     /**
      * @var class-string<FormInterface<FormInterface>>
      */
-    private $changePasswordFormType;
-
+    private string $changePasswordFormType;
     /**
      * @var array<string>
      */
-    private $changePasswordFormValidationGroups;
+    private array $changePasswordFormValidationGroups;
 
     /**
      * @param class-string<FormInterface<FormInterface>> $changePasswordFormType

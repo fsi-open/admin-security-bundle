@@ -18,25 +18,10 @@ use Twig\Environment;
 
 class SecurityController
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
-     * @var AuthenticationUtils
-     */
-    private $authenticationUtils;
-
-    /**
-     * @var FlashMessages
-     */
-    private $flashMessages;
-
-    /**
-     * @var string
-     */
-    private $loginActionTemplate;
+    private Environment $twig;
+    private AuthenticationUtils $authenticationUtils;
+    private FlashMessages $flashMessages;
+    private string $loginActionTemplate;
 
     public function __construct(
         Environment $twig,

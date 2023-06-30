@@ -23,15 +23,11 @@ use RuntimeException;
  */
 final class ResendActivationTokenBatchElement extends BatchElement
 {
+    private EventDispatcherInterface $eventDispatcher;
     /**
      * @var class-string<UserInterface>
      */
-    private $userModel;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private string $userModel;
 
     /**
      * @param class-string<UserInterface> $userModel
