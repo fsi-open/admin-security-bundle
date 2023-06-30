@@ -12,8 +12,10 @@ fsi_admin_security:
         mailer:
           from: null      # required, copied from mailer.from if empty
           reply_to: null  # copied from mailer.reply_to if empty
-          template: '@FSiAdminSecurity/Activation/mail.html.twig'
-          template_new_token: '@FSiAdminSecurity/Activation/mailNewToken.html.twig'
+          subject: 'admin.activation.mail.subject'
+          template: '@FSiAdminSecurity/Activation/mail/activation.html.twig'
+          subject_new_token: 'admin.activation.new_token.subject'
+          template_new_token: '@FSiAdminSecurity/Activation/mail/newToken.html.twig'
         token_ttl: 43200
         token_length: 32
         change_password_form:
@@ -23,7 +25,8 @@ fsi_admin_security:
         mailer:
           from: null      # required, copied from mailer.from if empty
           reply_to: null  # copied from mailer.reply_to if empty
-          template: '@FSiAdminSecurity/PasswordReset/mail.html.twig'
+          subject: 'admin.password_reset.request.mail_subject'
+          template: '@FSiAdminSecurity/PasswordReset/mail/passwordReset.html.twig'
         token_ttl: 43200
         token_length: 32
         change_password_form:
@@ -31,10 +34,10 @@ fsi_admin_security:
             validation_groups: ['ResetPassword', 'Default']
     templates:
         activation:
-            change_password: '@FSiAdminSecurity/Activation/change_password.html.twig'
+            change_password: '@FSiAdminSecurity/Activation/changePassword.html.twig'
         password_reset:
             request: '@FSiAdminSecurity/PasswordReset/request.html.twig'
-            change_password: '@FSiAdminSecurity/PasswordReset/change_password.html.twig'
+            change_password: '@FSiAdminSecurity/PasswordReset/changePassword.html.twig'
         login: '@FSiAdminSecurity/Security/login.html.twig'
-        change_password: '@FSiAdminSecurity/Admin/change_password.html.twig'
+        change_password: '@FSiAdminSecurity/Admin/changePassword.html.twig'
 ```

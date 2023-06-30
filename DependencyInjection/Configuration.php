@@ -34,19 +34,19 @@ class Configuration implements ConfigurationInterface
             ->beforeNormalization()
                 ->always(function ($v) {
                     if (isset($v['mailer']['from'])) {
-                        if (!isset($v['activation']['mailer']['from'])) {
+                        if (false === isset($v['activation']['mailer']['from'])) {
                             $v['activation']['mailer']['from'] = $v['mailer']['from'];
                         }
-                        if (!isset($v['password_reset']['mailer']['from'])) {
+                        if (false === isset($v['password_reset']['mailer']['from'])) {
                             $v['password_reset']['mailer']['from'] = $v['mailer']['from'];
                         }
                     }
 
                     if (isset($v['mailer']['reply_to'])) {
-                        if (!isset($v['activation']['mailer']['reply_to'])) {
+                        if (false === isset($v['activation']['mailer']['reply_to'])) {
                             $v['activation']['mailer']['reply_to'] = $v['mailer']['reply_to'];
                         }
-                        if (!isset($v['password_reset']['mailer']['reply_to'])) {
+                        if (false === isset($v['password_reset']['mailer']['reply_to'])) {
                             $v['password_reset']['mailer']['reply_to'] = $v['mailer']['reply_to'];
                         }
                     }
@@ -99,10 +99,10 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
                                 ->scalarNode('template')
-                                    ->defaultValue('@FSiAdminSecurity/Activation/mail.html.twig')
+                                    ->defaultValue('@FSiAdminSecurity/Activation/mail/activation.html.twig')
                                 ->end()
                                 ->scalarNode('template_new_token')
-                                    ->defaultValue('@FSiAdminSecurity/Activation/mailNewToken.html.twig')
+                                    ->defaultValue('@FSiAdminSecurity/Activation/mail/newToken.html.twig')
                                 ->end()
                                 ->scalarNode('reply_to')->defaultNull()->end()
                             ->end()
@@ -139,7 +139,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('from')->cannotBeEmpty()->isRequired()->end()
                                 ->scalarNode('template')
-                                    ->defaultValue('@FSiAdminSecurity/PasswordReset/mail.html.twig')
+                                    ->defaultValue('@FSiAdminSecurity/PasswordReset/mail/passwordReset.html.twig')
                                 ->end()
                                 ->scalarNode('reply_to')->defaultNull()->end()
                             ->end()
@@ -182,13 +182,13 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('login')->defaultValue('@FSiAdminSecurity/Security/login.html.twig')->end()
                         ->scalarNode('change_password')
-                            ->defaultValue('@FSiAdminSecurity/Admin/change_password.html.twig')
+                            ->defaultValue('@FSiAdminSecurity/Admin/changePassword.html.twig')
                         ->end()
                         ->arrayNode('activation')
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('change_password')
-                                    ->defaultValue('@FSiAdminSecurity/Activation/change_password.html.twig')
+                                    ->defaultValue('@FSiAdminSecurity/Activation/changePassword.html.twig')
                                 ->end()
                             ->end()
                         ->end()
@@ -199,7 +199,7 @@ class Configuration implements ConfigurationInterface
                                     ->defaultValue('@FSiAdminSecurity/PasswordReset/request.html.twig')
                                 ->end()
                                 ->scalarNode('change_password')
-                                    ->defaultValue('@FSiAdminSecurity/PasswordReset/change_password.html.twig')
+                                    ->defaultValue('@FSiAdminSecurity/PasswordReset/changePassword.html.twig')
                                 ->end()
                             ->end()
                         ->end()

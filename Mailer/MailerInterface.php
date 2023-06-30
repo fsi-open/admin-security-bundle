@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Mailer;
 
+use FSi\Bundle\AdminSecurityBundle\Mailer\Exception\MailerException;
+
 interface MailerInterface
 {
     /**
-     * @param EmailableInterface $to
-     * @return int
+     * @throws MailerException
      */
-    public function send(EmailableInterface $to): int;
+    public function send(EmailableInterface $to): bool;
 }

@@ -13,6 +13,9 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Driver\BrowserKitDriver;
+use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
+use FSi\Bundle\AdminSecurityBundle\Behat\Element\BatchAction;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\Datagrid;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 
@@ -33,7 +36,12 @@ final class AdminUserManagementContext extends AbstractContext
                 $cellRowIndex = $rowIndex + 1;
                 $cell = $datagrid->getCellByColumnName($key, $cellRowIndex);
                 Assertion::notNull($cell, "No cell for \"{$key}\" and row \"{$cellRowIndex}\"");
-                Assertion::same($cell->getText(), $value);
+                $expectedValue = $cell->getText();
+                Assertion::same(
+                    $expectedValue,
+                    $value,
+                    "Expected \"{$expectedValue}\" for cell \"{$key}\" in row {$rowIndex}, got \"{$value}\"."
+                );
             }
         }
     }
@@ -93,12 +101,35 @@ final class AdminUserManagementContext extends AbstractContext
 
     private function performBatchAction(string $action, int $cellIndex): void
     {
-        $userListPage = $this->getUserListPage();
-        $userListPage->getBatchActionsElement()->selectOption($action);
+        $batchActionsElement = $this->getBatchActionsElement();
+        $batchActionNode = $batchActionsElement->findOptionForAction($action);
 
-        $this->getDatagrid()->checkCellCheckbox($cellIndex);
+        $row = $this->getDatagrid()->getRow($cellIndex);
+        $cell = $row->find('xpath', '//td[1]');
+        Assertion::notNull($cell, "No cell in row \"{$cellIndex}\"");
+        $checkbox = $cell->find('css', 'input[type="checkbox"]');
 
-        $userListPage->pressButton('Ok');
+        if (null === $checkbox) {
+            throw new UnexpectedPageException(
+                "Can\'t find checkbox in first column of {$cellIndex} row"
+            );
+        }
+
+        $data = [
+            'batch_action' => [
+                '_token' => $batchActionsElement->getCsrfToken()
+            ],
+            'indexes' => [
+                $checkbox->getAttribute('value')
+            ]
+        ];
+
+        /** @var BrowserKitDriver $driver */
+        $driver = $this->getSession()->getDriver();
+
+        $batchActionUrl = $batchActionNode->getAttribute('value');
+        Assertion::notNull($batchActionUrl, "No url for action \"{$action}\"");
+        $driver->getClient()->request('POST', $batchActionUrl, $data);
     }
 
     private function getUserListPage(): UserList
@@ -110,6 +141,13 @@ final class AdminUserManagementContext extends AbstractContext
     {
         /** @var Datagrid $datagrid */
         $datagrid = $this->getElement(Datagrid::class);
+        return $datagrid;
+    }
+
+    public function getBatchActionsElement(): BatchAction
+    {
+        /** @var BatchAction $datagrid */
+        $datagrid = $this->getElement(BatchAction::class);
         return $datagrid;
     }
 }

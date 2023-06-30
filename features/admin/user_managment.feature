@@ -23,7 +23,6 @@ Feature: User management
       | Reset password          |
       | Resend activation token |
 
-  @javascript
   Scenario: Delete user
     Given I am on the "User list" page
     When I delete second user on the list
@@ -33,7 +32,6 @@ Feature: User management
       | red2@example.com | Yes    | No                     | No                 |
 
   @email
-  @javascript
   Scenario: Reset password
     Given I am on the "User list" page
     When I reset password for the second user on the list

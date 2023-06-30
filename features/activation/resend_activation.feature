@@ -10,7 +10,7 @@ Feature: Resend activation email
     Given I create disabled user with email address "user@example.com"
     And I clear the email pool
 
-    @javascript @email
+    @email
     Scenario: Resend active code
         And I am on the "User list" page
         When I resend activation token to the second user on the list
