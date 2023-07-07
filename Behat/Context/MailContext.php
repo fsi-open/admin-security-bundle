@@ -16,35 +16,22 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\Event\MessageEvent;
+use FSi\FixturesBundle\Listener\MailCollector;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
-final class MailContext extends AbstractContext implements EventSubscriberInterface
+final class MailContext extends AbstractContext
 {
-    /**
-     * @var array<Email>
-     */
-    private static array $emails;
-
-    /**
-     * @return array<class-string<object>, array<string|int>>
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            MessageEvent::class => ['onMessage', -255],
-        ];
-    }
+    private MailCollector $mailerCollector;
 
     public function __construct(
         Session $session,
         MinkParameters $minkParameters,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailCollector $mailerCollector
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
-        self::$emails = [];
+        $this->mailerCollector = $mailerCollector;
     }
 
     /**
@@ -53,17 +40,7 @@ final class MailContext extends AbstractContext implements EventSubscriberInterf
      */
     public function clearEmails(): void
     {
-        self::$emails = [];
-    }
-
-    public function onMessage(MessageEvent $event): void
-    {
-        $email = $event->getMessage();
-        if (false === $email instanceof Email) {
-            return;
-        }
-
-        self::$emails[] = $email;
+        $this->mailerCollector->resetEmails();
     }
 
     /**
@@ -71,7 +48,11 @@ final class MailContext extends AbstractContext implements EventSubscriberInterf
      */
     public function thereShouldBeNoEmailSent(): void
     {
-        Assertion::count(self::$emails, 0, 'There were "%s" emails sent, where none should.');
+        Assertion::count(
+            $this->mailerCollector->getEmails(),
+            0,
+            'There were "%s" emails sent, where none should.'
+        );
     }
 
     /**
@@ -80,9 +61,9 @@ final class MailContext extends AbstractContext implements EventSubscriberInterf
      */
     public function iShouldReceiveEmail(TableNode $table): void
     {
-        Assertion::minCount(self::$emails, 1, 'There should be at least "%s" email');
+        Assertion::minCount($this->mailerCollector->getEmails(), 1, 'There should be at least "%s" email');
 
-        $emails = self::$emails;
+        $emails = $this->mailerCollector->getEmails();
         usort(
             $emails,
             static fn(Email $a, Email $b): int => $a->getDate() <=> $b->getDate()
@@ -102,7 +83,7 @@ final class MailContext extends AbstractContext implements EventSubscriberInterf
     private function getEmailBySubject(string $subject): ?Email
     {
         return array_reduce(
-            self::$emails,
+            $this->mailerCollector->getEmails(),
             function (?Email $accumulator, Email $email) use ($subject): ?Email {
                 if (null !== $accumulator) {
                     return $accumulator;
