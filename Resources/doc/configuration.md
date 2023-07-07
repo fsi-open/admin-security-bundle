@@ -12,9 +12,7 @@ fsi_admin_security:
         mailer:
           from: null      # required, copied from mailer.from if empty
           reply_to: null  # copied from mailer.reply_to if empty
-          subject: 'admin.activation.mail.subject'
           template: '@FSiAdminSecurity/Activation/mail/activation.html.twig'
-          subject_new_token: 'admin.activation.new_token.subject'
           template_new_token: '@FSiAdminSecurity/Activation/mail/newToken.html.twig'
         token_ttl: 43200
         token_length: 32
@@ -25,7 +23,6 @@ fsi_admin_security:
         mailer:
           from: null      # required, copied from mailer.from if empty
           reply_to: null  # copied from mailer.reply_to if empty
-          subject: 'admin.password_reset.request.mail_subject'
           template: '@FSiAdminSecurity/PasswordReset/mail/passwordReset.html.twig'
         token_ttl: 43200
         token_length: 32

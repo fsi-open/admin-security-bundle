@@ -11,31 +11,34 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
-use FSi\Bundle\AdminSecurityBundle\Mailer\MailerInterface;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationTokenResetEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetActivationTokenEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactoryInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class ResendActvationMailListener implements EventSubscriberInterface
+final class ResetActivationTokenListener implements EventSubscriberInterface
 {
-    private MailerInterface $mailer;
     private TokenFactoryInterface $tokenFactory;
+    private EventDispatcherInterface $eventDispatcher;
+
+    public function __construct(
+        TokenFactoryInterface $tokenFactory,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->tokenFactory = $tokenFactory;
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @return array<string, string>
      */
     public static function getSubscribedEvents(): array
     {
-        return [ResendActivationTokenEvent::class => 'resendActivationMail'];
+        return [ResetActivationTokenEvent::class => 'resetActivationToken'];
     }
 
-    public function __construct(MailerInterface $mailer, TokenFactoryInterface $tokenFactory)
-    {
-        $this->mailer = $mailer;
-        $this->tokenFactory = $tokenFactory;
-    }
-
-    public function resendActivationMail(ResendActivationTokenEvent $event): void
+    public function resetActivationToken(ResetActivationTokenEvent $event): void
     {
         $user = $event->getUser();
         if (true === $user->isEnabled()) {
@@ -44,6 +47,7 @@ final class ResendActvationMailListener implements EventSubscriberInterface
 
         $user->removeActivationToken();
         $user->setActivationToken($this->tokenFactory->createToken());
-        $this->mailer->send($user);
+
+        $this->eventDispatcher->dispatch(new ActivationTokenResetEvent($user));
     }
 }

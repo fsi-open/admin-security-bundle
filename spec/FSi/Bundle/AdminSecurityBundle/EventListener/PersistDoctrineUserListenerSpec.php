@@ -18,7 +18,7 @@ use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DemoteUserEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\PromoteUserEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationTokenResetEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\User;
@@ -42,7 +42,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
             ChangePasswordEvent::class => 'onChangePassword',
             ResetPasswordRequestEvent::class => 'onResetPasswordRequest',
             ActivationEvent::class => 'onActivation',
-            ResendActivationTokenEvent::class => 'onActivationResend',
+            ActivationTokenResetEvent::class => 'onActivationResend',
             DeactivationEvent::class => 'onDeactivation',
             UserCreatedEvent::class => 'onUserCreated',
             PromoteUserEvent::class => 'onPromoteUser',
@@ -94,7 +94,7 @@ class PersistDoctrineUserListenerSpec extends ObjectBehavior
     }
 
     public function it_flushes_om_after_resending_activation_token(
-        ResendActivationTokenEvent $event,
+        ActivationTokenResetEvent $event,
         ObjectManager $objectManager,
         User $user
     ): void {

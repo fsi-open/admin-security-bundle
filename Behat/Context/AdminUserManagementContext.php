@@ -32,15 +32,16 @@ final class AdminUserManagementContext extends AbstractContext
 
         Assertion::same($datagrid->getRowCount(), count($table->getHash()));
         foreach ($table->getHash() as $rowIndex => $row) {
-            foreach ($row as $key => $value) {
+            foreach ($row as $key => $expectedValue) {
                 $cellRowIndex = $rowIndex + 1;
                 $cell = $datagrid->getCellByColumnName($key, $cellRowIndex);
                 Assertion::notNull($cell, "No cell for \"{$key}\" and row \"{$cellRowIndex}\"");
-                $expectedValue = $cell->getText();
+
+                $actualValue = $cell->getText();
                 Assertion::same(
+                    $actualValue,
                     $expectedValue,
-                    $value,
-                    "Expected \"{$expectedValue}\" for cell \"{$key}\" in row {$rowIndex}, got \"{$value}\"."
+                    "Expected \"{$expectedValue}\" for cell \"{$key}\" in row {$rowIndex}, got \"{$actualValue}\"."
                 );
             }
         }

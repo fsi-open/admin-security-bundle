@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Admin;
 
 use FSi\Bundle\AdminBundle\Doctrine\Admin\BatchElement;
-use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ResetActivationTokenEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -21,7 +21,7 @@ use RuntimeException;
 /**
  * @extends BatchElement<UserInterface>
  */
-final class ResendActivationTokenBatchElement extends BatchElement
+final class ResetActivationTokenBatchElement extends BatchElement
 {
     private EventDispatcherInterface $eventDispatcher;
     /**
@@ -68,6 +68,6 @@ final class ResendActivationTokenBatchElement extends BatchElement
             return;
         }
 
-        $this->eventDispatcher->dispatch(new ResendActivationTokenEvent($object));
+        $this->eventDispatcher->dispatch(new ResetActivationTokenEvent($object));
     }
 }
