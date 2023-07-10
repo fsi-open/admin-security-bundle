@@ -7,7 +7,6 @@
         <defaults autoconfigure="true" autowire="true" public="false">
             <bind key="$session" id="behat.mink.default_session" />
             <bind key="$minkParameters" id="behat.mink.parameters" />
-            <bind key="$spoolDirectory">%swiftmailer.spool.default.file.path%</bind>
         </defaults>
 
         <prototype namespace="FSi\Bundle\AdminSecurityBundle\Behat\Context\" resource="../../../../../../Behat/Context" />
@@ -16,13 +15,9 @@
             <argument key="$container" type="service" id="behat.driver.service_container" on-invalid="null" />
         </service>
 
-        <service id="fsi_fixtures_bundle.admin.news" class="FSi\FixturesBundle\Admin\News">
-            <tag name="admin.element"/>
-        </service>
-
-        <service id="fsi_fixtures_bundle.admin.page_settings" class="FSi\FixturesBundle\Admin\PageSettings">
-            <tag name="admin.element"/>
-        </service>
+        <service id="FSi\FixturesBundle\Admin\News" />
+        <service id="FSi\FixturesBundle\Admin\PageSettings" />
+        <service id="FSi\FixturesBundle\Listener\MailCollector" />
 
     </services>
 </container>

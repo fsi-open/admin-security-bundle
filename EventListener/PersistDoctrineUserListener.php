@@ -14,11 +14,12 @@ namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationTokenReset;
+use FSi\Bundle\AdminSecurityBundle\Event\ActivationTokenResetEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DeactivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\DemoteUserEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\PromoteUserEvent;
-use FSi\Bundle\AdminSecurityBundle\Event\ResendActivationTokenEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use RuntimeException;
@@ -48,7 +49,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
             ChangePasswordEvent::class => 'onChangePassword',
             ResetPasswordRequestEvent::class => 'onResetPasswordRequest',
             ActivationEvent::class => 'onActivation',
-            ResendActivationTokenEvent::class => 'onActivationResend',
+            ActivationTokenResetEvent::class => 'onActivationResend',
             DeactivationEvent::class => 'onDeactivation',
             UserCreatedEvent::class => 'onUserCreated',
             PromoteUserEvent::class => 'onPromoteUser',
@@ -62,7 +63,7 @@ class PersistDoctrineUserListener implements EventSubscriberInterface
         $this->flushUserObjectManager($event->getUser());
     }
 
-    public function onActivationResend(ResendActivationTokenEvent $event): void
+    public function onActivationResend(ActivationTokenResetEvent $event): void
     {
         $this->flushUserObjectManager($event->getUser());
     }

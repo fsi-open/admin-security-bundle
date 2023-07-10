@@ -1,0 +1,9 @@
+{% trans_default_domain 'FSiAdminSecurity' %}
+<p>
+    {{ 'admin.activation.mail.info'|trans }}<br/>
+    {% set activationUrl = url('fsi_admin_activation', {token: receiver.activationToken.token}) %}
+    <a href="{{ activationUrl }}">{{ activationUrl }}</a>
+</p>
+<p>
+    {{ 'admin.mail.link_valid'|trans }} <b>{{ receiver.activationToken.expiresAt|date('d/m/Y H:i') }}</b>
+</p>

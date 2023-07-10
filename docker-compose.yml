@@ -3,7 +3,7 @@ version: '3'
 
 services:
     web:
-        image: fsiopen/docker-php-apache:alpine-8.1
+        image: fsiopenpl/docker-php-apache:alpine-8.1
         container_name: admin-security-bundle-web
         ports:
             - 80:80
@@ -16,6 +16,3 @@ services:
         volumes:
             - .:/var/www/application
             - ~/.composer:/var/www/.composer
-    selenium:
-        image: selenium/standalone-firefox:2.53.1
-        container_name: admin-security-bundle-selenium

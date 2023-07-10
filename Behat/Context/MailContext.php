@@ -15,41 +15,32 @@ use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
-use Swift_Message;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
-
-use function count;
-use function file_get_contents;
-use function unserialize;
+use FSi\FixturesBundle\Listener\MailCollector;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 final class MailContext extends AbstractContext
 {
-    private string $spoolDirectory;
+    private MailCollector $mailerCollector;
 
     public function __construct(
         Session $session,
         MinkParameters $minkParameters,
         EntityManagerInterface $entityManager,
-        string $spoolDirectory
+        MailCollector $mailerCollector
     ) {
         parent::__construct($session, $minkParameters, $entityManager);
-        $this->spoolDirectory = $spoolDirectory;
+        $this->mailerCollector = $mailerCollector;
     }
 
     /**
-     * @BeforeScenario @email
+     * @BeforeScenario
+     * @Given I clear the email pool
      */
-    public function cleanEmailSpool(): void
+    public function clearEmails(): void
     {
-        $filesystem = new Filesystem();
-        if (false === $filesystem->exists($this->spoolDirectory)) {
-            return;
-        }
-
-        $filesystem->remove($this->getSpoolFiles());
+        $this->mailerCollector->resetEmails();
     }
 
     /**
@@ -57,8 +48,11 @@ final class MailContext extends AbstractContext
      */
     public function thereShouldBeNoEmailSent(): void
     {
-        $files = $this->getSpoolFiles();
-        Assertion::count($files, 0, 'There were "%s" emails sent, where none should.');
+        Assertion::count(
+            $this->mailerCollector->getEmails(),
+            0,
+            'There were "%s" emails sent, where none should.'
+        );
     }
 
     /**
@@ -67,59 +61,51 @@ final class MailContext extends AbstractContext
      */
     public function iShouldReceiveEmail(TableNode $table): void
     {
-        $files = $this->getSpoolFiles();
-        $files->sortByModifiedTime();
+        Assertion::minCount($this->mailerCollector->getEmails(), 1, 'There should be at least "%s" email');
 
-        if (0 === count($files)) {
-            throw new Exception("There should be at least 1 email");
-        }
+        $emails = $this->mailerCollector->getEmails();
+        usort(
+            $emails,
+            static fn(Email $a, Email $b): int => $a->getDate() <=> $b->getDate()
+        );
 
+        /** @var array{ subject: string, from: string, to: string, reply_to: string } $expected */
         $expected = $table->getRowsHash();
         $expectedSubject = $expected['subject'];
-        $email = $this->fetchEmail($expectedSubject);
-        if (null === $email) {
-            throw new Exception("There is no email with \"{$expectedSubject}\" subject");
-        }
+        $email = $this->getEmailBySubject($expectedSubject);
 
-        /** @var array<string> $replyTo */
-        $replyTo = $email->getReplyTo();
-        Assertion::same(key($email->getFrom()), $expected['from']);
-        Assertion::same(key($email->getTo()), $expected['to']);
-        Assertion::same(key($replyTo), $expected['reply_to']);
+        Assertion::notNull($email, "There is no email with \"{$expectedSubject}\" subject");
+        Assertion::same($this->getEmailAsString($email->getFrom()), $expected['from']);
+        Assertion::same($this->getEmailAsString($email->getTo()), $expected['to']);
+        Assertion::same($this->getEmailAsString($email->getReplyTo()), $expected['reply_to']);
+    }
+
+    private function getEmailBySubject(string $subject): ?Email
+    {
+        return array_reduce(
+            $this->mailerCollector->getEmails(),
+            function (?Email $accumulator, Email $email) use ($subject): ?Email {
+                if (null !== $accumulator) {
+                    return $accumulator;
+                }
+
+                if ($email->getSubject() === $subject) {
+                    $accumulator = $email;
+                }
+
+                return $accumulator;
+            }
+        );
     }
 
     /**
-     * @Given I clear the email pool
+     * @param array<Address> $emails
      */
-    public function iClearTheEmailPool(): void
+    private function getEmailAsString(array $emails): string
     {
-        $this->cleanEmailSpool();
-        $this->thereShouldBeNoEmailSent();
-    }
+        $email = reset($emails);
+        Assertion::isInstanceOf($email, Address::class);
 
-    private function fetchEmail(string $subject): ?Swift_Message
-    {
-        $files = $this->getSpoolFiles();
-        foreach ($files as $file) {
-            $fileContents = file_get_contents((string) $file);
-            Assertion::string($fileContents, 'Unable to parse file contents');
-
-            /** @var Swift_Message $message */
-            $message = unserialize($fileContents);
-            if ($message->getSubject() === $subject) {
-                unlink((string) $file);
-                return $message;
-            }
-        }
-
-        return null;
-    }
-
-    private function getSpoolFiles(): Finder
-    {
-        $finder = new Finder();
-        $finder->in($this->spoolDirectory)->ignoreDotFiles(true)->files();
-
-        return $finder;
+        return $email->toString();
     }
 }

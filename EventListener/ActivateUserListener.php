@@ -21,9 +21,7 @@ class ActivateUserListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return [
-            ActivationEvent::class => 'onActivation'
-        ];
+        return [ActivationEvent::class => 'onActivation'];
     }
 
     public function onActivation(ActivationEvent $event): void

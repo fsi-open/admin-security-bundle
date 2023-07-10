@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\MailerCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\PasswordEncodingPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\FSIAdminSecurityExtension;
@@ -20,23 +21,25 @@ use LogicException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+use function get_class;
+use function gettype;
+use function is_object;
+
 class FSiAdminSecurityBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
-        parent::build($container);
-
+        $container->addCompilerPass(new MailerCompilerPass());
         $container->addCompilerPass(new PasswordEncodingPass());
         $container->addCompilerPass(new ValidationCompilerPass());
 
         $doctrineConfigDir = realpath(__DIR__ . '/Resources/config/doctrine');
-
-        $mappings = [
-            $doctrineConfigDir . '/User' => 'FSi\Bundle\AdminSecurityBundle\Security\User',
-            $doctrineConfigDir . '/Token' => 'FSi\Bundle\AdminSecurityBundle\Security\Token',
-        ];
-
-        $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
+        $container->addCompilerPass(
+            DoctrineOrmMappingsPass::createXmlMappingDriver([
+                "{$doctrineConfigDir}/User" => 'FSi\Bundle\AdminSecurityBundle\Security\User',
+                "{$doctrineConfigDir}/Token" => 'FSi\Bundle\AdminSecurityBundle\Security\Token',
+            ])
+        );
     }
 
     public function boot(): void

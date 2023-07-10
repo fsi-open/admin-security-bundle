@@ -14,7 +14,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Event;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class ResendActivationTokenEvent extends Event
+final class ActivationTokenSetEvent extends Event
 {
     private ActivableInterface $user;
 
