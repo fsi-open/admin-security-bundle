@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
-use DateTimeImmutable;
 
 use function base64_encode;
 use function random_bytes;
@@ -40,7 +39,7 @@ class TokenFactory implements TokenFactoryInterface
 
     public function createToken(): TokenInterface
     {
-        return new Token($this->generateToken(), new DateTimeImmutable(), $this->ttl);
+        return new Token($this->generateToken(), $this->ttl);
     }
 
     private function generateToken(): string

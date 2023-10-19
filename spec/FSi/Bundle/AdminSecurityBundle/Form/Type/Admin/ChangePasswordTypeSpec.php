@@ -28,7 +28,7 @@ class ChangePasswordTypeSpec extends ObjectBehavior
     public function it_add_fields_during_build(FormBuilderInterface $formBuilder): void
     {
         $formBuilder->add(
-            'current_password',
+            'currentPassword',
             PasswordType::class,
             [
                 'label' => 'admin.change_password_form.current_password',

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use DateTimeImmutable;
+use FSi\Bundle\AdminSecurityBundle\DateTime\Clock;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -31,9 +31,10 @@ class SetLastLoginListener implements EventSubscriberInterface
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $user = $event->getAuthenticationToken()->getUser();
-
-        if (true === $user instanceof UserInterface) {
-            $user->setLastLogin(new DateTimeImmutable());
+        if (false === $user instanceof UserInterface) {
+            return;
         }
+
+        $user->setLastLogin(Clock::now());
     }
 }

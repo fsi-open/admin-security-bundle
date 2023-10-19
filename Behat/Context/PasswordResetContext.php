@@ -16,6 +16,7 @@ use DateInterval;
 use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
+use FSi\Bundle\AdminSecurityBundle\DateTime\Clock;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\FixturesBundle\Entity\User;
 
@@ -54,13 +55,15 @@ final class PasswordResetContext extends AbstractContext
      */
     public function userHasConfirmationTokenWithTtl(string $username, string $confirmationToken): void
     {
-        $user = $this->findUserByUsername($username);
-        $ttl = new DateInterval('P1D');
-        $ttl->invert = 1;
+        Clock::freeze((new DateTimeImmutable())->sub(new DateInterval('P2D')));
 
-        $user->setPasswordResetToken($this->createToken($confirmationToken, $ttl));
+        $user = $this->findUserByUsername($username);
+
+        $user->setPasswordResetToken($this->createToken($confirmationToken, new DateInterval('P1D')));
 
         $this->getEntityManager()->flush();
+
+        Clock::return();
     }
 
     /**
@@ -123,7 +126,7 @@ final class PasswordResetContext extends AbstractContext
 
     private function createToken(string $confirmationToken, DateInterval $ttl): Token
     {
-        return new Token($confirmationToken, new DateTimeImmutable(), $ttl);
+        return new Token($confirmationToken, $ttl);
     }
 
     private function getPasswordResetRequestPage(): PasswordResetRequest

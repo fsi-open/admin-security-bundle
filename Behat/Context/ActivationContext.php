@@ -13,7 +13,6 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use DateInterval;
-use DateTimeImmutable;
 use Exception;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Activation;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\ActivationChangePassword;
@@ -129,13 +128,8 @@ final class ActivationContext extends AbstractContext
         return $user;
     }
 
-    /**
-     * @param string $token
-     * @param DateInterval $ttl
-     * @return Token
-     */
     private function createToken(string $token, DateInterval $ttl): Token
     {
-        return new Token($token, new DateTimeImmutable(), $ttl);
+        return new Token($token, $ttl);
     }
 }
