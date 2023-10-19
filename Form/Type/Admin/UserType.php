@@ -23,6 +23,7 @@ use function sprintf;
 
 class UserType extends AbstractType
 {
+    private bool $displayRolesField;
     /**
      * @var class-string<UserInterface>|null
      */
@@ -36,8 +37,9 @@ class UserType extends AbstractType
      * @param class-string<UserInterface>|null $dataClass
      * @param array<array<string>>|null $roles
      */
-    public function __construct(?string $dataClass, ?array $roles)
+    public function __construct(bool $displayRolesField, ?string $dataClass, ?array $roles)
     {
+        $this->displayRolesField = $displayRolesField;
         $this->dataClass = $dataClass;
         $this->roles = $roles;
     }
@@ -51,12 +53,14 @@ class UserType extends AbstractType
     {
         $builder->add('email', EmailType::class, ['label' => 'admin.admin_user.email']);
 
-        $builder->add('roles', ChoiceType::class, [
-            'label' => 'admin.admin_user.roles',
-            'choices' => $this->getRoleList(),
-            'expanded' => true,
-            'multiple' => true,
-        ]);
+        if (true === $this->displayRolesField) {
+            $builder->add('roles', ChoiceType::class, [
+                'label' => 'admin.admin_user.roles',
+                'choices' => $this->getRoleList(),
+                'expanded' => true,
+                'multiple' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
