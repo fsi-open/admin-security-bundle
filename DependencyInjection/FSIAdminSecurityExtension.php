@@ -32,6 +32,7 @@ final class FSIAdminSecurityExtension extends Extension implements PrependExtens
 
         $container->setParameter('admin_security.storage', $config['storage']);
         $container->setParameter('admin_security.firewall_name', $config['firewall_name']);
+        $container->setParameter('admin_security.enforce_secured_elements', $config['enforce_secured_elements']);
         $this->setTemplateParameters($container, 'admin_security.templates', $config['templates']);
         $this->setModelParameters($container, $config['model']);
         $this->setActivationParameters($container, $config['activation']);

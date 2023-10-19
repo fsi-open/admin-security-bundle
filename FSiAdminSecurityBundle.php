@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\EnforceSecuredElementsCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\MailerCompilerPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\PasswordEncodingPass;
 use FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler\ValidationCompilerPass;
@@ -29,6 +30,7 @@ class FSiAdminSecurityBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {
+        $container->addCompilerPass(new EnforceSecuredElementsCompilerPass());
         $container->addCompilerPass(new MailerCompilerPass());
         $container->addCompilerPass(new PasswordEncodingPass());
         $container->addCompilerPass(new ValidationCompilerPass());
