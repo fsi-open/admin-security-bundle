@@ -12,15 +12,31 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
+use Behat\Mink\Session;
 use DateInterval;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\FixturesBundle\Entity\User;
+use FSi\FixturesBundle\Time\Clock;
 
 final class PasswordResetContext extends AbstractContext
 {
+    private Clock $clock;
+
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        Clock $clock
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->clock = $clock;
+    }
+
     /**
      * @Given /^user "([^"]*)" has confirmation token "([^"]*)"$/
      */
@@ -54,13 +70,15 @@ final class PasswordResetContext extends AbstractContext
      */
     public function userHasConfirmationTokenWithTtl(string $username, string $confirmationToken): void
     {
-        $user = $this->findUserByUsername($username);
-        $ttl = new DateInterval('P1D');
-        $ttl->invert = 1;
+        $this->clock->freeze((new DateTimeImmutable())->sub(new DateInterval('P2D')));
 
-        $user->setPasswordResetToken($this->createToken($confirmationToken, $ttl));
+        $user = $this->findUserByUsername($username);
+
+        $user->setPasswordResetToken($this->createToken($confirmationToken, new DateInterval('P1D')));
 
         $this->getEntityManager()->flush();
+
+        $this->clock->return();
     }
 
     /**
@@ -123,7 +141,7 @@ final class PasswordResetContext extends AbstractContext
 
     private function createToken(string $confirmationToken, DateInterval $ttl): Token
     {
-        return new Token($confirmationToken, new DateTimeImmutable(), $ttl);
+        return new Token($confirmationToken, $this->clock, $ttl);
     }
 
     private function getPasswordResetRequestPage(): PasswordResetRequest

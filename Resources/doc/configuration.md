@@ -3,6 +3,8 @@
 ```yml
 fsi_admin_security:
     storage: null         # required
+    enforce_secured_elements: false      # forces all registered admin elements to implement the SecuredElementInterface
+    display_user_roles_form_field: true  # whether to display the choice field for user roles in `admin_security.form.type.user` form
     model:
         user: null        # required
     mailer:
@@ -17,7 +19,7 @@ fsi_admin_security:
         token_ttl: 43200
         token_length: 32
         change_password_form:
-            type: 'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType' # Or 'admin_password_reset_change_password', if Symfony 2.*
+            type: 'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType'
             validation_groups: ['ResetPassword', 'Default']
     password_reset:
         mailer:
@@ -27,7 +29,7 @@ fsi_admin_security:
         token_ttl: 43200
         token_length: 32
         change_password_form:
-            type: 'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType' # Or 'admin_password_reset_change_password', if Symfony 2.*
+            type: 'FSi\Bundle\AdminSecurityBundle\Form\Type\PasswordReset\ChangePasswordType'
             validation_groups: ['ResetPassword', 'Default']
     templates:
         activation:

@@ -13,6 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
 use DateInterval;
 use DateTimeImmutable;
+use Psr\Clock\ClockInterface;
 
 class Token implements TokenInterface
 {
@@ -20,11 +21,11 @@ class Token implements TokenInterface
     private DateTimeImmutable $createdAt;
     private DateTimeImmutable $expiresAt;
 
-    public function __construct(string $token, DateTimeImmutable $createdAt, DateInterval $ttl)
+    public function __construct(string $token, ClockInterface $clock, DateInterval $ttl)
     {
         $this->token = $token;
-        $this->createdAt = $createdAt;
-        $this->expiresAt = $createdAt->add($ttl);
+        $this->createdAt = $clock->now();
+        $this->expiresAt = $clock->now()->add($ttl);
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -42,8 +43,8 @@ class Token implements TokenInterface
         return $this->expiresAt;
     }
 
-    public function isNonExpired(): bool
+    public function isNonExpired(ClockInterface $clock): bool
     {
-        return new DateTimeImmutable() <= $this->expiresAt;
+        return $clock->now() <= $this->expiresAt;
     }
 }

@@ -1,7 +1,8 @@
+---
 fsi_admin_activation:
     path: /activation/activate/{token}
-    controller: admin_security.controller.activation:activateAction
+    controller: admin_security.controller.activation.activate
 
 fsi_admin_activation_change_password:
     path: /activation/change-password/{token}
-    controller: admin_security.controller.activation:changePasswordAction
+    controller: admin_security.controller.activation.change_password

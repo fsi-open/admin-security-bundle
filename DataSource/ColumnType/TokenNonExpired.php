@@ -14,13 +14,22 @@ namespace FSi\Bundle\AdminSecurityBundle\DataSource\ColumnType;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\TokenInterface;
 use FSi\Component\DataGrid\Column\ColumnInterface;
 use FSi\Component\DataGrid\ColumnType\Boolean;
+use FSi\Component\DataGrid\DataMapper\DataMapperInterface;
+use Psr\Clock\ClockInterface;
 
-/**
- * This column should be removed after symfony/property-access allows for safe
- * access for null values.
- */
 final class TokenNonExpired extends Boolean
 {
+    private ClockInterface $clock;
+
+    public function __construct(
+        array $columnTypeExtensions,
+        DataMapperInterface $dataMapper,
+        ClockInterface $clock
+    ) {
+        parent::__construct($columnTypeExtensions, $dataMapper);
+        $this->clock = $clock;
+    }
+
     public function getId(): string
     {
         return 'token_non_expired';
@@ -41,7 +50,7 @@ final class TokenNonExpired extends Boolean
 
         return parent::filterValue(
             $column,
-            null !== $value ? $value->isNonExpired() : false
+            null !== $value ? $value->isNonExpired($this->clock) : false
         );
     }
 }

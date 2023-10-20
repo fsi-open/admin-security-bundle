@@ -19,5 +19,8 @@
         <service id="FSi\FixturesBundle\Admin\PageSettings" />
         <service id="FSi\FixturesBundle\Listener\MailCollector" />
 
+        <service id="Psr\Clock\ClockInterface" alias="FSi\FixturesBundle\Time\Clock" public="true" />
+        <service id="FSi\FixturesBundle\Time\Clock" />
+
     </services>
 </container>

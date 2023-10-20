@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\Token;
 
+use Psr\Clock\ClockInterface;
+
 interface TokenInterface
 {
     public function getToken(): string;
-    public function isNonExpired(): bool;
+    public function isNonExpired(ClockInterface $clock): bool;
 }

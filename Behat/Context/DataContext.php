@@ -13,10 +13,7 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Hook\BeforeScenario;
 use Behat\Mink\Session;
-use Behat\Step\Given;
-use Behat\Step\Then;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;

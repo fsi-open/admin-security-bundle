@@ -11,13 +11,20 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use DateTimeImmutable;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
+use Psr\Clock\ClockInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class SetLastLoginListener implements EventSubscriberInterface
 {
+    private ClockInterface $clock;
+
+    public function __construct(ClockInterface $clock)
+    {
+        $this->clock = $clock;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -31,9 +38,10 @@ class SetLastLoginListener implements EventSubscriberInterface
     public function onInteractiveLogin(InteractiveLoginEvent $event): void
     {
         $user = $event->getAuthenticationToken()->getUser();
-
-        if (true === $user instanceof UserInterface) {
-            $user->setLastLogin(new DateTimeImmutable());
+        if (false === $user instanceof UserInterface) {
+            return;
         }
+
+        $user->setLastLogin($this->clock->now());
     }
 }

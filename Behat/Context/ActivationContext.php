@@ -12,17 +12,33 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
+use Behat\Mink\Session;
 use DateInterval;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Activation;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\ActivationChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\FixturesBundle\Entity\User;
+use FSi\FixturesBundle\Time\Clock;
 
 final class ActivationContext extends AbstractContext
 {
+    private Clock $clock;
+
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        Clock $clock
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->clock = $clock;
+    }
+
     /**
      * @Given /^user "([^"]*)" has activation token "([^"]*)"$/
      */
@@ -53,10 +69,11 @@ final class ActivationContext extends AbstractContext
      */
     public function userHasActivationTokenWithTtl(string $username, string $activationToken): void
     {
-        $ttl = new DateInterval('P1D');
-        $ttl->invert = 1;
+        $this->clock->freeze((new DateTimeImmutable())->sub(new DateInterval('P2D')));
+        $token = $this->createToken($activationToken, new DateInterval('P1D'));
+        $this->clock->return();
 
-        $this->getUserByUsername($username)->setActivationToken($this->createToken($activationToken, $ttl));
+        $this->getUserByUsername($username)->setActivationToken($token);
 
         $this->getEntityManager()->flush();
     }
@@ -129,13 +146,8 @@ final class ActivationContext extends AbstractContext
         return $user;
     }
 
-    /**
-     * @param string $token
-     * @param DateInterval $ttl
-     * @return Token
-     */
     private function createToken(string $token, DateInterval $ttl): Token
     {
-        return new Token($token, new DateTimeImmutable(), $ttl);
+        return new Token($token, $this->clock, $ttl);
     }
 }
