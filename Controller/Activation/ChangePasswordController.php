@@ -12,26 +12,28 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Controller\Activation;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Controller\FlashWithRedirect;
 use FSi\Bundle\AdminSecurityBundle\Event\ActivationEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
-use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use Psr\Clock\ClockInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
-class ActivationController
+class ChangePasswordController
 {
+    use ActivableUser;
+    use FlashWithRedirect;
+
     private Environment $twig;
     private UserRepositoryInterface $userRepository;
-    private RouterInterface $router;
+    private ClockInterface $clock;
+    private UrlGeneratorInterface $urlGenerator;
     private FormFactoryInterface $formFactory;
     private EventDispatcherInterface $eventDispatcher;
     private FlashMessages $flashMessages;
@@ -48,7 +50,8 @@ class ActivationController
     public function __construct(
         Environment $twig,
         UserRepositoryInterface $userRepository,
-        RouterInterface $router,
+        ClockInterface $clock,
+        UrlGeneratorInterface $urlGenerator,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
@@ -58,7 +61,8 @@ class ActivationController
     ) {
         $this->twig = $twig;
         $this->userRepository = $userRepository;
-        $this->router = $router;
+        $this->clock = $clock;
+        $this->urlGenerator = $urlGenerator;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
@@ -67,29 +71,7 @@ class ActivationController
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
-    public function activateAction(string $token): Response
-    {
-        $user = $this->tryFindUserByActivationToken($token);
-        if (true === $this->isUserEnforcedToChangePassword($user)) {
-            $this->flashMessages->info(
-                'admin.activation.message.change_password',
-                [],
-                'FSiAdminSecurity'
-            );
-
-            $response = new RedirectResponse(
-                $this->router->generate('fsi_admin_activation_change_password', ['token' => $token])
-            );
-        } else {
-            $this->eventDispatcher->dispatch(new ActivationEvent($user));
-
-            $response = $this->addFlashAndRedirect('success', 'admin.activation.message.success');
-        }
-
-        return $response;
-    }
-
-    public function changePasswordAction(Request $request, string $token): Response
+    public function __invoke(Request $request, string $token): Response
     {
         $user = $this->tryFindUserByActivationToken($token);
         if (false === $this->isUserEnforcedToChangePassword($user)) {
@@ -110,51 +92,11 @@ class ActivationController
             return $this->addFlashAndRedirect('success', 'admin.activation.message.change_password_success');
         }
 
-        return new Response($this->twig->render(
-            $this->changePasswordActionTemplate,
-            ['form' => $form->createView()]
-        ));
-    }
-
-    /**
-     * @param string $token
-     * @return ActivableInterface&ChangeablePasswordInterface
-     */
-    private function tryFindUserByActivationToken(string $token): ActivableInterface
-    {
-        $user = $this->userRepository->findUserByActivationToken($token);
-
-        if (null === $user) {
-            throw new NotFoundHttpException();
-        }
-
-        if (true === $user->isEnabled()) {
-            throw new NotFoundHttpException();
-        }
-
-        $activationToken = $user->getActivationToken();
-        if (null === $activationToken) {
-            throw new NotFoundHttpException();
-        }
-
-        if (false === $activationToken->isNonExpired()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $user;
-    }
-
-    private function addFlashAndRedirect(string $type, string $message): RedirectResponse
-    {
-        $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
-
-        return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
-    }
-
-    private function isUserEnforcedToChangePassword(ActivableInterface $user): bool
-    {
-        return true === $user instanceof EnforceablePasswordChangeInterface
-            && true === $user->isForcedToChangePassword()
-        ;
+        return new Response(
+            $this->twig->render(
+                $this->changePasswordActionTemplate,
+                ['form' => $form->createView()]
+            )
+        );
     }
 }

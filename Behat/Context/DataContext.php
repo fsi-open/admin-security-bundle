@@ -17,7 +17,6 @@ use Behat\Mink\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
-use FSi\Bundle\AdminSecurityBundle\DateTime\Clock;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\FixturesBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;

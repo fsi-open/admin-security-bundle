@@ -15,6 +15,7 @@ use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use FSi\Bundle\AdminSecurityBundle\Event\ChangePasswordEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use Psr\Clock\ClockInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -29,6 +30,7 @@ class ChangePasswordController
 {
     private Environment $twig;
     private UserRepositoryInterface $userRepository;
+    private ClockInterface $clock;
     private RouterInterface $router;
     private FormFactoryInterface $formFactory;
     private EventDispatcherInterface $eventDispatcher;
@@ -50,6 +52,7 @@ class ChangePasswordController
     public function __construct(
         Environment $twig,
         UserRepositoryInterface $userRepository,
+        ClockInterface $clock,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
@@ -60,6 +63,7 @@ class ChangePasswordController
     ) {
         $this->twig = $twig;
         $this->userRepository = $userRepository;
+        $this->clock = $clock;
         $this->router = $router;
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
@@ -69,7 +73,7 @@ class ChangePasswordController
         $this->formValidationGroups = $formValidationGroups;
     }
 
-    public function changePasswordAction(Request $request, string $token): Response
+    public function __invoke(Request $request, string $token): Response
     {
         $user = $this->userRepository->findUserByPasswordResetToken($token);
         if (null === $user) {
@@ -105,7 +109,7 @@ class ChangePasswordController
             throw new NotFoundHttpException();
         }
 
-        if (false === $passwordResetToken->isNonExpired()) {
+        if (false === $passwordResetToken->isNonExpired($this->clock)) {
             throw new NotFoundHttpException();
         }
     }

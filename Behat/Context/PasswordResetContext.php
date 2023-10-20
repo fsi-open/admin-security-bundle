@@ -12,16 +12,31 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
+use Behat\Mink\Session;
 use DateInterval;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
+use FriendsOfBehat\SymfonyExtension\Mink\MinkParameters;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetChangePassword;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
-use FSi\Bundle\AdminSecurityBundle\DateTime\Clock;
 use FSi\Bundle\AdminSecurityBundle\Security\Token\Token;
 use FSi\FixturesBundle\Entity\User;
+use FSi\FixturesBundle\Time\Clock;
 
 final class PasswordResetContext extends AbstractContext
 {
+    private Clock $clock;
+
+    public function __construct(
+        Session $session,
+        MinkParameters $minkParameters,
+        EntityManagerInterface $entityManager,
+        Clock $clock
+    ) {
+        parent::__construct($session, $minkParameters, $entityManager);
+        $this->clock = $clock;
+    }
+
     /**
      * @Given /^user "([^"]*)" has confirmation token "([^"]*)"$/
      */
@@ -55,7 +70,7 @@ final class PasswordResetContext extends AbstractContext
      */
     public function userHasConfirmationTokenWithTtl(string $username, string $confirmationToken): void
     {
-        Clock::freeze((new DateTimeImmutable())->sub(new DateInterval('P2D')));
+        $this->clock->freeze((new DateTimeImmutable())->sub(new DateInterval('P2D')));
 
         $user = $this->findUserByUsername($username);
 
@@ -63,7 +78,7 @@ final class PasswordResetContext extends AbstractContext
 
         $this->getEntityManager()->flush();
 
-        Clock::return();
+        $this->clock->return();
     }
 
     /**
@@ -126,7 +141,7 @@ final class PasswordResetContext extends AbstractContext
 
     private function createToken(string $confirmationToken, DateInterval $ttl): Token
     {
-        return new Token($confirmationToken, $ttl);
+        return new Token($confirmationToken, $this->clock, $ttl);
     }
 
     private function getPasswordResetRequestPage(): PasswordResetRequest

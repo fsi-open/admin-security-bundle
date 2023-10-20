@@ -19,6 +19,7 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Clock\ClockInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -31,6 +32,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 {
     public function let(
         Environment $twig,
+        ClockInterface $clock,
         UserRepositoryInterface $userRepository,
         RouterInterface $router,
         FormFactoryInterface $formFactory,
@@ -40,6 +42,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $this->beConstructedWith(
             $twig,
             $userRepository,
+            $clock,
             $router,
             $formFactory,
             $eventDispatcher,
@@ -58,6 +61,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
     public function it_changes_password(
         Request $request,
         UserRepositoryInterface $userRepository,
+        ClockInterface $clock,
         ResettablePasswordInterface $user,
         TokenInterface $token,
         FormFactoryInterface $formFactory,
@@ -70,7 +74,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
         $form->isSubmitted()->willReturn(true);
         $userRepository->findUserByPasswordResetToken('token12345')->willReturn($user);
         $user->getPasswordResetToken()->willReturn($token);
-        $token->isNonExpired()->willReturn(true);
+        $token->isNonExpired($clock)->willReturn(true);
 
         $formFactory->create(
             'form_type',
@@ -96,7 +100,7 @@ class ChangePasswordControllerSpec extends ObjectBehavior
 
         $router->generate('fsi_admin_security_user_login')->willReturn('url');
 
-        $response = $this->changePasswordAction($request, 'token12345');
+        $response = $this->__invoke($request, 'token12345');
         $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('url');
     }

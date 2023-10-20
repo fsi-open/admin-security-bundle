@@ -18,12 +18,13 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Clock\ClockInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
 class ResetRequestControllerSpec extends ObjectBehavior
@@ -31,7 +32,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
     public function let(
         Environment $twig,
         FormFactoryInterface $formFactory,
-        RouterInterface $router,
+        ClockInterface $clock,
+        UrlGeneratorInterface $urlGenerator,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
@@ -56,7 +58,8 @@ class ResetRequestControllerSpec extends ObjectBehavior
         $this->beConstructedWith(
             $twig,
             $formFactory,
-            $router,
+            $clock,
+            $urlGenerator,
             $userRepository,
             $eventDispatcher,
             $flashMessages,
@@ -74,7 +77,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         Request $request,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher,
-        RouterInterface $router,
+        UrlGeneratorInterface $urlGenerator,
         FlashMessages $flashMessages
     ): void {
         $eventDispatcher->dispatch(
@@ -90,9 +93,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
             'FSiAdminSecurity'
         )->shouldBeCalled();
 
-        $router->generate('fsi_admin_security_user_login')->willReturn('url');
+        $urlGenerator->generate('fsi_admin_security_user_login', [])->willReturn('url');
 
-        $response = $this->requestAction($request);
+        $response = $this->__invoke($request);
         $response->shouldHaveType(RedirectResponse::class);
     }
 
@@ -100,7 +103,7 @@ class ResetRequestControllerSpec extends ObjectBehavior
         Request $request,
         UserInterface $user,
         EventDispatcherInterface $eventDispatcher,
-        RouterInterface $router,
+        UrlGeneratorInterface $urlGenerator,
         FlashMessages $flashMessages
     ): void {
         $user->isEnabled()->willReturn(false);
@@ -118,9 +121,9 @@ class ResetRequestControllerSpec extends ObjectBehavior
             'FSiAdminSecurity'
         )->shouldBeCalled();
 
-        $router->generate('fsi_admin_security_user_login')->willReturn('url');
+        $urlGenerator->generate('fsi_admin_security_user_login', [])->willReturn('url');
 
-        $response = $this->requestAction($request);
+        $response = $this->__invoke($request);
         $response->shouldHaveType(RedirectResponse::class);
     }
 }

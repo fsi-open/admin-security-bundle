@@ -3,7 +3,8 @@
 ```yml
 fsi_admin_security:
     storage: null         # required
-    enforce_secured_elements: false      # forces all registered admin elements to implement the SecuredElementInterface interface
+    enforce_secured_elements: false      # forces all registered admin elements to implement the SecuredElementInterface
+    display_user_roles_form_field: true  # whether to display the choice field for user roles in `admin_security.form.type.user` form
     model:
         user: null        # required
     mailer:

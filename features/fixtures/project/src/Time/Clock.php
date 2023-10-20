@@ -9,16 +9,17 @@
 
 declare(strict_types=1);
 
-namespace FSi\Bundle\AdminSecurityBundle\DateTime;
+namespace FSi\FixturesBundle\Time;
 
 use DateTimeImmutable;
+use Psr\Clock\ClockInterface;
 
-final class Clock
+final class Clock implements ClockInterface
 {
     private static ?DateTimeImmutable $now = null;
     private static ?DateTimeImmutable $traveledAt = null;
 
-    public static function now(): DateTimeImmutable
+    public function now(): DateTimeImmutable
     {
         if (null === self::$now) {
             return new DateTimeImmutable();
@@ -30,22 +31,16 @@ final class Clock
 
         // TODO this works reliably only for short periods like under 60 seconds
         $interval = self::$traveledAt->diff(new DateTimeImmutable());
-
         return self::$now->add($interval);
     }
 
-    public static function fromString(string $dateTimeString): DateTimeImmutable
-    {
-        return new DateTimeImmutable($dateTimeString);
-    }
-
-    public static function freeze(DateTimeImmutable $time): void
+    public function freeze(DateTimeImmutable $time): void
     {
         self::$now = $time;
         self::$traveledAt = null;
     }
 
-    public static function return(): void
+    public function return(): void
     {
         self::$now = null;
         self::$traveledAt = null;

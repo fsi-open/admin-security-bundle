@@ -12,28 +12,32 @@ declare(strict_types=1);
 namespace FSi\Bundle\AdminSecurityBundle\Controller\PasswordReset;
 
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
+use FSi\Bundle\AdminSecurityBundle\Controller\FlashWithRedirect;
 use FSi\Bundle\AdminSecurityBundle\Event\ResetPasswordRequestEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
+use Psr\Clock\ClockInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
 use function get_class;
 
 class ResetRequestController
 {
+    use FlashWithRedirect;
+
     private Environment $twig;
     private FormFactoryInterface $formFactory;
-    private RouterInterface $router;
+    private ClockInterface $clock;
+    private UrlGeneratorInterface $urlGenerator;
     private UserRepositoryInterface $userRepository;
     private EventDispatcherInterface $eventDispatcher;
     private FlashMessages $flashMessages;
@@ -50,7 +54,8 @@ class ResetRequestController
     public function __construct(
         Environment $twig,
         FormFactoryInterface $formFactory,
-        RouterInterface $router,
+        ClockInterface $clock,
+        UrlGeneratorInterface $urlGenerator,
         UserRepositoryInterface $userRepository,
         EventDispatcherInterface $eventDispatcher,
         FlashMessages $flashMessages,
@@ -59,7 +64,8 @@ class ResetRequestController
     ) {
         $this->twig = $twig;
         $this->formFactory = $formFactory;
-        $this->router = $router;
+        $this->clock = $clock;
+        $this->urlGenerator = $urlGenerator;
         $this->userRepository = $userRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->flashMessages = $flashMessages;
@@ -67,36 +73,27 @@ class ResetRequestController
         $this->formType = $formType;
     }
 
-    public function requestAction(Request $request): Response
+    public function __invoke(Request $request): Response
     {
         $form = $this->formFactory->create($this->formType);
 
         $form->handleRequest($request);
-        if (false === $form->isSubmitted() || false === $form->isValid()) {
-            return new Response(
-                $this->twig->render($this->requestActionTemplate, ['form' => $form->createView()])
-            );
-        }
+        if (true === $form->isSubmitted() && true === $form->isValid()) {
+            $user = $this->getUser($form);
+            if (
+                false === $user instanceof ResettablePasswordInterface
+                || false === $this->isUserEligibleForResettingPassword($user)
+            ) {
+                return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
+            }
 
-        $user = $this->getUser($form);
-        if (false === $user instanceof ResettablePasswordInterface) {
+            $this->eventDispatcher->dispatch(new ResetPasswordRequestEvent($user));
             return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
         }
 
-        if (false === $this->isUserEligibleForResettingPassword($user)) {
-            return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
-        }
-
-        $this->eventDispatcher->dispatch(new ResetPasswordRequestEvent($user));
-
-        return $this->addFlashAndRedirect('info', 'admin.password_reset.request.mail_sent_if_correct');
-    }
-
-    private function addFlashAndRedirect(string $type, string $message): RedirectResponse
-    {
-        $this->flashMessages->{$type}($message, [], 'FSiAdminSecurity');
-
-        return new RedirectResponse($this->router->generate('fsi_admin_security_user_login'));
+        return new Response(
+            $this->twig->render($this->requestActionTemplate, ['form' => $form->createView()])
+        );
     }
 
     /**
@@ -128,17 +125,13 @@ class ResetRequestController
             return false;
         }
 
-        if (true === $this->hasNonExpiredPasswordResetToken($user)) {
-            return false;
-        }
-
-        return true;
+        return false === $this->hasNonExpiredPasswordResetToken($user);
     }
 
     private function hasNonExpiredPasswordResetToken(ResettablePasswordInterface $user): bool
     {
         return null !== $user->getPasswordResetToken()
-            && true === $user->getPasswordResetToken()->isNonExpired()
+            && true === $user->getPasswordResetToken()->isNonExpired($this->clock)
         ;
     }
 }
