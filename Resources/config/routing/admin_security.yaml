@@ -1,15 +1,13 @@
 fsi_admin_security_user_login:
     path: /login
-    controller: admin_security.controller.security:loginAction
+    controller: admin_security.controller.login
 
 fsi_admin_security_user_check:
     path: /login_check
-    controller: admin_security.controller.security:checkAction
 
 fsi_admin_security_user_logout:
     path: /logout
-    controller: admin_security.controller.security:logoutAction
 
 fsi_admin_change_password:
     path: /change-password
-    controller: admin_security.controller.admin:changePasswordAction
+    controller: admin_security.controller.change_password

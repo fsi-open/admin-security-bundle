@@ -14,13 +14,11 @@ namespace spec\FSi\Bundle\AdminSecurityBundle\Controller;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Environment;
 
-class SecurityControllerSpec extends ObjectBehavior
+class LoginControllerSpec extends ObjectBehavior
 {
     public function let(
         Environment $twig,
@@ -34,11 +32,8 @@ class SecurityControllerSpec extends ObjectBehavior
         Environment $twig,
         AuthenticationUtils $authenticationUtils,
         FlashMessages $flashMessages,
-        AuthenticationException $exception,
-        Response $response
+        AuthenticationException $exception
     ): void {
-        $error = new \Exception('message');
-        $authenticationUtils->getLastAuthenticationError()->willReturn($error);
         $exception->getMessageKey()->willReturn('error');
         $exception->getMessageData()->willReturn(['parameter' => 'value']);
         $authenticationUtils->getLastAuthenticationError()->willReturn($exception);
@@ -55,6 +50,6 @@ class SecurityControllerSpec extends ObjectBehavior
             ['last_username' => 'user']
         )->willReturn('response');
 
-        $this->loginAction()->getContent()->shouldReturn('response');
+        $this->__invoke()->getContent()->shouldReturn('response');
     }
 }

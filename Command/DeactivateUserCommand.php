@@ -18,7 +18,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,6 +27,8 @@ use function is_string;
 
 class DeactivateUserCommand extends Command
 {
+    use QuestionHelper;
+
     private UserRepositoryInterface $userRepository;
     private EventDispatcherInterface $eventDispatcher;
 
@@ -98,10 +99,5 @@ EOT
 
         $email = $this->getQuestionHelper()->ask($input, $output, $question);
         $input->setArgument('email', $email);
-    }
-
-    private function getQuestionHelper(): QuestionHelper
-    {
-        return $this->getHelper('question');
     }
 }

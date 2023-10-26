@@ -6,7 +6,7 @@
 
     <services>
         <!-- Controllers -->
-        <service id="admin_security.controller.security" class="FSi\Bundle\AdminSecurityBundle\Controller\SecurityController" public="true">
+        <service id="admin_security.controller.login" class="FSi\Bundle\AdminSecurityBundle\Controller\LoginController" public="true">
             <argument type="service" id="twig" />
             <argument type="service" id="security.authentication_utils" />
             <argument type="service" id="FSi\Bundle\AdminBundle\Message\FlashMessages" />
@@ -59,7 +59,7 @@
             <argument type="string">%admin_security.password_reset.change_password_form.validation_groups%</argument>
         </service>
 
-        <service id="admin_security.controller.admin" class="FSi\Bundle\AdminSecurityBundle\Controller\AdminController" public="true">
+        <service id="admin_security.controller.change_password" class="FSi\Bundle\AdminSecurityBundle\Controller\ChangePasswordController" public="true">
             <argument type="service" id="twig" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="security.token_storage" />

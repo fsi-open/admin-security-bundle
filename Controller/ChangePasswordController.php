@@ -25,7 +25,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
-class AdminController
+class ChangePasswordController
 {
     private TokenStorageInterface $tokenStorage;
     private RouterInterface $router;
@@ -69,7 +69,7 @@ class AdminController
         $this->changePasswordFormValidationGroups = $changePasswordFormValidationGroups;
     }
 
-    public function changePasswordAction(Request $request): Response
+    public function __invoke(Request $request): Response
     {
         $token = $this->tokenStorage->getToken();
         if (null === $token) {

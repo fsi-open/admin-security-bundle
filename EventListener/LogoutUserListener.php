@@ -43,7 +43,11 @@ class LogoutUserListener implements EventSubscriberInterface
     {
         $token = $this->tokenStorage->getToken();
         if (null !== $token && $token->getUser() === $event->getUser()) {
-            $request = $this->requestStack->getMasterRequest();
+            $request = true === method_exists($this->requestStack, 'getMainRequest')
+                ? $this->requestStack->getMainRequest()
+                : $this->requestStack->getMasterRequest()
+            ;
+
             if (null === $request) {
                 throw new RuntimeException('No request when attempting to log out the user!');
             }

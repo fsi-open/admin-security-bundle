@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
-class AdminControllerSpec extends ObjectBehavior
+class LoginControllerSpec extends ObjectBehavior
 {
     public function let(
         Environment $twig,
@@ -81,7 +81,7 @@ class AdminControllerSpec extends ObjectBehavior
             ['form' => $formView]
         )->shouldBeCalled()->willReturn('response');
 
-        $this->changePasswordAction($request)->getContent()->shouldReturn('response');
+        $this->__invoke($request)->getContent()->shouldReturn('response');
     }
 
     public function it_dispatch_event_and_redirect_user_to_login_page_after_successful_form_validation(
@@ -122,7 +122,7 @@ class AdminControllerSpec extends ObjectBehavior
 
         $router->generate('fsi_admin_security_user_login')->shouldBeCalled()->willReturn('/admin/login');
 
-        $response = $this->changePasswordAction($request);
+        $response = $this->__invoke($request);
         $response->shouldHaveType(RedirectResponse::class);
         $response->getTargetUrl()->shouldReturn('/admin/login');
     }

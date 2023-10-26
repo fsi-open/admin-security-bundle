@@ -26,12 +26,17 @@ class LogoutUserListenerSpec extends ObjectBehavior
         RequestStack $requestStack,
         TokenStorageInterface $tokenStorage,
         AbstractToken $token,
-        Request $masterRequest,
+        Request $mainRequest,
         SessionInterface $session
     ): void {
         $tokenStorage->getToken()->willReturn($token);
-        $requestStack->getMasterRequest()->willReturn($masterRequest);
-        $masterRequest->getSession()->willReturn($session);
+        if (true === method_exists(RequestStack::class, 'getMainRequest')) {
+            $requestStack->getMainRequest()->willReturn($mainRequest);
+        } else {
+            $requestStack->getMasterRequest()->willReturn($mainRequest);
+        }
+
+        $mainRequest->getSession()->willReturn($session);
 
         $this->beConstructedWith($requestStack, $tokenStorage);
     }
