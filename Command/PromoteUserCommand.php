@@ -18,7 +18,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,6 +25,8 @@ use Symfony\Component\Console\Question\Question;
 
 class PromoteUserCommand extends Command
 {
+    use QuestionHelper;
+
     private UserRepositoryInterface $userRepository;
     private EventDispatcherInterface $eventDispatcher;
 
@@ -122,10 +123,5 @@ EOT
 
         $role = $this->getQuestionHelper()->ask($input, $output, $question);
         $input->setArgument('role', $role);
-    }
-
-    private function getQuestionHelper(): QuestionHelper
-    {
-        return $this->getHelper('question');
     }
 }

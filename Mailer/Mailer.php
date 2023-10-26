@@ -15,6 +15,7 @@ use FSi\Bundle\AdminSecurityBundle\Mailer\Exception\MailerException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface as SymfonyMailer;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\BodyRendererInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function get_class;
@@ -24,6 +25,7 @@ final class Mailer implements MailerInterface
 {
     private SymfonyMailer $mailer;
     private TranslatorInterface $translator;
+    private ?BodyRendererInterface $bodyRenderer;
     private string $subject;
     private string $templateName;
     private string $fromEmail;
@@ -32,6 +34,7 @@ final class Mailer implements MailerInterface
     public function __construct(
         SymfonyMailer $mailer,
         TranslatorInterface $translator,
+        ?BodyRendererInterface $bodyRenderer,
         string $subject,
         string $templateName,
         string $fromEmail,
@@ -39,6 +42,7 @@ final class Mailer implements MailerInterface
     ) {
         $this->mailer = $mailer;
         $this->translator = $translator;
+        $this->bodyRenderer = $bodyRenderer;
         $this->subject = $subject;
         $this->templateName = $templateName;
         $this->fromEmail = $fromEmail;
@@ -67,6 +71,10 @@ final class Mailer implements MailerInterface
 
         if (null !== $this->replyToEmail) {
             $message->replyTo(new Address($this->replyToEmail));
+        }
+
+        if (null !== $this->bodyRenderer) {
+            $this->bodyRenderer->render($message);
         }
 
         $this->mailer->send($message);

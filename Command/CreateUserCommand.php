@@ -17,7 +17,6 @@ use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,6 +27,8 @@ use function is_string;
 
 final class CreateUserCommand extends Command
 {
+    use QuestionHelper;
+
     private EventDispatcherInterface $eventDispatcher;
     /**
      * @var class-string<UserInterface>
@@ -172,10 +173,5 @@ EOT
 
         $role = $this->getQuestionHelper()->ask($input, $output, $question);
         $input->setArgument('role', $role);
-    }
-
-    private function getQuestionHelper(): QuestionHelper
-    {
-        return $this->getHelper('question');
     }
 }

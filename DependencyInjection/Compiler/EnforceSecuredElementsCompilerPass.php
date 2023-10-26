@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\DependencyInjection\Compiler;
 
+use FSi\Bundle\AdminBundle\Admin\Element;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -35,6 +36,7 @@ final class EnforceSecuredElementsCompilerPass implements CompilerPassInterface
             $elementsIds,
             function (string $serviceId) use ($container): void {
                 $definition = $container->getDefinition($serviceId);
+                /** @var class-string<Element> $definitionClass */
                 $definitionClass = $definition->getClass();
                 if (null === $definitionClass) {
                     return;

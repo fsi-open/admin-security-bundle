@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Environment;
 
-class SecurityController
+class LoginController
 {
     private Environment $twig;
     private AuthenticationUtils $authenticationUtils;
@@ -35,7 +35,7 @@ class SecurityController
         $this->loginActionTemplate = $loginActionTemplate;
     }
 
-    public function loginAction(): Response
+    public function __invoke(): Response
     {
         $error = $this->authenticationUtils->getLastAuthenticationError();
         if (null !== $error) {
