@@ -115,7 +115,12 @@ abstract class User implements UserInterface
 
     public function getUsername(): ?string
     {
-        return $this->username;
+        return $this->getUserIdentifier();
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username ?? '';
     }
 
     public function getEmail(): ?string
