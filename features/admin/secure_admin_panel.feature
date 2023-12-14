@@ -22,6 +22,16 @@ Feature: Secure admin panel
     And I press "Login" button
     Then I should be redirected to "Admin panel" page
 
+  Scenario: Login into admin panel using disabled user's credentials
+    Given user "admin@fsi.pl" has been disabled
+    And I am on the "Login" page
+    When I fill form with valid admin login and password
+    And I press "Login" button
+    And I should see message:
+    """
+    Invalid credentials.
+    """
+
   Scenario: Login into admin panel using bad credentials
     Given I am on the "Login" page
     When I fill form with invalid admin login and password

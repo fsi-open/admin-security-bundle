@@ -160,6 +160,9 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <!-- Security -->
+        <service id="admin_security.user_checker.disabled_user_checker" class="FSi\Bundle\AdminSecurityBundle\Security\UserChecker\DisabledUserChecker" />
+
         <!-- Factories -->
         <service id="admin_security.token_factory.activation" class="FSi\Bundle\AdminSecurityBundle\Security\Token\TokenFactory">
             <argument type="service" id="Psr\Clock\ClockInterface"/>

@@ -66,6 +66,7 @@
         "fsi/datagrid": "*",
         "fsi/datasource": "*",
         "twig/twig": "<2.0",
+        "symfony/property-info": ">=7.0",
         "symfony/expression-language": "<4.4"
     },
     "config": {
