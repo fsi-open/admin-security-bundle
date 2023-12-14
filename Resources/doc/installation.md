@@ -135,6 +135,7 @@ security:
 
         admin_panel:
             pattern:    ^/admin
+            user_checker: admin_security.user_checker.disabled_user_checker
             form_login:
                 provider: entity_provider
                 check_path: fsi_admin_security_user_check

@@ -126,6 +126,16 @@ final class DataContext extends AbstractContext
     }
 
     /**
+     * @Then /^user "([^"]*)" has been disabled$/
+     */
+    public function userHasBeenDisabled(string $userEmail): void
+    {
+        $user = $this->findUserByEmail($userEmail);
+        $user->setEnabled(false);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
      * @Then /^user "([^"]*)" password should be changed$/
      */
     public function userShouldHaveChangedPassword(string $userEmail): void
