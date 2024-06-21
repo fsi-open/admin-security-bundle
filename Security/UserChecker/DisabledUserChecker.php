@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Security\UserChecker;
 
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserIdentifierHelper;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\LockedException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
@@ -28,7 +29,9 @@ final class DisabledUserChecker implements UserCheckerInterface
             return;
         }
 
-        throw new LockedException("User {$user->getUsername()} is disabled");
+        $userIdentifier = UserIdentifierHelper::getUserIdentifier($user);
+
+        throw new LockedException("User {$userIdentifier} is disabled");
     }
 
     public function checkPostAuth(SymfonyUserInterface $user): void

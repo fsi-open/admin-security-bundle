@@ -38,7 +38,11 @@ class User implements UserInterface
         $this->password = $password;
     }
 
-    public function getUsername(): ?string
+    public function getUsername(): string
+    {
+    }
+
+    public function getUserIdentifier(): string
     {
     }
 
@@ -103,10 +107,6 @@ class User implements UserInterface
     }
 
     public function setEmail(string $email): void
-    {
-    }
-
-    public function setLocked(bool $boolean): void
     {
     }
 

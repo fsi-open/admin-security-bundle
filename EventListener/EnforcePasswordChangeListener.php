@@ -83,7 +83,10 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
-        if (true === $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+        if (
+            true === $this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')
+            || true === $this->authorizationChecker->isGranted('IS_IMPERSONATOR')
+        ) {
             return;
         }
 

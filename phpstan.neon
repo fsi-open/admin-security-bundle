@@ -9,7 +9,7 @@ parameters:
     excludePaths:
         - DependencyInjection/Configuration
         - '%rootDir%/../../../docker'
-        - '%rootDir%/../../../features'
+        - '%rootDir%/../../../features/fixtures/project/var'
         - '%rootDir%/../../../spec'
         - '%rootDir%/../../../var'
         - '%rootDir%/../../../vendor'
@@ -17,7 +17,11 @@ parameters:
         - '#Property FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::\$passwordHasherFactory has unknown class Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface as its type\.#'
         - '#Parameter \$passwordHasherFactory of method FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::__construct\(\) has invalid type Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface\.#'
         - '#Call to method getPasswordHasher\(\) on an unknown class Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface\.#'
+        - '#^Class Symfony\\Component\\Security\\Core\\Encoder\\EncoderFactoryInterface not found\.#'
+        - '#^.*(unknown class)|(invalid type) Symfony\\Component\\Security\\Core\\Encoder\\EncoderFactoryInterface.*$#'
         - message: '#Cannot call method get\(\) on Symfony\\Component\\DependencyInjection\\ContainerInterface\|null\.#'
           path: %currentWorkingDirectory%/FSiAdminSecurityBundle.php
         - message: '#Call to an undefined method Symfony\\Component\\HttpFoundation\\RequestStack\:\:get(Main|Master)Request\(\)\.#'
           path: %currentWorkingDirectory%/EventListener/LogoutUserListener.php
+        - message: '#.*Symfony\\Component\\Routing\\RouteCollectionBuilder.*#'
+          path: %currentWorkingDirectory%/features/fixtures/project/src/Kernel.php

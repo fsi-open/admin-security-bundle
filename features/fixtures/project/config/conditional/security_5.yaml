@@ -19,3 +19,9 @@ security:
             logout:
                 path: fsi_admin_security_user_logout
             switch_user: true
+
+    access_control:
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/activation/, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/password-reset/, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_REDACTOR] }

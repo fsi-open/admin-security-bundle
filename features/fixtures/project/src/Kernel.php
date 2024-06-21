@@ -16,8 +16,10 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Session\SessionFactoryInterface;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 use function interface_exists;
@@ -31,6 +33,7 @@ class Kernel extends BaseKernel
 
     public function registerBundles(): iterable
     {
+        /** @var array<class-string<BundleInterface>, array<string, bool>> $contents */
         $contents = require $this->getProjectDir() . '/config/bundles.php';
         foreach ($contents as $class => $envs) {
             if ($envs[$this->environment] ?? $envs['all'] ?? false) {
@@ -80,12 +83,21 @@ class Kernel extends BaseKernel
         $loader->load(sprintf('%s/../src/Resources/config/services.xml', __DIR__));
     }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes): void
+    /**
+     * @param RouteCollectionBuilder|RoutingConfigurator $routes
+     */
+    protected function configureRoutes($routes): void
     {
         $confDir = $this->getProjectDir() . '/config';
 
-        $routes->import($confDir . '/{routes}/' . $this->environment . '/*' . self::CONFIG_EXTS, '/', 'glob');
-        $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
-        $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, '/', 'glob');
+        if (true === $routes instanceof RouteCollectionBuilder) {
+            $routes->import($confDir . '/{routes}/' . $this->environment . '/*' . self::CONFIG_EXTS, '/', 'glob');
+            $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, '/', 'glob');
+            $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, '/', 'glob');
+        } else {
+            $routes->import($confDir . '/{routes}/' . $this->environment . '/*' . self::CONFIG_EXTS, 'glob');
+            $routes->import($confDir . '/{routes}/*' . self::CONFIG_EXTS, 'glob');
+            $routes->import($confDir . '/{routes}' . self::CONFIG_EXTS, 'glob');
+        }
     }
 }
