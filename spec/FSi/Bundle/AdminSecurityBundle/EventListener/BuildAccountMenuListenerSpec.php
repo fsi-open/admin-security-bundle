@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function method_exists;
+
 class BuildAccountMenuListenerSpec extends ObjectBehavior
 {
     public function let(
@@ -30,7 +32,11 @@ class BuildAccountMenuListenerSpec extends ObjectBehavior
     ): void {
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
-        $token->getUsername()->willReturn('some user');
+        if (method_exists(AbstractToken::class, 'getUserIdentifier')) {
+            $token->getUserIdentifier()->willReturn('some user');
+        } else {
+            $token->getUsername()->willReturn('some user');
+        }
 
         $translator->trans('admin.welcome', ['%username%' => 'some user'], 'FSiAdminSecurity')
             ->willReturn('Hello some user');

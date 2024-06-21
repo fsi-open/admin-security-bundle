@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Twig;
 
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserIdentifierHelper;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -30,7 +31,7 @@ final class SecurityExtension extends AbstractExtension
                         return false;
                     }
 
-                    return $a->getUsername() === $b->getUsername();
+                    return UserIdentifierHelper::getUserIdentifier($a) === UserIdentifierHelper::getUserIdentifier($b);
                 }
             )
         ];

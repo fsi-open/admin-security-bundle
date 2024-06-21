@@ -15,6 +15,7 @@ use FSi\Bundle\AdminBundle\Event\MenuToolsEvent;
 use FSi\Bundle\AdminBundle\Menu\Item\Item;
 use FSi\Bundle\AdminBundle\Menu\Item\RoutableItem;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserIdentifierHelper;
 use RuntimeException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,7 +65,7 @@ class BuildAccountMenuListener
         $rootItem->setLabel(
             $this->translator->trans(
                 'admin.welcome',
-                ['%username%' => $token->getUsername()],
+                ['%username%' => UserIdentifierHelper::getTokenUserIdentifier($token)],
                 'FSiAdminSecurity'
             )
         );

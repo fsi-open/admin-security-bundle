@@ -11,19 +11,15 @@ declare(strict_types=1);
 
 namespace FSi\FixturesBundle\Admin;
 
-use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
+use FSi\Bundle\AdminBundle\Doctrine\Admin\ResourceElement;
 use FSi\Bundle\AdminSecurityBundle\Admin\SecuredElementInterface;
-use FSi\Component\DataGrid\DataGridFactoryInterface;
-use FSi\Component\DataGrid\DataGridInterface;
-use FSi\Component\DataSource\DataSourceFactoryInterface;
-use FSi\Component\DataSource\DataSourceInterface;
-use FSi\FixturesBundle\Entity\PageSettings as PageSettingsEntity;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
+use FSi\FixturesBundle\Entity\Resource;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class PageSettings extends CRUDElement implements SecuredElementInterface
+/**
+ * @extends ResourceElement<Resource>
+ */
+class PageSettings extends ResourceElement implements SecuredElementInterface
 {
     public function isAllowed(AuthorizationCheckerInterface $authorizationChecker): bool
     {
@@ -32,7 +28,7 @@ class PageSettings extends CRUDElement implements SecuredElementInterface
 
     public function getClassName(): string
     {
-        return PageSettingsEntity::class;
+        return Resource::class;
     }
 
     public function getId(): string
@@ -40,22 +36,8 @@ class PageSettings extends CRUDElement implements SecuredElementInterface
         return 'page_settings';
     }
 
-    protected function initDataGrid(DataGridFactoryInterface $factory): DataGridInterface
+    public function getKey(): string
     {
-        return $factory->createDataGrid($this->getId());
-    }
-
-    protected function initDataSource(DataSourceFactoryInterface $factory): DataSourceInterface
-    {
-        return $factory->createDataSource(
-            'doctrine-orm',
-            ['entity' => $this->getClassName()],
-            $this->getId()
-        );
-    }
-
-    protected function initForm(FormFactoryInterface $factory, $data = null): FormInterface
-    {
-        return $factory->create(FormType::class, $data);
+        return 'page_settings';
     }
 }

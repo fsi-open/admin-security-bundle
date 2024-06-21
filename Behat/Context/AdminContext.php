@@ -27,6 +27,7 @@ use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Page;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserIdentifierHelper;
 use InvalidArgumentException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -116,7 +117,7 @@ final class AdminContext extends AbstractContext
     {
         $token = $this->tokenStorage->getToken();
         Assertion::notNull($token);
-        Assertion::same($token->getUsername(), $user);
+        Assertion::same(UserIdentifierHelper::getTokenUserIdentifier($token), $user);
     }
 
     /**

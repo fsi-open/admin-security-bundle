@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminSecurityBundle\Security\User\EnforceablePasswordChangeInterface;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallConfig;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap as FixturesFirewallMap;
 use PhpSpec\ObjectBehavior;
@@ -40,7 +40,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         AbstractToken $token,
-        EnforceablePasswordChangeInterface $user,
+        UserInterface $user,
         RouterInterface $router
     ): void {
         $event->getRequest()->willReturn($request);
@@ -49,6 +49,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $firewallConfig->getName()->willReturn(self::CONFIGURED_FIREWALL);
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')->willReturn(false);
+        $authorizationChecker->isGranted('IS_IMPERSONATOR')->willReturn(false);
         $tokenStorage->getToken()->willReturn($token);
         $token->getUser()->willReturn($user);
 
@@ -131,12 +132,27 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         $this->onKernelRequest($event);
     }
 
-    public function it_does_nothing_when_user_is_impersonated(
+    public function it_does_nothing_when_user_is_impersonated_v4(
         RequestEvent $event,
         AuthorizationCheckerInterface $authorizationChecker
     ): void {
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
         $authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')->willReturn(true);
+        $authorizationChecker->isGranted('IS_IMPERSONATOR')->willReturn(false);
+
+        $event->setResponse(Argument::any())->shouldNotBeCalled();
+        $event->stopPropagation()->shouldNotBeCalled();
+
+        $this->onKernelRequest($event);
+    }
+
+    public function it_does_nothing_when_user_is_impersonated_v5(
+        RequestEvent $event,
+        AuthorizationCheckerInterface $authorizationChecker
+    ): void {
+        $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
+        $authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')->willReturn(false);
+        $authorizationChecker->isGranted('IS_IMPERSONATOR')->willReturn(true);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
         $event->stopPropagation()->shouldNotBeCalled();
@@ -146,7 +162,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
 
     public function it_does_nothing_when_user_has_not_enforce_password_change(
         RequestEvent $event,
-        EnforceablePasswordChangeInterface $user
+        UserInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(false);
 
@@ -159,7 +175,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
     public function it_stops_event_propagation_when_already_on_change_password_page(
         RequestEvent $event,
         Request $request,
-        EnforceablePasswordChangeInterface $user
+        UserInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('change_password');
@@ -174,7 +190,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         RequestEvent $event,
         Request $request,
         RouterInterface $router,
-        EnforceablePasswordChangeInterface $user
+        UserInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(true);
         $request->get('_route')->willReturn('something_secure');
