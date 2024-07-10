@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Doctrine\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ActivableInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ChangeablePasswordInterface;
 use FSi\Bundle\AdminSecurityBundle\Security\User\ResettablePasswordInterface;
@@ -22,9 +22,9 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 use function get_class;
 
 /**
- * @extends EntityRepository<SymfonyUserInterface>
+ * @extends ServiceEntityRepository<SymfonyUserInterface>
  */
-class UserRepository extends EntityRepository implements UserRepositoryInterface
+class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
 {
     public function findUserByActivationToken(string $activationToken): ?ActivableInterface
     {
