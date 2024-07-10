@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace spec\FSi\Bundle\AdminSecurityBundle;
 
 use FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository;
+use FSi\Bundle\AdminSecurityBundle\Security\User\UserRepositoryInterface;
 use FSi\Bundle\AdminSecurityBundle\spec\fixtures\NonFSiUserRepository;
 use LogicException;
 use PhpSpec\ObjectBehavior;
@@ -33,7 +34,7 @@ class FSiAdminSecurityBundleSpec extends ObjectBehavior
 
     public function it_does_not_throw_exception_when_correct_user_model_repository_class(
         ContainerInterface $container,
-        UserRepository $correctRepository
+        UserRepositoryInterface $correctRepository
     ): void {
         $container->get('admin_security.repository.user')->willReturn($correctRepository);
         $this->setContainer($container);

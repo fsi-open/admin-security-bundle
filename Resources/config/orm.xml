@@ -7,9 +7,12 @@
     <services>
 
         <!-- Repository -->
-        <service id="admin_security.repository.user" class="FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository" public="true">
-            <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
+        <service id="admin_security.repository.user" alias="FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository" public="true" />
+
+        <service id="FSi\Bundle\AdminSecurityBundle\Doctrine\Repository\UserRepository">
+            <argument type="service" id="doctrine" />
             <argument type="string">%admin_security.model.user%</argument>
+            <tag name="doctrine.repository_service" />
         </service>
 
         <!-- Event listener-->
