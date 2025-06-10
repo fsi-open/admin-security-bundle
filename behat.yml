@@ -44,12 +44,12 @@ default: &default
                 class: FSi\FixturesBundle\Kernel
         Caciobanu\Behat\DeprecationExtension: ~
 
-travis:
+actions:
     <<: *default
     extensions:
         Behat\MinkExtension:
-            base_url: "http://localhost:8080/index.php"
+            base_url: "http://test-container:8080/index.php"
             sessions:
                 javascript:
                     selenium2:
-                        wd_host: http://localhost:4444/wd/hub
+                        wd_host: http://firefox:4444/wd/hub
