@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\FixturesBundle\DependencyInjection;
 
+use Composer\InstalledVersions;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -26,6 +27,10 @@ final class FSiFixturesExtension extends Extension implements PrependExtensionIn
     {
         // Only enable the option for SecurityBundle 5.3 and higher
         if (false === class_exists(InMemoryUser::class)) {
+            return;
+        }
+
+        if (InstalledVersions::getVersion('symfony/security-bundle') >= '7.0.0') {
             return;
         }
 

@@ -62,7 +62,7 @@ class FSiAdminSecurityBundle extends Bundle
 
     public function getContainerExtension(): FSIAdminSecurityExtension
     {
-        if (null === $this->extension) {
+        if (false === $this->extension instanceof FSIAdminSecurityExtension) {
             $this->extension = new FSIAdminSecurityExtension();
         }
 

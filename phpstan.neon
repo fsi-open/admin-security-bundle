@@ -9,6 +9,7 @@ parameters:
     excludePaths:
         - DependencyInjection/Configuration
         - '%rootDir%/../../../docker'
+        - '%rootDir%/../../../features/fixtures/project/config/reference.php'
         - '%rootDir%/../../../features/fixtures/project/var'
         - '%rootDir%/../../../spec'
         - '%rootDir%/../../../var'
