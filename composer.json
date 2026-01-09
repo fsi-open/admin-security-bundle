@@ -10,6 +10,12 @@
             "email": "norbert@orzechowicz.pl"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/fsi-open/phpspec.git"
+        }
+    ],
     "require": {
         "php": "^7.4|^8.0",
         "beberlei/assert": "^3.3",
