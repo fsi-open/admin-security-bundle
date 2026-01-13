@@ -25,6 +25,9 @@ use function strtoupper;
 abstract class User implements UserInterface
 {
     protected ?int $id;
+    /**
+     * @var non-empty-string|null
+     */
     protected ?string $username;
     protected ?string $email;
     protected bool $enabled;
@@ -81,7 +84,7 @@ abstract class User implements UserInterface
     /**
      * @param array{
      *   password: string|null,
-     *   username: string|null,
+     *   username: non-empty-string|null,
      *   enabled: bool,
      *   id: int|null,
      * } $serialized
@@ -120,7 +123,7 @@ abstract class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->username ?? '';
+        return $this->username ?? 'anonymous';
     }
 
     public function getEmail(): ?string
@@ -212,6 +215,9 @@ abstract class User implements UserInterface
         $this->roles = array_values($this->roles);
     }
 
+    /**
+     * @param non-empty-string $username
+     */
     public function setUsername(string $username): void
     {
         $this->username = $username;
