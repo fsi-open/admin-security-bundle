@@ -66,7 +66,7 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (true !== $event->isMainRequest()) {
             return;
         }
 
