@@ -17,7 +17,6 @@ use Psr\Clock\ClockInterface;
 final class Clock implements ClockInterface
 {
     private static ?DateTimeImmutable $now = null;
-    private static ?DateTimeImmutable $traveledAt = null;
 
     public function now(): DateTimeImmutable
     {
@@ -25,24 +24,16 @@ final class Clock implements ClockInterface
             return new DateTimeImmutable();
         }
 
-        if (null === self::$traveledAt) {
-            return clone self::$now;
-        }
-
-        // TODO this works reliably only for short periods like under 60 seconds
-        $interval = self::$traveledAt->diff(new DateTimeImmutable());
-        return self::$now->add($interval);
+        return clone self::$now;
     }
 
     public function freeze(DateTimeImmutable $time): void
     {
         self::$now = $time;
-        self::$traveledAt = null;
     }
 
     public function return(): void
     {
         self::$now = null;
-        self::$traveledAt = null;
     }
 }

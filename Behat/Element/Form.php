@@ -17,7 +17,7 @@ use RuntimeException;
 
 final class Form extends Element
 {
-    public function getField(string $locator): ?NodeElement
+    public function getField(string $locator): NodeElement
     {
         $field = $this->getElement('form')->findField($locator);
         if (null === $field) {

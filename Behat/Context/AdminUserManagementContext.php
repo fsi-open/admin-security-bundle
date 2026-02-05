@@ -15,6 +15,7 @@ use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\BrowserKitDriver;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
+use FriendsOfBehat\SymfonyExtension\Driver\SymfonyDriver;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\BatchAction;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\Datagrid;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
@@ -125,7 +126,7 @@ final class AdminUserManagementContext extends AbstractContext
             ]
         ];
 
-        /** @var BrowserKitDriver $driver */
+        /** @var SymfonyDriver $driver */
         $driver = $this->getSession()->getDriver();
 
         $batchActionUrl = $batchActionNode->getAttribute('value');

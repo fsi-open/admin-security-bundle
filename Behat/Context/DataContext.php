@@ -70,6 +70,7 @@ final class DataContext extends AbstractContext
      */
     public function thereIsUserWithRoleAndPassword(string $email, string $role, string $password): void
     {
+        Assertion::notEmpty($email);
         $user = new User();
         $user->setUsername($email);
         $user->setEmail($email);
@@ -95,6 +96,7 @@ final class DataContext extends AbstractContext
         $manager = $this->getEntityManager();
 
         foreach ($table->getHash() as $userInfo) {
+            Assertion::notEmpty($userInfo['Email']);
             $user = new User();
             $user->setUsername($userInfo['Email']);
             $user->setEmail($userInfo['Email']);

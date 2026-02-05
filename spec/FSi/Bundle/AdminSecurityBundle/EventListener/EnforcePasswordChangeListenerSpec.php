@@ -20,7 +20,6 @@ use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
@@ -44,7 +43,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         RouterInterface $router
     ): void {
         $event->getRequest()->willReturn($request);
-        $event->getRequestType()->willReturn(HttpKernelInterface::MASTER_REQUEST);
+        $event->isMainRequest()->willReturn(true);
         $firewallMap->getFirewallConfig($request)->willReturn($firewallConfig);
         $firewallConfig->getName()->willReturn(self::CONFIGURED_FIREWALL);
         $authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')->willReturn(true);
@@ -74,7 +73,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         RequestEvent $event,
         TokenStorageInterface $tokenStorage
     ): void {
-        $event->getRequestType()->willReturn(HttpKernelInterface::SUB_REQUEST);
+        $event->isMainRequest()->willReturn(false);
 
         $tokenStorage->getToken()->shouldNotBeCalled();
         $event->setResponse(Argument::any())->shouldNotBeCalled();
