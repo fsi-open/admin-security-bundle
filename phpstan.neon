@@ -7,13 +7,11 @@ parameters:
     paths:
         - .
     excludePaths:
-        - DependencyInjection/Configuration
-        - '%rootDir%/../../../docker'
-        - '%rootDir%/../../../features/fixtures/project/config/reference.php'
-        - '%rootDir%/../../../features/fixtures/project/var'
-        - '%rootDir%/../../../spec'
-        - '%rootDir%/../../../var'
-        - '%rootDir%/../../../vendor'
+        - DependencyInjection/Configuration.php
+        - features/fixtures/project/config
+        - features/fixtures/project/var
+        - spec
+        - vendor
     ignoreErrors:
         - '#Property FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::\$passwordHasherFactory has unknown class Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface as its type\.#'
         - '#Parameter \$passwordHasherFactory of method FSi\\Bundle\\AdminSecurityBundle\\EventListener\\EncodePasswordListener::__construct\(\) has invalid type Symfony\\Component\\PasswordHasher\\Hasher\\PasswordHasherFactoryInterface\.#'
@@ -24,5 +22,11 @@ parameters:
           path: %currentWorkingDirectory%/FSiAdminSecurityBundle.php
         - message: '#Call to an undefined method Symfony\\Component\\HttpFoundation\\RequestStack\:\:get(Main|Master)Request\(\)\.#'
           path: %currentWorkingDirectory%/EventListener/LogoutUserListener.php
+        - message: '#Call to function method_exists\(\) with Symfony\\Component\\HttpFoundation\\RequestStack and ''get(Main|Master)Request'' will always evaluate to true\.#'
+          path: %currentWorkingDirectory%/EventListener/LogoutUserListener.php
+        - message: '#Call to function method_exists\(\) with Symfony\\Component\\Security\\Core\\User\\UserInterface and ''getUser(name|Identifier)'' will always evaluate to true\.#'
+          path: %currentWorkingDirectory%/Security/User/UserIdentifierHelper.php
+        - message: '#Call to function method_exists\(\) with Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface and ''getUser(name|Identifier)'' will always evaluate to true\.#'
+          path: %currentWorkingDirectory%/Security/User/UserIdentifierHelper.php
         - message: '#.*Symfony\\Component\\Routing\\RouteCollectionBuilder.*#'
           path: %currentWorkingDirectory%/features/fixtures/project/src/Kernel.php
