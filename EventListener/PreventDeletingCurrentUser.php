@@ -19,6 +19,8 @@ use FSi\Bundle\AdminSecurityBundle\Doctrine\Admin\UserElement;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -64,7 +66,7 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
 
         $user = $token->getUser();
         $request = $event->getRequest();
-        $indexes = $request->get('indexes', []);
+        $indexes = $request->request->all('indexes');
 
         foreach ($indexes as $index) {
             /** @var UserInterface $entity */
@@ -92,11 +94,11 @@ class PreventDeletingCurrentUser implements EventSubscriberInterface
 
     private function getRedirectUrl(Element $element, Request $request): string
     {
-        $redirectUrl = $request->get('redirect_uri');
+        $redirectUrl = $request->query->get('redirect_uri');
         if (null === $redirectUrl) {
             return $this->router->generate($element->getRoute(), $element->getRouteParameters());
         }
 
-        return $redirectUrl;
+        return (string) $redirectUrl;
     }
 }

@@ -17,6 +17,7 @@ use FSi\Bundle\AdminSecurityBundle\spec\fixtures\FirewallMap as FixturesFirewall
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -177,7 +178,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         UserInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(true);
-        $request->get('_route')->willReturn('change_password');
+        $request->attributes = new ParameterBag(['_route' => 'change_password']);
 
         $event->stopPropagation()->shouldBeCalled();
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -192,7 +193,7 @@ class EnforcePasswordChangeListenerSpec extends ObjectBehavior
         UserInterface $user
     ): void {
         $user->isForcedToChangePassword()->willReturn(true);
-        $request->get('_route')->willReturn('something_secure');
+        $request->attributes = new ParameterBag(['_route' => 'something_secure']);
         $router->generate('change_password')->willReturn('change_password_url');
 
         $event->setResponse(
