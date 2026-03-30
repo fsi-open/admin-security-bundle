@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
-use FSi\Bundle\AdminBundle\Event\BatchEvents;
 use FSi\Bundle\AdminBundle\Event\BatchObjectsPreApplyEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminBundle\Message\FlashMessages;
@@ -21,6 +20,8 @@ use FSi\Component\DataIndexer\DataIndexerInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -42,7 +43,13 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         $event->getElement()->willReturn($userElement);
         $tokenStorage->getToken()->willReturn($token);
         $event->getRequest()->willReturn($request);
-        $request->get('redirect_uri')->willReturn('list_url');
+        if (class_exists(InputBag::class)) {
+            $requestQueryBag = new InputBag();
+        } else {
+            $requestQueryBag = new ParameterBag();
+        }
+        $requestQueryBag->set('redirect_uri', 'list_url');
+        $request->query = $requestQueryBag;
         $userElement->getDataIndexer()->willReturn($dataIndexer);
 
         $this->beConstructedWith($tokenStorage, $router, $flashMessages);
@@ -69,7 +76,13 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $user
     ): void {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn(['1']);
+        if (class_exists(InputBag::class)) {
+            $requestBag = new InputBag();
+        } else {
+            $requestBag = new ParameterBag();
+        }
+        $requestBag->set('indexes', ['1']);
+        $request->request = $requestBag;
         $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldBeCalled();
@@ -93,7 +106,13 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $currentUser
     ): void {
         $token->getUser()->willReturn($currentUser);
-        $request->get('indexes', [])->willReturn(['1']);
+        if (class_exists(InputBag::class)) {
+            $requestBag = new InputBag();
+        } else {
+            $requestBag = new ParameterBag();
+        }
+        $requestBag->set('indexes', ['1']);
+        $request->request = $requestBag;
         $dataIndexer->getData('1')->willReturn($user);
 
         $event->stopPropagation()->shouldNotBeCalled();
@@ -112,10 +131,22 @@ class PreventDeletingCurrentUserSpec extends ObjectBehavior
         UserInterface $user
     ): void {
         $token->getUser()->willReturn($user);
-        $request->get('indexes', [])->willReturn(['1']);
+        if (class_exists(InputBag::class)) {
+            $requestBag = new InputBag();
+        } else {
+            $requestBag = new ParameterBag();
+        }
+        $requestBag->set('indexes', ['1']);
+        $request->request = $requestBag;
         $dataIndexer->getData('1')->willReturn($user);
 
-        $request->get('redirect_uri')->willReturn(null);
+        if (class_exists(InputBag::class)) {
+            $requestQueryBag = new InputBag();
+        } else {
+            $requestQueryBag = new ParameterBag();
+        }
+        $requestQueryBag->set('redirect_uri', null);
+        $request->query = $requestQueryBag;
 
         $event->getElement()->willReturn($userElement);
         $userElement->getRoute()->willReturn('route_name');
