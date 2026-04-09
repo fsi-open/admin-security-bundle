@@ -73,7 +73,6 @@
     },
     "conflict": {
         "doctrine/doctrine-cache-bundle": "<1.4.0",
-        "doctrine/dbal": ">=4.0",
         "fsi/datagrid": "*",
         "fsi/datasource": "*",
         "symfony/property-info": ">=8.0",
