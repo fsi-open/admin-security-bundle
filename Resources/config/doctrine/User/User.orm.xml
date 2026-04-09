@@ -16,7 +16,7 @@
         <field name="enforcePasswordChange" column="enforce_password_change" type="boolean" />
         <field name="password" column="password" type="string" />
         <field name="lastLogin" column="last_login" type="datetime_immutable" nullable="true" />
-        <field name="roles" column="roles" type="array" />
+        <field name="roles" column="roles" type="json" />
 
         <embedded name="activationToken" column-prefix="activation_token_" class="FSi\Bundle\AdminSecurityBundle\Security\Token\Token" />
         <embedded name="passwordResetToken" column-prefix="password_reset_token_" class="FSi\Bundle\AdminSecurityBundle\Security\Token\Token" />

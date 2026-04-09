@@ -42,6 +42,12 @@
             <tag name="console.command" />
         </service>
 
+        <service id="admin_security.command.migrate_roles" class="FSi\Bundle\AdminSecurityBundle\Command\MigrateUsersRolesCommand">
+            <argument type="service" id="doctrine" />
+            <argument type="string">%admin_security.model.user%</argument>
+            <tag name="console.command" />
+        </service>
+
     </services>
 
 </container>
