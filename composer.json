@@ -10,6 +10,16 @@
             "email": "norbert@orzechowicz.pl"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/chives/translatable"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/chives/resource-repository-bundle"
+        }
+    ],
     "require": {
         "php": "^7.4|^8.0",
         "beberlei/assert": "^3.3",
@@ -45,7 +55,6 @@
         "friends-of-behat/symfony-extension": "^2.4.1",
         "fsi/resource-repository-bundle": "^2.2|^3.0.2|^4.0",
         "fsi/translatable": "^1.0",
-        "ocramius/proxy-manager": "^2.5",
         "phpspec/phpspec": "^7.0|^8.0",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-beberlei-assert": "^2.0",

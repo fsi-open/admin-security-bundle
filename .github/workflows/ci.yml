@@ -23,7 +23,7 @@ jobs:
         container:
             image: fsiopenpl/docker-php-apache:alpine-${{ matrix.php-version }}
             env:
-                COMPOSER_FLAGS: ${{ matrix.php-version == '7.4' && ' --prefer-lowest' || '' }}
+                COMPOSER_FLAGS: ${{ matrix.php-version == '7.4' && ' --prefer-lowest --prefer-stable' || '' }}
             options: '--network-alias test-container'
         services:
           firefox:
@@ -35,7 +35,9 @@ jobs:
             - name: Validate composer config
               run: composer validate
             - name: Install dependencies
-              run: composer update ${COMPOSER_FLAGS}
+              run: |
+                composer config github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+                composer update ${COMPOSER_FLAGS}
             - name: Install assets
               run: features/fixtures/project/bin/console assets:install --symlink features/fixtures/project/public
             - name: Code quality
