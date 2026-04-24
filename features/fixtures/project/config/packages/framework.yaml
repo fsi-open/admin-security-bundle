@@ -10,3 +10,5 @@ framework:
     profiler:        { only_exceptions: false }
     test:            ~
     assets:          ~
+    session:
+        storage_factory_id:  session.storage.factory.mock_file
