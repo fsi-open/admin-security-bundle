@@ -70,12 +70,12 @@ class EnforcePasswordChangeListener implements EventSubscriberInterface
             return;
         }
 
-        $token = $this->tokenStorage->getToken();
-        if (null === $token) {
+        if (false === $this->isConfiguredFirewall($event->getRequest())) {
             return;
         }
 
-        if (false === $this->isConfiguredFirewall($event->getRequest())) {
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
             return;
         }
 
