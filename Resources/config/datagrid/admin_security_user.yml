@@ -41,3 +41,13 @@ columns:
         resend_activation_token:
           label: admin.user_list.batch_action.resend_activation_token
           element: admin_security_reset_activation_token
+  actions:
+    type: action
+    options:
+      label: admin.user_list.actions.label
+      field_mapping: ['id']
+      actions:
+        edit:
+          route_name: fsi_admin_form
+          additional_parameters: { element: admin_security_user }
+          parameters_field_mapping: { id: id }

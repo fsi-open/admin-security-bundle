@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use FSi\Bundle\AdminBundle\Doctrine\Admin\Element;
 use FSi\Bundle\AdminBundle\Event\FormDataPreSaveEvent;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
@@ -47,8 +48,13 @@ final class PrepareUserListener implements EventSubscriberInterface
             return;
         }
 
+        $element = $event->getElement();
+        if (false === $element instanceof Element) {
+            return;
+        }
+
         // do not dispatch event and do not set random password for existing users
-        if (null !== $entity->getPassword()) {
+        if (true === $element->getObjectManager()->contains($entity)) {
             return;
         }
 

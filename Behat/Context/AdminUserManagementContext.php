@@ -13,11 +13,11 @@ namespace FSi\Bundle\AdminSecurityBundle\Behat\Context;
 
 use Assert\Assertion;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Driver\BrowserKitDriver;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 use FriendsOfBehat\SymfonyExtension\Driver\SymfonyDriver;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\BatchAction;
 use FSi\Bundle\AdminSecurityBundle\Behat\Element\Datagrid;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserEdit;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 
 use function count;
@@ -92,13 +92,34 @@ final class AdminUserManagementContext extends AbstractContext
     }
 
     /**
+     * @When I click :name in :nthLiteral row
+     */
+    public function iPressButtonInRow(string $name, string $nthLiteral): void
+    {
+        $nthRow = match ($nthLiteral) {
+            'first' => 1,
+            'second' => 2,
+            default => throw new \InvalidArgumentException(sprintf('Unknown row "%s"', $nthLiteral)),
+        };
+        $this->getUserListPage()->clickButtonInRow($name, $nthRow);
+    }
+
+    /**
      * @Then I fill form with valid user data
      */
     public function iFillFormWithValidUserData(): void
     {
-        $userListPage = $this->getUserListPage();
-        $userListPage->fillField('Email', 'new-user@fsi.pl');
-        $userListPage->checkField('ROLE_ADMIN');
+        $userEditPage = $this->getUserEditPage();
+        $userEditPage->fillField('Email', 'new-user@fsi.pl');
+        $userEditPage->checkField('ROLE_ADMIN');
+    }
+
+    /**
+     * @Then I check :value
+     */
+    public function iCheckField(string $value): void
+    {
+        $this->getUserEditPage()->checkField($value);
     }
 
     private function performBatchAction(string $action, int $cellIndex): void
@@ -137,6 +158,11 @@ final class AdminUserManagementContext extends AbstractContext
     private function getUserListPage(): UserList
     {
         return $this->getPageObject(UserList::class);
+    }
+
+    private function getUserEditPage(): UserEdit
+    {
+        return $this->getPageObject(UserEdit::class);
     }
 
     private function getDatagrid(): Datagrid

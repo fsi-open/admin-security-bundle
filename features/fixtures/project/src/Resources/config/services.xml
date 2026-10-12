@@ -16,6 +16,7 @@
         </service>
 
         <service id="FSi\FixturesBundle\Admin\News" />
+        <service id="FSi\FixturesBundle\Admin\User" />
         <service id="FSi\FixturesBundle\Admin\PageSettings" />
         <service id="FSi\FixturesBundle\Listener\MailCollector" />
 

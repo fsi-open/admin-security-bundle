@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace spec\FSi\Bundle\AdminSecurityBundle\EventListener;
 
+use Doctrine\Persistence\ObjectManager;
+use FSi\Bundle\AdminBundle\Doctrine\Admin\CRUDElement;
+use FSi\Bundle\AdminBundle\Doctrine\Admin\Element;
 use FSi\Bundle\AdminBundle\Event\FormEvent;
 use FSi\Bundle\AdminSecurityBundle\Event\UserCreatedEvent;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserInterface;
@@ -36,10 +39,16 @@ class PrepareUserListenerSpec extends ObjectBehavior
         FormEvent $event,
         FormInterface $form,
         UserInterface $user,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CRUDElement $element,
+        ObjectManager $objectManager,
     ): void {
+        $event->getElement()->willReturn($element);
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
+
+        $element->getObjectManager()->willReturn($objectManager);
+        $objectManager->contains($user)->willReturn(false);
 
         $user->getPassword()->willReturn(null);
 
@@ -54,16 +63,20 @@ class PrepareUserListenerSpec extends ObjectBehavior
         $this->prepareAndDispatchUserCreated($event);
     }
 
-    public function it_should_do_not_set_random_password_when_user_already_exists(
+    public function it_should_not_preapre_existing_user(
         FormEvent $event,
         FormInterface $form,
         UserInterface $user,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CRUDElement $element,
+        ObjectManager $objectManager,
     ): void {
+        $event->getElement()->willReturn($element);
         $event->getForm()->willReturn($form);
         $form->getData()->willReturn($user);
 
-        $user->getPassword()->willReturn('password-hash');
+        $element->getObjectManager()->willReturn($objectManager);
+        $objectManager->contains($user)->willReturn(true);
 
         $user->setPlainPassword(Argument::any())->shouldNotBeCalled();
         $user->setEnabled(Argument::any())->shouldNotBeCalled();

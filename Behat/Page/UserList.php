@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FSi\Bundle\AdminSecurityBundle\Behat\Page;
 
+use Assert\Assertion;
 use Behat\Mink\Element\NodeElement;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 
@@ -60,6 +61,14 @@ final class UserList extends Page
             $options,
             static fn(string $item): bool => 'Select action' !== $item
         );
+    }
+
+    public function clickButtonInRow(string $name, int $nth): void
+    {
+        $locator = sprintf('tbody > tr:nth-child(%d) > td a[title="%s"]', $nth, $name);
+        $element = $this->getElement('table')->find('css', $locator);
+        Assertion::notNull($element, sprintf('"%s" not found in row %d', $name, $nth));
+        $element->click();
     }
 
     /**

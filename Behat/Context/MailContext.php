@@ -51,7 +51,7 @@ final class MailContext extends AbstractContext
         Assertion::count(
             $this->mailerCollector->getEmails(),
             0,
-            'There were "%s" emails sent, where none should.'
+            'The email list must contain %d email addresses, but %d was provided.'
         );
     }
 

@@ -64,3 +64,12 @@ Feature: User management
       | from     | activation@fsi.pl        |
       | to       | new-user@fsi.pl          |
       | reply_to | do-not-reply@example.com |
+
+  @email
+  Scenario: Edit User
+    Given I am on the "User list" page
+    And I click "Edit" in second row
+    And I check "ROLE_ADMIN"
+    And I press "Save" button
+    And I should be redirected to "User list" page
+    And no emails were sent

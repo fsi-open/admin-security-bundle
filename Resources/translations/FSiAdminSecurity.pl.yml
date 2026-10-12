@@ -66,6 +66,8 @@ admin:
       delete: Usuń
       password_reset: Przypomnij hasło
       resend_activation_token: Wyślij ponownie email aktywacyjny
+    actions:
+      label: Akcje
     message:
       delete_current_user: Nie można usunąć swojego użytkownika
   admin_user:
