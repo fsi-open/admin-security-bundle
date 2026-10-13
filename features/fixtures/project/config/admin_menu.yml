@@ -1,4 +1,4 @@
 menu:
   - news
   - { id: page_settings, name: Page settings }
-  - { id: admin_security_user, name: Users }
+  - { id: user, name: Users }

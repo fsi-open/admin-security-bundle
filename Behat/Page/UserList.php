@@ -65,7 +65,7 @@ final class UserList extends Page
 
     public function clickButtonInRow(string $name, int $nth): void
     {
-        $locator = sprintf('tbody > tr:nth-child(%d) > td a[title="%s"]', $nth, $name);
+        $locator = sprintf('tbody > tr:nth-child(%d) > td a:contains("%s")', $nth, $name);
         $element = $this->getElement('table')->find('css', $locator);
         Assertion::notNull($element, sprintf('"%s" not found in row %d', $name, $nth));
         $element->click();
@@ -77,7 +77,7 @@ final class UserList extends Page
     protected function getDefinedElements(): array
     {
         return [
-            'table' => '#admin_security_user',
+            'table' => 'table#user',
             'batch actions' => '#batch_action_action',
         ];
     }
@@ -88,6 +88,6 @@ final class UserList extends Page
      */
     protected function getUrl(array $urlParameters = []): string
     {
-        return $this->getParameter('base_url') . '/admin/en/list/admin_security_user';
+        return $this->getParameter('base_url') . '/admin/en/list/user';
     }
 }
