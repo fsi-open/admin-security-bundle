@@ -1,0 +1,55 @@
+columns:
+  # All columns below are copied directly from the default configuration Resources/config/datagrid/admin_security_user.yml
+  email:
+    type: text
+    options:
+      label: admin.user_list.datagrid.email
+      translation_domain: FSiAdminSecurity
+  enabled:
+    type: boolean
+    options:
+      label: admin.user_list.datagrid.enabled
+      translation_domain: FSiAdminSecurity
+  last_login:
+    type: datetime
+    options:
+      label: admin.user_list.datagrid.last_login
+      translation_domain: FSiAdminSecurity
+  password_reset_token_non_expired:
+    type: token_non_expired
+    options:
+      label: admin.user_list.datagrid.password_reset_token
+      translation_domain: FSiAdminSecurity
+      field_mapping: [ passwordResetToken ]
+  activation_token_non_expired:
+    type: token_non_expired
+    options:
+      label: admin.user_list.datagrid.activation_token
+      translation_domain: FSiAdminSecurity
+      field_mapping: [ activationToken ]
+  batch:
+    type: batch
+    options:
+      translation_domain: FSiAdminSecurity
+      actions:
+        delete:
+          label: admin.user_list.batch_action.delete
+          route_name: fsi_admin_batch
+          additional_parameters: { element: user } # Changed element to user
+        password_reset:
+          label: admin.user_list.batch_action.password_reset
+          element: admin_security_password_reset
+        resend_activation_token:
+          label: admin.user_list.batch_action.resend_activation_token
+          element: admin_security_reset_activation_token
+  # New column that is not present in default configuration
+  actions:
+    type: action
+    options:
+      translation_domain: FSiAdminSecurity
+      field_mapping: [ id ]
+      actions:
+        Edit:
+          route_name: fsi_admin_form
+          additional_parameters: { element: user }
+          parameters_field_mapping: { id: id }

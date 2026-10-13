@@ -77,7 +77,7 @@ final class UserList extends Page
     protected function getDefinedElements(): array
     {
         return [
-            'table' => 'table#user',
+            'table' => 'table#admin_security_user',
             'batch actions' => '#batch_action_action',
         ];
     }

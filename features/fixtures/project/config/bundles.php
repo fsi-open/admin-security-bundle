@@ -12,7 +12,7 @@ return [
     FSi\Component\Translatable\Integration\Symfony\TranslatableBundle::class => ['all' => true],
     FSi\Bundle\ResourceRepositoryBundle\FSiResourceRepositoryBundle::class => ['all' => true],
     FSi\Bundle\AdminBundle\FSiAdminBundle::class => ['all' => true],
-    FSi\FixturesBundle\FSiFixturesBundle::class => ['all' => true],
     FSi\Bundle\AdminSecurityBundle\FSiAdminSecurityBundle::class => ['all' => true],
-    FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle::class => ['all' => true]
+    FSi\FixturesBundle\FSiFixturesBundle::class => ['all' => true],
+    FriendsOfBehat\SymfonyExtension\Bundle\FriendsOfBehatSymfonyExtensionBundle::class => ['all' => true],
 ];
