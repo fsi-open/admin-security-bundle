@@ -55,7 +55,7 @@
         "symfony/monolog-bridge": "^5.4|^6.0|^7.0",
         "symfony/monolog-bundle": "^3.8",
         "symfony/routing": "^5.4|^6.0|^7.0",
-        "symfony/twig-bridge": "^5.4|^6.0|^7.0",
+        "symfony/twig-bridge": "~5.4.48|^6.0|^7.0",
         "symfony/var-dumper": "^5.4|^6.0|^7.0",
         "symfony/var-exporter": "^5.4|^6.0|^7.0",
         "rize/uri-template": "^0.3.5|^0.4.0"

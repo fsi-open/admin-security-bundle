@@ -26,6 +26,7 @@ use FSi\Bundle\AdminSecurityBundle\Behat\Page\AdminPanel;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Login;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\Page;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\PasswordResetRequest;
+use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserEdit;
 use FSi\Bundle\AdminSecurityBundle\Behat\Page\UserList;
 use FSi\Bundle\AdminSecurityBundle\Security\User\UserIdentifierHelper;
 use InvalidArgumentException;
@@ -59,6 +60,9 @@ final class AdminContext extends AbstractContext
                 break;
             case 'User list':
                 $page = $this->getPageObject(UserList::class);
+                break;
+            case 'User edit':
+                $page = $this->getPageObject(UserEdit::class);
                 break;
             case 'Password reset request':
                 $page = $this->getPageObject(PasswordResetRequest::class);
